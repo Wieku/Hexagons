@@ -20,7 +20,9 @@ public abstract class CurrentMap {
 	public static float difficulty = 1f;
 	public static float levelIncrement = 15f;
 	public static float delayMult = 1f;
-	public static float speed = 2.65f ;
+	public static float delayMultInc = 0.01f;
+	public static float speed = 1f ;
+	public static float speedInc = 0.125f;
 	public static float currentTime = 0f;
 
 	/** sides */
@@ -46,11 +48,12 @@ public abstract class CurrentMap {
 
 	/**colors*/
 	public static ArrayList<HColor> colors = new ArrayList<>();
-	public static float menuColor = 0f;
+	//public static float menuColor = 0f;
 	public static float colorPulse = 3f;
+	public static float colorPulseInc = 1f;
 	public static int colorOffset = 0;
 	public static float colorSwitch = 1f;
-	public static HColor walls = new HColor(0, 0, 1, 1);
+	public static HColor walls = new HColor(1, 1, 1, 1);
 
 	/**gfx settings */
 	public static int layers = 6;
@@ -82,7 +85,9 @@ public abstract class CurrentMap {
 		difficulty = 1f;
 		levelIncrement = 15f;
 		delayMult = 1f;
-		speed = 1f ;
+		delayMultInc = 0.01f;
+		speed = 1f;
+		speedInc = 0.125f;
 		currentTime = 0f;
 		
 		/** sides */
@@ -110,6 +115,7 @@ public abstract class CurrentMap {
 		/**colors*/
 		colors.clear();
 		colorPulse = 3f;
+		colorPulseInc = 1f;
 		colorOffset = 0;
 		colorSwitch = 1f;
 		walls = new HColor(0, 0, 1, 1);
@@ -174,8 +180,16 @@ public abstract class CurrentMap {
 		CurrentMap.delayMult = delay;
 	}
 
+	public static void setDelayMultInc(float delayInc) {
+		CurrentMap.delayMultInc = delayInc;
+	}
+
 	public static void setSpeed(float speed) {
 		CurrentMap.speed = speed;
+	}
+
+	public static void setSpeedInc(float speedInc) {
+		CurrentMap.speedInc = speedInc;
 	}
 
 	public static void setCurrentTime(float currentTime) {
@@ -238,6 +252,10 @@ public abstract class CurrentMap {
 
 	public static void setColorPulse(float colorPulse) {
 		CurrentMap.colorPulse = colorPulse;
+	}
+
+	public static void setColorPulseInc(float colorPulseInc) {
+		CurrentMap.colorPulseInc = colorPulseInc;
 	}
 
 	public static void setColorOffset(int colorOffset) {

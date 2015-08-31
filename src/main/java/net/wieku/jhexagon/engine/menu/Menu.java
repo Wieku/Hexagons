@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import net.wieku.jhexagon.Main;
 import net.wieku.jhexagon.api.CurrentMap;
-import net.wieku.jhexagon.engine.Background;
+import net.wieku.jhexagon.engine.render.Background;
 import net.wieku.jhexagon.engine.Game;
 import net.wieku.jhexagon.engine.Settings;
 import net.wieku.jhexagon.engine.camera.SkewCamera;
@@ -39,7 +39,7 @@ public class Menu implements Screen {
 	Table logo, info, credits;
 	Label number, name, description, author, music, creditLabel;
 
-	String[] creditArray = {"Programmed by:", "Sebastian Krajewski", "Lukasz Magiera", "Original ideas by:", "Vittorio Romeo", "Terry Cavanagh", "Music by:", "BOSSFIGHT", "Chipzel"};
+	String[] creditArray = {"Programmed by:", "Sebastian Krajewski", "Lukasz Magiera (net client)", "Original ideas by:", "Vittorio Romeo", "Terry Cavanagh", "Music by:", "BOSSFIGHT", "Chipzel"};
 	int index = -1;
 	float time = 1.5f;
 	float toChange = 0f;
@@ -81,17 +81,17 @@ public class Menu implements Screen {
 						playBeep();
 					}
 
-					if(keycode == Keys.F3){
-						playBeep();
-						Main.getInstance().setScreen(options);
-					}
-
 					if(keycode == Keys.ENTER){
 						playBeep();
 						Gdx.input.setInputProcessor(null);
 						Main.getInstance().setScreen(new Game(maps.get(mapIndex)));
 					}
 
+				}
+
+				if(keycode == Keys.F3){
+					playBeep();
+					Main.getInstance().setScreen(options);
 				}
 
 				if(keycode == Keys.ESCAPE){
@@ -109,7 +109,7 @@ public class Menu implements Screen {
 		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 18))).left().row();
 		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 16))).left().row();
 		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
-		info.add(music = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
+		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
 
 		info.setPosition(5, 5);
 		stage.addActor(info);
@@ -131,10 +131,13 @@ public class Menu implements Screen {
 
 		stage.addActor(credits);
 
-		if(!maps.isEmpty()) selectIndex(mapIndex);
-
+		selectIndex(mapIndex);
+		if(Settings.instance.fullscreen == true)
+			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
 
+	float delta0;
+	Color tmpC = new Color();
 	@Override
 	public void render(float delta) {
 
@@ -142,12 +145,29 @@ public class Menu implements Screen {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		CurrentMap.skew = 0;
-		camera.orbit(90f * delta);
+		camera.rotate(90f * delta);
+		camera.update(delta);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.identity();
 		shapeRenderer.rotate(1, 0, 0, 90);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		background.update(delta);
+
+		if((delta0+=delta)>=1f/60){
+			background.update(1f/60);
+			CurrentMap.walls.update(1f/60);
+
+			tmpC.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
+
+			number.getStyle().fontColor = tmpC;
+			name.getStyle().fontColor = tmpC;
+			description.getStyle().fontColor = tmpC;
+			author.getStyle().fontColor = tmpC;
+			music.getStyle().fontColor = tmpC;
+
+			delta0 = 0;
+		}
+
+
 		background.render(shapeRenderer, delta, true);
 		shapeRenderer.end();
 
@@ -180,25 +200,38 @@ public class Menu implements Screen {
 
 	@Override
 	public void show() {
+
 		Main.config.foregroundFPS = 120;
 
 		CurrentMap.reset();
-		maps.get(mapIndex).script.initColors();
+
+		if(!maps.isEmpty())
+			maps.get(mapIndex).script.initColors();
 
 		Gdx.input.setInputProcessor(stage);
 	}
 
 
 	public void selectIndex(int index){
-		Map map = maps.get(index);
+		if(maps.isEmpty()){
+			number.setText("");
+			name.setText("");
+			description.setText("");
+			author.setText("");
+			music.setText("No maps available!");
+			info.pack();
+			info.setPosition(5, 5);
+		} else {
+			Map map = maps.get(index);
+			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
+			name.setText(map.info.name);
+			description.setText(map.info.description);
+			author.setText("Author: " + map.info.author);
+			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
+			info.pack();
+			info.setPosition(5, 5);
+		}
 
-		number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
-		name.setText(map.info.name);
-		description.setText(map.info.description);
-		author.setText("Author: " + map.info.author);
-		music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
-		info.pack();
-		info.setPosition(5, 5);
 	}
 
 	public static void playBeep(){

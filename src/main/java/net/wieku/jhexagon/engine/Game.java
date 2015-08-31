@@ -16,12 +16,15 @@ import net.wieku.jhexagon.api.CurrentMap;
 import net.wieku.jhexagon.api.Wall;
 import net.wieku.jhexagon.engine.camera.SkewCamera;
 import net.wieku.jhexagon.engine.menu.Menu;
+import net.wieku.jhexagon.engine.render.Background;
+import net.wieku.jhexagon.engine.render.Center;
+import net.wieku.jhexagon.engine.render.Renderer;
+import net.wieku.jhexagon.engine.render.WallRenderer;
 import net.wieku.jhexagon.map.Map;
 import net.wieku.jhexagon.resources.ArchiveFileHandle;
 import net.wieku.jhexagon.resources.AudioPlayer;
 import net.wieku.jhexagon.utils.GUIHelper;
 
-import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 
@@ -52,13 +55,6 @@ public class Game implements Screen{
 	Sound gameOver;
 
 	LinkedList<Renderer> renderers = new LinkedList<>();
-
-	private float rumbleX;
-	private float rumbleY;
-	private float rumbleTime = 0;
-	private float currentRumbleTime = 1;
-	private float rumblePower = 0;
-	private float currentRumblePower = 0;
 
 	int width, height;
 
@@ -95,25 +91,21 @@ public class Game implements Screen{
 		message.layout();
 		stage.addActor(message);
 
-		try {
-			audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
+		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
 
 
 
-			levelUp = Gdx.audio.newSound(Gdx.files.internal("assets/sound/levelUp.ogg"));
-			sides = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
-			go = Gdx.audio.newSound(Gdx.files.internal("assets/sound/go.ogg"));
-			death = Gdx.audio.newSound(Gdx.files.internal("assets/sound/death.ogg"));
-			gameOver = Gdx.audio.newSound(Gdx.files.internal("assets/sound/gameOver.ogg"));
+		levelUp = Gdx.audio.newSound(Gdx.files.internal("assets/sound/levelUp.ogg"));
+		sides = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
+		go = Gdx.audio.newSound(Gdx.files.internal("assets/sound/go.ogg"));
+		death = Gdx.audio.newSound(Gdx.files.internal("assets/sound/death.ogg"));
+		gameOver = Gdx.audio.newSound(Gdx.files.internal("assets/sound/gameOver.ogg"));
 
-			addRenderer(center);
-			addRenderer(wallRenderer);
-			addRenderer(player);
+		addRenderer(center);
+		addRenderer(wallRenderer);
+		addRenderer(player);
 
-			start(map.info.startTimes[0]);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		start(map.info.startTimes[0]);
 	}
 
 	public void addRenderer(Renderer renderer){
@@ -135,18 +127,21 @@ public class Game implements Screen{
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		renderer.setProjectionMatrix(camera.combined);
 
 		renderer.identity();
 		renderer.rotate(1, 0, 0, 90);
-		renderer.translate(rumbleX, 0, rumbleY);
+		renderer.translate(0, 0, 0);
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 		background.render(renderer, delta, true);
 		renderer.end();
 
+
 		for(int j = 1; j <= CurrentMap.layers; ++j){
 			renderer.identity();
-			renderer.translate(rumbleX, -j * CurrentMap.depth, rumbleY);
+			renderer.translate(0, -j * CurrentMap.depth * 1.4f * Math.abs(CurrentMap.skew / CurrentMap.maxSkew), 0);
 			renderer.rotate(1, 0, 0, 90);
 			renderer.begin(ShapeRenderer.ShapeType.Filled);
 			for(Renderer render : renderers){
@@ -157,18 +152,18 @@ public class Game implements Screen{
 
 		renderer.identity();
 		renderer.rotate(1, 0, 0, 90);
-		renderer.translate(rumbleX, 0, rumbleY);
+		renderer.translate(0, 0, 0);
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 		for(Renderer render : renderers){
 			render.render(renderer, delta, false);
 		}
 		renderer.end();
 
-		message.setPosition((stage.getWidth() - message.getWidth())/2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
+		message.setPosition((stage.getWidth() - message.getWidth()) / 2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
 
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 	@Override
@@ -194,13 +189,10 @@ public class Game implements Screen{
 
 		delta0 = delta1 = delta5 = delta4 = delta3 = 0;
 
-		rumblePower = 0;
-		rumbleTime = 1;
-		currentRumbleTime = 0;
-
 		CurrentMap.currentTime = 0f;
 		CurrentMap.reset();
 		player.reset();
+		camera.reset();
 		audioPlayer.setVolume((float) Settings.instance.masterVolume * (float) Settings.instance.musicVolume / 10000f);
 		audioPlayer.play();
 		if(startTime != 0)
@@ -229,7 +221,7 @@ public class Game implements Screen{
 			if (audioPlayer != null && !audioPlayer.hasEnded()) {
 				playSound(death);
 				playSound(gameOver);
-				rumble(15f, 2f);
+				camera.rumble(10f, 1f);
 				audioPlayer.stop();
 			}
 
@@ -253,47 +245,28 @@ public class Game implements Screen{
 		}
 
 		updateRotation(delta);
-
+		camera.update(delta);
 		this.delta0 += delta;
+		renderers.forEach(o -> o.update(delta));
 		while (this.delta0 >= (1f / 60)) {
-			renderers.forEach(o -> o.update(1f / 60));
 
 			updateText(1f / 60);
 			updateSkew(1f / 60);
 			updatePulse(1f/60);
 
-			if(currentRumbleTime <= rumbleTime) {
-				currentRumblePower = rumblePower * ((rumbleTime - currentRumbleTime) / rumbleTime);
-
-				rumbleX = (MathUtils.random(1.0f) - 0.5f) * 2 * currentRumblePower;
-				rumbleY = (MathUtils.random(1.0f) - 0.5f) * 2 * currentRumblePower;
-
-				currentRumbleTime += 1f/60;
-			} else {
-				rumbleX = 0;
-				rumbleY = 0;
-			}
-
 			if (!player.dead) {
-				Wall.updatePulse();
+				CurrentMap.walls.update(1f/60);
 				background.update(1f / 60);
 				tmpColor.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
 				fps.getStyle().fontColor = tmpColor;
 				time.getStyle().fontColor = tmpColor;
 				message.getStyle().fontColor = tmpColor;
-
 			}
 
 			delta0 -= 0.016666668f;
 		}
 		if(!player.dead)
 			map.script.update(delta);
-	}
-
-	public void rumble(float power, float time) {
-		rumblePower = power;
-		rumbleTime = time;
-		currentRumbleTime = 0;
 	}
 
 	float delta1;
@@ -313,7 +286,7 @@ public class Game implements Screen{
 		}
 
 		fps.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
-		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + "\nPoints: " +((int) Math.pow(CurrentMap.currentTime * 2, 3)) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 
 		fps.pack();
 		time.pack();
@@ -340,7 +313,7 @@ public class Game implements Screen{
 			CurrentMap.currentTime += delta;
 		}
 
-		if(!player.dead && (delta3 +=delta)>=CurrentMap.levelIncrement){
+		if(!player.dead && (delta3 +=delta) >= CurrentMap.levelIncrement){
 
 			fastRotate = CurrentMap.fastRotate;
 
@@ -353,6 +326,8 @@ public class Game implements Screen{
 
 			CurrentMap.mustChangeSides = true;
 
+			CurrentMap.speed += CurrentMap.speedInc;
+			CurrentMap.delayMult += CurrentMap.delayMultInc;
 			delta3 = 0;
 		}
 
@@ -371,14 +346,13 @@ public class Game implements Screen{
 	public void updateRotation(float delta) {
 
 		if(player.dead) {
-			if(CurrentMap.rotationSpeed < 0){
+			if(CurrentMap.rotationSpeed < 0) {
 				CurrentMap.rotationSpeed = Math.min(-0.02f, CurrentMap.rotationSpeed + 0.002f * 60 * delta);
 			} else if(CurrentMap.rotationSpeed > 0) {
 				CurrentMap.rotationSpeed = Math.max(0.02f, CurrentMap.rotationSpeed - 0.002f * 60 * delta);
 			}
 		}
-
-		camera.orbit(CurrentMap.rotationSpeed * 360f *  delta + (CurrentMap.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
+		camera.rotate(CurrentMap.rotationSpeed * 360f * delta + (CurrentMap.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
 		fastRotate = Math.max(0, fastRotate - 60f * delta);
 		if(fastRotate == 0) CurrentMap.isFastRotation = false;
 	}
@@ -402,16 +376,14 @@ public class Game implements Screen{
 
 			if((CurrentMap.pulseDir < 0 && CurrentMap.pulse <= CurrentMap.pulseMin) || (CurrentMap.pulseDir > 0 && CurrentMap.pulse >= CurrentMap.pulseMax)){
 				CurrentMap.pulseDir *=-1;
-				delta5 = CurrentMap.pulseDelayMax;
+				if(CurrentMap.pulseDir < 0) delta5 = CurrentMap.pulseDelayMax;
 			}
 
 			CurrentMap.pulse += (CurrentMap.pulseDir > 0 ? CurrentMap.pulseSpeed : -CurrentMap.pulseSpeedR) * 60 * delta;
 
-			CurrentMap.pulse = MathUtils.clamp(CurrentMap.pulse, CurrentMap.pulseMin, CurrentMap.pulseMax);
-
 		}
-		//System.out.println(CurrentMap.pulse);
-		delta5 -= 60f * delta;
+
+		delta5 -= delta * 60;
 
 	}
 

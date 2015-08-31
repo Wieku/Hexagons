@@ -23,7 +23,7 @@ public class Graphics extends Section{
 		super();
 		top().left();
 
-		State state = new State("VSync", false) {
+		State vsync = new State("VSync", false) {
 			@Override
 			public void writeValue(Boolean value) {
 				Settings.instance.vSync = value;
@@ -37,7 +37,25 @@ public class Graphics extends Section{
 			}
 		};
 
-		state.select(true);
+		vsync.select(true);
+
+		State fullScreen = new State("Full Screen", false) {
+			@Override
+			public void writeValue(Boolean value) {
+				Settings.instance.fullscreen = value;
+				Main.config.fullscreen = value;
+				if(value){
+					Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+				} else {
+					Gdx.graphics.setDisplayMode(1024, 768, false);
+				}
+			}
+
+			@Override
+			public Boolean loadValue() {
+				return Settings.instance.fullscreen;
+			}
+		};
 
 		Slider msaa = new Slider("MSAA", 0, 4, 1, 4) {
 			@Override
@@ -60,12 +78,14 @@ public class Graphics extends Section{
 			}
 		};
 
-		addButton(state);
+		addButton(vsync);
+		//addButton(fullScreen);
 		addButton(msaa);
 		addButton(exit);
 
 		add(new Label("Graphics", GUIHelper.getLabelStyle(Color.WHITE, 22))).colspan(2).padLeft(20).padBottom(20).left().fillX().row();
-		add(state).fillX().row();
+		add(vsync).fillX().row();
+		//add(fullScreen).fillX().row();
 		add(msaa).fillX().row();
 		add(exit).fillX().colspan(2).padTop(22).row();
 	}

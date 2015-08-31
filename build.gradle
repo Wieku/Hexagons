@@ -89,7 +89,7 @@ shadowJar {
 	exclude 'LICENSE'
 	
 	manifest {
-		attributes("Implementation-Title": "JHexagon", "Implementation-Version": version)
+		attributes("Implementation-Title": "JHexagon", "Implementation-Version": version, "Build-Number": new Date().format("yyyyMMddHHmmss"))
 	}
 }
 
@@ -98,6 +98,7 @@ compileJava {
 	sourceCompatibility = "1.8"
 	targetCompatibility = "1.8"
 }
+
 
 task cleanAll(dependsOn: clean)<<{	
 	file('temp').deleteDir()

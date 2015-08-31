@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import net.wieku.jhexagon.Main;
 import net.wieku.jhexagon.api.CurrentMap;
 import net.wieku.jhexagon.api.Wall;
+import net.wieku.jhexagon.engine.render.Renderer;
 
 /**
  * @author Sebastian Krajewski on 22.03.15.
@@ -19,7 +20,7 @@ public class Player implements Renderer {
 	Vector2 tmp = new Vector2();
 	Vector2 tmp2 = new Vector2();
 	Vector2 tmp3 = new Vector2();
-	Vector2 tmp4 = new Vector2();
+	Vector2 fCh = new Vector2();
 	Vector2 lCh = new Vector2();
 	Vector2 rCh = new Vector2();
 	public boolean dead = false;
@@ -40,54 +41,41 @@ public class Player implements Renderer {
 	public void update(float delta){
 		this.delta += delta;
 
-		while (this.delta >= (1f / 60)) {
+		float oldRot = rot;
 
-			float oldRot = rot;
-
-			if(!dead)
-				if(Gdx.input.isKeyPressed(Keys.LEFT)){
-					rot += (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 300f : 600f) / 60f;
-					dir = -1;
-				} else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
-					rot -= (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 300f : 600f) / 60f;
-					dir = 1;
-				} else {
-					dir = 0;
-				}
-
-			rot = (rot < 0 ? rot + 360f : (rot > 360f ? rot - 360f : rot));
-
-			tmp4.set(0, 0.057f * Main.diagonal * Game.scale).rotate(-rot);
-
-			lCh.set(0, 0.057f * Main.diagonal * Game.scale).rotate(-(rot+1));
-			rCh.set(0, 0.057f * Main.diagonal * Game.scale).rotate(-(rot-1));
-
-
-			for(Wall wall : CurrentMap.wallTimeline.getObjects()){
-
-				if((dir == -1 && Intersector.isPointInPolygon(wall.vecs, lCh)) || (dir == 1 && Intersector.isPointInPolygon(wall.vecs, rCh))){
-
-					rot = oldRot;
-					tmp4.set(0, 0.057f * Main.diagonal * Game.scale).rotate(- rot);
-					lCh.set(0, 0.057f * Main.diagonal * Game.scale).rotate(- (rot + 3));
-					rCh.set(0, 0.057f * Main.diagonal * Game.scale).rotate(- (rot - 3));
-
-				}
-
-				if(Intersector.isPointInPolygon(wall.vecs, tmp4)){
-					dead = true;
-				}
+		if(!dead)
+			if(Gdx.input.isKeyPressed(Keys.LEFT)){
+				rot -= (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
+				dir = -1;
+			} else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+				rot += (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
+				dir = 1;
+			} else {
+				dir = 0;
 			}
 
-			tmp.set(0, 0.057f * Main.diagonal * Game.scale).rotate(- rot);
+		rot = (rot < 0 ? rot + 360f : (rot > 360f ? rot - 360f : rot));
 
-			tmp2.set(0, 0.05f * Main.diagonal * Game.scale).rotate(- rot - 9);
-			tmp3.set(0, 0.05f * Main.diagonal * Game.scale).rotate(- rot + 9);
-			lCh.set(0, 0.057f * Main.diagonal * Game.scale).rotate(- (rot + 3));
-			rCh.set(0, 0.057f * Main.diagonal * Game.scale).rotate(- (rot - 3));
+		fCh.set(0, 0.065f * Main.diagonal * Game.scale).rotate(rot);
+		lCh.set(0, 5f).rotate(rot-90).add(fCh);
+		rCh.set(0, 5f).rotate(rot+90).add(fCh);
 
-			this.delta  -= 0.016666668f;
+		for(Wall wall : CurrentMap.wallTimeline.getObjects()){
+
+			if((dir == -1 && Intersector.isPointInPolygon(wall.vecs, lCh)) || (dir == 1 && Intersector.isPointInPolygon(wall.vecs, rCh))){
+				rot = oldRot;
+			}
+
+			if(Intersector.isPointInPolygon(wall.vecs, tmp)){
+				dead = true;
+			}
 		}
+
+		tmp.set(0, 0.065f * Main.diagonal * Game.scale).rotate(rot);
+
+		tmp2.set(0, 0.058f * Main.diagonal * Game.scale).rotate(rot - 9);
+		tmp3.set(0, 0.058f * Main.diagonal * Game.scale).rotate(rot + 9);
+
 	}
 
 	@Override

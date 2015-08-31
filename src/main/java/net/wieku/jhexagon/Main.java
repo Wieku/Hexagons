@@ -2,6 +2,8 @@ package net.wieku.jhexagon;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.google.common.base.Charsets;
@@ -10,9 +12,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.wieku.jhexagon.engine.Settings;
 import net.wieku.jhexagon.engine.menu.Menu;
+import net.wieku.jhexagon.engine.menu.Updater;
 import net.wieku.jhexagon.map.Map;
 import net.wieku.jhexagon.map.MapLoader;
 import net.wieku.jhexagon.resources.FontManager;
+import net.wieku.jhexagon.utils.Utils;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.io.File;
@@ -25,13 +29,14 @@ import java.util.ArrayList;
  */
 public class Main extends Game{
 
-	public static final String version = "0.0.1";
 	public static LwjglApplicationConfiguration config;
 	int width, height;
-	ArrayList<Map> maps;
+	public ArrayList<Map> maps;
 	public static float diagonal = 1600f;
 	static Main instance = new Main();
 	static LwjglApplication app;
+	public static boolean noupdate = false;
+	public static final String version = "0.1.0";
 	private Main(){
 
 	}
@@ -40,15 +45,10 @@ public class Main extends Game{
 		return instance;
 	}
 
-	static boolean restarted = false;
-
 	@Override
 	public void create() {
 		FontManager.init();
-		maps = MapLoader.load();
-		new Menu(maps);
-		setScreen(restarted ? Menu.options : Menu.getInstance());
-
+		setScreen(Updater.instance);
 	}
 
 
@@ -84,6 +84,8 @@ public class Main extends Game{
 
 	public static void main(String[] args) {
 
+		if(args.length > 0 && args[0].equals("noupdate")) noupdate = true;
+
 		SysOutOverSLF4J.sendSystemOutAndErrToSLF4J();
 
 		try {
@@ -100,7 +102,8 @@ public class Main extends Game{
 		config = new LwjglApplicationConfiguration();
 		config.width = 1024;
 		config.height = 768;
-		config.title = "Hexagons! " + version + " - by Sebastian Krajewski";
+		config.fullscreen = false;
+		config.title = "Hexagons! " + Main.version;
 		config.foregroundFPS = 120;
 		config.addIcon("assets/icon.png", FileType.Internal);
 		config.samples = Settings.instance.msaa;

@@ -10,6 +10,7 @@ public class Settings implements Serializable{
 	public static Settings instance;
 
 	public boolean vSync = false;
+	public boolean fullscreen = false;
 	public int msaa = 4;
 
 	public int masterVolume = 100;
