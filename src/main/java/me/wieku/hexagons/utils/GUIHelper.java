@@ -36,7 +36,7 @@ public class GUIHelper{
 	public static LabelStyle getLabelStyle(Color color, int size){
 		LabelStyle stl = new LabelStyle();
 		stl.font =  FontManager.getFont(FontManager.MAIN, size);
-		stl.font.setMarkupEnabled(true);
+		stl.font.getData().markupEnabled = true;
 		stl.fontColor = color.cpy();
 		styles.put(size, stl);
 		return stl;

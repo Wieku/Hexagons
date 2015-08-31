@@ -14,21 +14,20 @@ allprojects {
 }
 
 def runDir = new File('run')
+mainClassName = "me.wieku.hexagons.Main"
+version = "0.1.0"
 
 task runClient(dependsOn: 'classes', type: JavaExec) {
-	main = 'net.wieku.jhexagon.Main'
+	main = mainClassName
+	args 'noupdate'
 	classpath = sourceSets.main.runtimeClasspath
 }
-
-mainClassName = "net.wieku.jhexagon.Main"
-version = "0.1.0"
 
 buildscript {
     repositories {
         mavenCentral()
 		jcenter()
         maven {
-        	url  "https://repo.eclipse.org/content/repositories/eclipse-staging/"
 			url "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
@@ -53,13 +52,6 @@ repositories {
 }
 
 dependencies {
-	//API
-	//compile project(':api')
-
-	//compile fileTree(dir: 'lib', include: ['*.jar'])	
-	compile 'org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0'
-	//compile 'com.google.inject:guice:4.0-beta5'
-	compile 'com.typesafe:config:1.2.1'
 	compile 'com.google.guava:guava:18.0'
 	compile 'com.google.code.gson:gson:2.3.1'
 
@@ -69,7 +61,7 @@ dependencies {
 	compile 'ch.qos.logback:logback-core:1.1.2'
 	compile 'uk.org.lidalia:sysout-over-slf4j:1.0.2'
 
-	def gdx = '1.5.4'
+	def gdx = '1.6.5'
 
 	//LibGDX
 	compile 'com.badlogicgames.gdx:gdx-backend-lwjgl:'+gdx
@@ -77,19 +69,13 @@ dependencies {
 	compile 'com.badlogicgames.gdx:gdx-platform:'+gdx+':natives-desktop'
 	compile 'com.badlogicgames.gdx:gdx-freetype:'+gdx
 	compile 'com.badlogicgames.gdx:gdx-freetype-platform:'+gdx+':natives-desktop'
-
-	
-
-	/*******************TESTS**********************/
-	//testCompile group: 'junit', name: 'junit', version: '4.+'
-
 }
 
 shadowJar {
 	exclude 'LICENSE'
 	
 	manifest {
-		attributes("Implementation-Title": "JHexagon", "Implementation-Version": version, "Build-Number": new Date().format("yyyyMMddHHmmss"))
+		attributes("Implementation-Title": "Hexagons",  "Implementation-Version": version, "Implementation-Vendor": "Sebastian Krajewski (Wieku)", "Build-Number": new Date().format("yyyyMMddHHmmss"))
 	}
 }
 
@@ -99,12 +85,7 @@ compileJava {
 	targetCompatibility = "1.8"
 }
 
-
-task cleanAll(dependsOn: clean)<<{	
-	file('temp').deleteDir()
-}
-
-task setUp(dependsOn: cleanAll) <<{
+task setUp() <<{
 	if(!runDir.isDirectory())
 		runDir.mkdirs()
 }
