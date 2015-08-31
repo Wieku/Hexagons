@@ -1,6 +1,7 @@
 package me.wieku.hexagons.engine.menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -63,6 +64,28 @@ public class Menu implements Screen {
 		options = new Options();
 		stage = new Stage(new ScreenViewport());
 		stage.addListener(new InputListener(){
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+				if(!maps.isEmpty()) {
+
+					if (button == Buttons.LEFT || button == Buttons.RIGHT) {
+
+						if (button == Buttons.LEFT && --mapIndex < 0) mapIndex = maps.size() - 1;
+						if (button == Buttons.RIGHT && ++mapIndex > maps.size() - 1) mapIndex = 0;
+
+						selectIndex(mapIndex);
+
+						CurrentMap.reset();
+						maps.get(mapIndex).script.initColors();
+
+						playBeep();
+					}
+				}
+
+				return super.touchDown(event, x, y, pointer, button);
+			}
+
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 

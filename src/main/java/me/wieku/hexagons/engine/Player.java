@@ -1,6 +1,7 @@
 package me.wieku.hexagons.engine;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -44,10 +45,10 @@ public class Player implements Renderer {
 		float oldRot = rot;
 
 		if(!dead)
-			if(Gdx.input.isKeyPressed(Keys.LEFT)){
+			if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isButtonPressed(Buttons.LEFT)){
 				rot -= (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
 				dir = -1;
-			} else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+			} else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isButtonPressed(Buttons.RIGHT)){
 				rot += (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
 				dir = 1;
 			} else {
