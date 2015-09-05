@@ -11,8 +11,8 @@ import me.wieku.hexagons.api.CurrentMap;
 public class SkewCamera extends PerspectiveCamera {
 
 	private float currentRotation;
-	private float rumbleX;
-	private float rumbleZ;
+	public float rumbleX;
+	public float rumbleZ;
 	private float rumbleTime = 0;
 	private float currentRumbleTime = 1;
 	private float rumblePower = 0;
@@ -43,12 +43,12 @@ public class SkewCamera extends PerspectiveCamera {
 			rumbleZ = 0;
 		}
 
-		position.set(0, 1200f, 0).rotate(Vector3.X, Math.max(0.00001f, 50f * CurrentMap.skew)).rotate(Vector3.Y, currentRotation);
+		position.set(0, 1200f, 0).rotate(Vector3.X, Math.max(0.00001f, 50f * CurrentMap.skew)).rotate(Vector3.Y, currentRotation).add(rumbleX, 0, rumbleZ);
 
-		float realRumbleX = (position.x < 0 ? Math.max(position.x, rumbleX) : Math.min(position.x, rumbleX));
-		float realRumbleZ = (position.z < 0 ? Math.max(position.z, rumbleZ) : Math.min(position.z, rumbleZ));
+		//float realRumbleX = (position.x < 0 ? Math.max(position.x, rumbleX) : Math.min(position.x, rumbleX));
+		//float realRumbleZ = (position.z < 0 ? Math.max(position.z, rumbleZ) : Math.min(position.z, rumbleZ));
 
-		lookAt(realRumbleX, 0, realRumbleZ);
+		lookAt(rumbleX, 0, rumbleZ);
 		up.set(Vector3.Y);
 
 		update();

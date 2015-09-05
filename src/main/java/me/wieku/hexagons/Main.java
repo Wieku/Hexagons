@@ -2,8 +2,11 @@ package me.wieku.hexagons;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -13,6 +16,9 @@ import me.wieku.hexagons.map.MapLoader;
 import me.wieku.hexagons.resources.FontManager;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.map.Map;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.io.File;
@@ -45,6 +51,8 @@ public class Main extends Game{
 	public void create() {
 		FontManager.init();
 		setScreen(Updater.instance);
+		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		//Mouse.
 	}
 
 
@@ -96,6 +104,12 @@ public class Main extends Game{
 		}
 
 		config = new LwjglApplicationConfiguration();
+
+		for (DisplayMode current : LwjglApplicationConfiguration.getDisplayModes()) {
+			System.out.println(current.width + "x" + current.height + "x" +
+					current.bitsPerPixel + " " + current.refreshRate + "Hz");
+		}
+
 		config.width = 1024;
 		config.height = 768;
 		config.fullscreen = false;
@@ -105,6 +119,9 @@ public class Main extends Game{
 		config.samples = Settings.instance.msaa;
 		config.vSyncEnabled = Settings.instance.vSync;
 		app = new LwjglApplication(instance, config);
+
+		/*Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width,
+				Gdx.graphics.getDesktopDisplayMode().height, true);*/
 
 	}
 

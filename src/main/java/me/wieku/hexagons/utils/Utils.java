@@ -1,6 +1,8 @@
 package me.wieku.hexagons.utils;
 
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedInputStream;
@@ -112,6 +114,15 @@ public class Utils {
 			e1.printStackTrace();
 		}
 
+		return null;
+	}
+
+	public static String getFileHash(File file){
+		try {
+			return Files.hash(file, Hashing.sha1()).toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

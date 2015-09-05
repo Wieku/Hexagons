@@ -1,8 +1,10 @@
 package me.wieku.hexagons.map;
 
+import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.wieku.hexagons.api.MapScript;
+import me.wieku.hexagons.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,12 +22,13 @@ import java.util.zip.ZipFile;
  * @author Sebastian Krajewski on 28.03.15.
  */
 public class MapLoader {
-	private static String MAPS_PATH = "Maps/";
-
+	private static String MAPS_PATH = "Maps" + File.separator;
+	private static String DATA_PATH = "Data" + File.separator;
 	//private static Logger log = LoggerFactory.getLogger(MapLoader.class);
 
 	public static ArrayList<Map> load() {
 		new File(MAPS_PATH).mkdirs();
+		new File(DATA_PATH).mkdirs();
 
 		System.out.println("Loading maps");
 		ArrayList<Map> maps = new ArrayList<>();
@@ -35,7 +38,7 @@ public class MapLoader {
 		File files[] = dir.listFiles();
 
 		for (File file : files) {
-			if (file.isFile()) {
+			if (file.isFile() && Files.getFileExtension(file.getAbsolutePath()).equals("jar")) {
 				JarFile jar;
 				try {
 					jar = new JarFile(file);
@@ -88,7 +91,11 @@ public class MapLoader {
 				}
 
 				try {
-					maps.add(new Map((MapScript) toLoad.newInstance(), m, jar));
+					String sh1 = Utils.getFileHash(file);
+					File data = new File(DATA_PATH + sh1 + ".hxd");
+					//if(!data.exists()) data.createNewFile();
+					maps.add(new Map((MapScript) toLoad.newInstance(), m, jar, data));
+
 				} catch (Exception e1) {
 					System.err.println("Script of " + m.name + "(" + file.getName() + ") couldn't contain custom constructor!");
 					e1.printStackTrace();
@@ -97,6 +104,7 @@ public class MapLoader {
 				}
 
 				System.out.println("Map " + m.name + " Has been loaded!");
+
 			}
 		}
 		System.out.println("Loaded " + maps.size() + " maps");

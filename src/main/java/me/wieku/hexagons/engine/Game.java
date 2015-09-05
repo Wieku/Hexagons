@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -76,12 +77,12 @@ public class Game implements Screen{
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(width, height, true);
 
-		fps = new Label("", GUIHelper.getLabelStyle(/*new Color(0, 0, 0, 0.5f),*/ Color.WHITE, 14));
+		fps = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14));
 		fps.layout();
 		fps.setX(2);
 		stage.addActor(fps);
 
-		time = new Label("", GUIHelper.getLabelStyle(/*new Color(0, 0, 0, 0.5f),*/ Color.WHITE, 14));
+		time = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14));
 		time.layout();
 		time.setX(2);
 		stage.addActor(time);
@@ -119,6 +120,8 @@ public class Game implements Screen{
 		Main.config.foregroundFPS = 0;
 	}
 
+
+	Matrix4 mat = new Matrix4();
 	@Override
 	public void render(float delta) {
 		updateGame(delta);
@@ -160,6 +163,7 @@ public class Game implements Screen{
 
 		message.setPosition((stage.getWidth() - message.getWidth()) / 2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
 
+		stage.getCamera().position.set(camera.rumbleX + stage.getWidth() / 2, camera.rumbleZ + stage.getHeight() / 2, 0);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -220,7 +224,7 @@ public class Game implements Screen{
 			if (audioPlayer != null && !audioPlayer.hasEnded()) {
 				playSound(death);
 				playSound(gameOver);
-				camera.rumble(10f, 1f);
+				camera.rumble(20f, 1f);
 				audioPlayer.stop();
 			}
 

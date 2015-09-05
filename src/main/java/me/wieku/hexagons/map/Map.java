@@ -2,6 +2,7 @@ package me.wieku.hexagons.map;
 
 import me.wieku.hexagons.api.MapScript;
 
+import java.io.File;
 import java.util.zip.ZipFile;
 
 /**
@@ -12,10 +13,12 @@ public class Map {
 	public MapScript script;
 	public MapJson info;
 	public ZipFile file;
+	public File dataFile;
 
-	public Map(MapScript script, MapJson info, ZipFile file) {
+	public Map(MapScript script, MapJson info, ZipFile file, File dataFile) {
 		this.script = script;
 		this.info = info;
 		this.file = file;
+		this.dataFile = dataFile;
 	}
 }

@@ -118,7 +118,7 @@ public abstract class CurrentMap {
 		colorPulseInc = 1f;
 		colorOffset = 0;
 		colorSwitch = 1f;
-		walls = new HColor(0, 0, 1, 1);
+		walls = new HColor(1, 1, 1, 1);
 		
 		/**gfx settings */
 		layers = 6;

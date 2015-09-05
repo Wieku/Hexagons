@@ -40,7 +40,7 @@ public class Menu implements Screen {
 	Table logo, info, credits;
 	Label number, name, description, author, music, creditLabel;
 
-	String[] creditArray = {"Programmed by:", "Sebastian Krajewski", "Lukasz Magiera (net client)", "Original ideas by:", "Vittorio Romeo", "Terry Cavanagh", "Music by:", "BOSSFIGHT", "Chipzel"};
+	String[] creditArray = {"Programmed by:", "Sebastian Krajewski", "Lukasz Magiera", "Original ideas by:", "Vittorio Romeo", "Terry Cavanagh"/*, "Music by:", "BOSSFIGHT", "Chipzel"*/};
 	int index = -1;
 	float time = 1.5f;
 	float toChange = 0f;
@@ -159,7 +159,8 @@ public class Menu implements Screen {
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
 
-	float delta0;
+	float delta0 = 0;
+
 	Color tmpC = new Color();
 	@Override
 	public void render(float delta) {
@@ -167,18 +168,21 @@ public class Menu implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		CurrentMap.skew = 0;
-		camera.rotate(90f * delta);
-		camera.update(delta);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.identity();
 		shapeRenderer.rotate(1, 0, 0, 90);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		if((delta0+=delta)>=1f/60){
-			background.update(1f/60);
-			CurrentMap.walls.update(1f/60);
+			background.update(delta0);
+			CurrentMap.walls.update(delta0);
 
+			CurrentMap.setMinSkew(0);
+			CurrentMap.setMaxSkew(1);
+			CurrentMap.setSkewTime(2);
+			updateSkew(delta0);
+			camera.rotate(90f * delta0);
+			camera.update(delta0);
 			tmpC.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
 
 			number.getStyle().fontColor = tmpC;
@@ -187,7 +191,7 @@ public class Menu implements Screen {
 			author.getStyle().fontColor = tmpC;
 			music.getStyle().fontColor = tmpC;
 
-			delta0 = 0;
+			delta0 -= 1f/60;
 		}
 
 
@@ -211,6 +215,16 @@ public class Menu implements Screen {
 
 		stage.act(delta);
 		stage.draw();
+	}
+
+	int inc;
+	float delta2;
+	public void updateSkew(float delta) {
+		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.skewTime ? -1 : inc));
+		delta2 += delta * inc;
+		delta2 = Math.min(CurrentMap.skewTime, Math.max(delta2, 0));
+		float percent = delta2 / CurrentMap.skewTime;
+		CurrentMap.skew = CurrentMap.minSkew + (CurrentMap.maxSkew - CurrentMap.minSkew) * percent;
 	}
 
 	@Override
