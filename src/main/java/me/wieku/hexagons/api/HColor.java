@@ -9,7 +9,7 @@ public class HColor {
 	float pr, pg, pb, pa;
 	float hue, hueMin, hueMax, hueInc, hueShift;
 	float offset = 1f, darkness = 1f;
-	boolean pingPong, dynamic, dynamicDarknes;
+	boolean pingPong, dynamic, dynamicDarknes, main = false;
 	boolean pulse = false;
 	public float r, g, b, a;
 
@@ -51,6 +51,11 @@ public class HColor {
 
 	public HColor addHueOffset(float offset){
 		this.offset = offset;
+		return this;
+	}
+
+	public HColor setMain(boolean main){
+		this.main = main;
 		return this;
 	}
 
@@ -105,7 +110,7 @@ public class HColor {
 
 			float[] rgb = getFromHSV((hue + hueShift) / 360f, 1f, 1f);
 
-			if(dynamicDarknes) {
+			if(dynamicDarknes || main) {
 				gr = rgb[0] / darkness;
 				gg = rgb[1] / darkness;
 				gb = rgb[2] / darkness;
@@ -119,15 +124,16 @@ public class HColor {
 		r = clamp(gr + percent * pr, 0f, 1f);
 		g = clamp(gg + percent * pg, 0f, 1f);
 		b = clamp(gb + percent * pb, 0f, 1f);
-		a = clamp(fa + percent * pa, 0, 1);
+		a = clamp(fa + percent * pa, 0, 1f);
 
 	}
 
 	static float clamp(float value, float min, float max){
-		if (value < min)
-			value = min;
-		else if (value > max) value = max;
-		return value;
+		/*while (value > max)
+			value -= max;
+		while (value < min)
+			value += max;*/
+		return value < min ? min : value > max ? max : value;
 	}
 
 	public static float[] getFromHSV(float hue, float saturation, float brightness) {

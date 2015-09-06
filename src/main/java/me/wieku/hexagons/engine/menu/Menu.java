@@ -173,16 +173,17 @@ public class Menu implements Screen {
 		shapeRenderer.rotate(1, 0, 0, 90);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-		if((delta0+=delta)>=1f/60){
+		updateSkew(delta);
+		camera.rotate(90f * delta);
+		camera.update(delta);
+
+		if((delta0 += delta)>=1f/60){
 			background.update(delta0);
 			CurrentMap.walls.update(delta0);
 
-			CurrentMap.setMinSkew(0);
+			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
-			CurrentMap.setSkewTime(2);
-			updateSkew(delta0);
-			camera.rotate(90f * delta0);
-			camera.update(delta0);
+			CurrentMap.setSkewTime(1);
 			tmpC.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
 
 			number.getStyle().fontColor = tmpC;
@@ -191,7 +192,7 @@ public class Menu implements Screen {
 			author.getStyle().fontColor = tmpC;
 			music.getStyle().fontColor = tmpC;
 
-			delta0 -= 1f/60;
+			delta0 = 0;
 		}
 
 

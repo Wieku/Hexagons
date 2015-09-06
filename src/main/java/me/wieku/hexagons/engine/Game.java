@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -46,6 +47,7 @@ public class Game implements Screen{
 	WallRenderer wallRenderer = new WallRenderer();
 
 	Label fps;
+	Label points;
 	Label time;
 	Label message;
 	Sound levelUp;
@@ -57,6 +59,8 @@ public class Game implements Screen{
 	LinkedList<Renderer> renderers = new LinkedList<>();
 
 	int width, height;
+
+	float score = 0;
 
 	public static float scale = 1f;
 
@@ -91,6 +95,10 @@ public class Game implements Screen{
 		message.layout();
 		stage.addActor(message);
 
+		points = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 30));
+		points.layout();
+		stage.addActor(points);
+
 		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
 
 
@@ -120,8 +128,6 @@ public class Game implements Screen{
 		Main.config.foregroundFPS = 0;
 	}
 
-
-	Matrix4 mat = new Matrix4();
 	@Override
 	public void render(float delta) {
 		updateGame(delta);
@@ -132,10 +138,9 @@ public class Game implements Screen{
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		renderer.setProjectionMatrix(camera.combined);
-
 		renderer.identity();
-		renderer.rotate(1, 0, 0, 90);
 		renderer.translate(0, 0, 0);
+		renderer.rotate(1, 0, 0, 90);
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 		background.render(renderer, delta, true);
 		renderer.end();
@@ -144,6 +149,7 @@ public class Game implements Screen{
 		for(int j = 1; j <= CurrentMap.layers; ++j){
 			renderer.identity();
 			renderer.translate(0, -j * CurrentMap.depth * 1.4f * Math.abs(CurrentMap.skew / CurrentMap.maxSkew), 0);
+
 			renderer.rotate(1, 0, 0, 90);
 			renderer.begin(ShapeRenderer.ShapeType.Filled);
 			for(Renderer render : renderers){
@@ -153,8 +159,9 @@ public class Game implements Screen{
 		}
 
 		renderer.identity();
-		renderer.rotate(1, 0, 0, 90);
 		renderer.translate(0, 0, 0);
+		renderer.rotate(1, 0, 0, 90);
+
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 		for(Renderer render : renderers){
 			render.render(renderer, delta, false);
@@ -194,6 +201,7 @@ public class Game implements Screen{
 
 		CurrentMap.currentTime = 0f;
 		CurrentMap.reset();
+		score = 0;
 		player.reset();
 		camera.reset();
 		audioPlayer.setVolume((float) Settings.instance.masterVolume * (float) Settings.instance.musicVolume / 10000f);
@@ -216,6 +224,9 @@ public class Game implements Screen{
 	boolean escClick = false;
 	Color tmpColor = new Color();
 	public void updateGame(float delta){
+
+		if(!player.dead)
+			score += delta * (CurrentMap.difficulty * CurrentMap.speed * (((int)CurrentMap.currentTime) * 5 + 300));
 
 		updateTimeline(delta);
 
@@ -243,7 +254,7 @@ public class Game implements Screen{
 			}
 		}
 
-		if(!Gdx.input.isKeyPressed(Keys.ESCAPE)){
+		if (!Gdx.input.isKeyPressed(Keys.ESCAPE)){
 			escClick = false;
 		}
 
@@ -264,6 +275,7 @@ public class Game implements Screen{
 				fps.getStyle().fontColor = tmpColor;
 				time.getStyle().fontColor = tmpColor;
 				message.getStyle().fontColor = tmpColor;
+				points.getStyle().fontColor = tmpColor;
 			}
 
 			delta0 -= 0.016666668f;
@@ -289,8 +301,10 @@ public class Game implements Screen{
 		}
 
 		fps.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
-		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + "\nPoints: " +((int) Math.pow(CurrentMap.currentTime * 2, 3)) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
-
+		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		points.setText(String.format("%08d", (int) score));
+		points.pack();
+		points.setPosition(stage.getWidth() - points.getWidth() - 5 , stage.getHeight() - points.getHeight());
 		fps.pack();
 		time.pack();
 		message.pack();
@@ -378,11 +392,12 @@ public class Game implements Screen{
 		if(delta5 <= 0){
 
 			if((CurrentMap.pulseDir < 0 && CurrentMap.pulse <= CurrentMap.pulseMin) || (CurrentMap.pulseDir > 0 && CurrentMap.pulse >= CurrentMap.pulseMax)){
-				CurrentMap.pulseDir *=-1;
+				CurrentMap.pulse = CurrentMap.pulseDir > 0 ? CurrentMap.pulseMax : CurrentMap.pulseMin;
+				CurrentMap.pulseDir *= -1;
 				if(CurrentMap.pulseDir < 0) delta5 = CurrentMap.pulseDelayMax;
 			}
 
-			CurrentMap.pulse += (CurrentMap.pulseDir > 0 ? CurrentMap.pulseSpeed : -CurrentMap.pulseSpeedR) * 60 * delta;
+			CurrentMap.pulse += (CurrentMap.pulseDir > 0 ? CurrentMap.pulseSpeed : -CurrentMap.pulseSpeedR) * 60f * delta;
 
 		}
 

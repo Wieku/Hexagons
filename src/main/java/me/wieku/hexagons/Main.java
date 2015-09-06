@@ -51,8 +51,11 @@ public class Main extends Game{
 	public void create() {
 		FontManager.init();
 		setScreen(Updater.instance);
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
-		//Mouse.
+		if(Settings.instance.fullscreen){
+			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		} else {
+			Gdx.graphics.setDisplayMode(1024, 768, false);
+		}
 	}
 
 

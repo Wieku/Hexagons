@@ -22,7 +22,7 @@ public class Center implements Renderer {
 	public void render(ShapeRenderer renderer, float delta, boolean shadows) {
 
 		shadow.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a).lerp(Color.BLACK, 0.4f);
-
+		float pulseSpeed =  CurrentMap.pulseMin / CurrentMap.pulse;
 		for (float i = 0; i < CurrentMap.sides; ++i) {
 
 			if(!shadows)
@@ -44,7 +44,7 @@ public class Center implements Renderer {
 			}
 
 			renderer.circle(tmp.x, tmp.y, 3);
-			renderer.rectLine(tmp, tmp2, 6);
+			renderer.rectLine(tmp, tmp2, 6 * pulseSpeed);
 
 		}
 

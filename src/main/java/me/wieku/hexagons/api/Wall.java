@@ -66,7 +66,7 @@ public class Wall extends TimelineObject {
 		//while(delta0 >= 1f / 60){
 
 			if(acceleration > 0) {
-				speed += acceleration * delta /*/ 60f*/;
+				speed += acceleration * delta * 60f;
 				if(speed > speedMax) {
 					speed = speedMax;
 					if(pingPong)

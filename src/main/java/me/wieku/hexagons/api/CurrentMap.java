@@ -43,7 +43,7 @@ public abstract class CurrentMap {
 	public static float pulseSpeed = 1.0f;
 	public static float pulseSpeedR = 0.6f;
 	public static float pulseDelayMax = 0;
-	public static float pulse = 90;
+	public static float pulse = 75;
 	public static int pulseDir = 1;
 
 	/**colors*/
@@ -108,8 +108,7 @@ public abstract class CurrentMap {
 		pulseSpeed = 1.0f;
 		pulseSpeedR = 0.6f;
 		pulseDelayMax = 0;
-		pulse = 90;
-		pulse = pulseMax;
+		pulse = 75;
 		pulseDir = 1;
 
 		/**colors*/

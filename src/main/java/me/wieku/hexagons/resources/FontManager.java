@@ -74,8 +74,9 @@ public enum FontManager{
 				//pam.borderColor = Color.BLACK;//new Color(0.5f, 0.5f, 0.5f, 1f);
 				pam.shadowColor = new Color(0.5f, 0.5f, 0.5f, 1f);
 				//pam.borderWidth = 1f;
-				pam.shadowOffsetX = 2;
-				pam.shadowOffsetY = 2;
+				//pam.borderColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+				pam.shadowOffsetX = 1;
+				pam.shadowOffsetY = 1;
 				pam.magFilter = TextureFilter.Nearest;
 				pam.minFilter = TextureFilter.MipMapNearestNearest;
 				pam.characters = chars;
