@@ -85,12 +85,12 @@ public class Game implements Screen {
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(width, height, true);
 
-		fps = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14));
+		fps = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 10));
 		fps.layout();
 		fps.setX(2);
 		stage.addActor(fps);
 
-		time = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14));
+		time = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 10));
 		time.layout();
 		time.setX(2);
 		stage.addActor(time);
@@ -280,7 +280,7 @@ public class Game implements Screen {
 		renderers.forEach(o -> o.update(delta));
 		while (this.delta0 >= (1f / 60)) {
 
-			/*fpsBuffer[index++] = (int)(1f / delta);
+			fpsBuffer[index++] = (int)(1f / delta);
 
 			if(index>=fpsBuffer.length)
 				index = 0;
@@ -289,7 +289,7 @@ public class Game implements Screen {
 			for(int i : fpsBuffer){
 				framesps += i;
 			}
-			framesps /= fpsBuffer.length;*/
+			framesps /= fpsBuffer.length;
 
 			updateText(1f / 60);
 			updateSkew(1f / 60);
@@ -327,7 +327,7 @@ public class Game implements Screen {
 			}
 		}
 
-		fps.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+		fps.setText("FPS: " + framesps);
 		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();

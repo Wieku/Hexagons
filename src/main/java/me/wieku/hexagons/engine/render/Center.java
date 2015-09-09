@@ -43,7 +43,7 @@ public class Center implements Renderer {
 				renderer.setColor(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
 			}
 
-			renderer.circle(tmp.x, tmp.y, 3);
+			renderer.circle(tmp.x, tmp.y, 3 * pulseSpeed);
 			renderer.rectLine(tmp, tmp2, 6 * pulseSpeed);
 
 		}
