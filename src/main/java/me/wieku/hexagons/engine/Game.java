@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.engine.menu.Menu;
 import me.wieku.hexagons.Main;
@@ -21,10 +22,12 @@ import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.render.Center;
 import me.wieku.hexagons.engine.render.Renderer;
 import me.wieku.hexagons.engine.render.WallRenderer;
+import me.wieku.hexagons.engine.ui.HProgressBar;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.resources.ArchiveFileHandle;
 import me.wieku.hexagons.resources.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
+import org.lwjgl.opengl.GL11;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -32,7 +35,7 @@ import java.util.LinkedList;
 /**
  * @author Sebastian Krajewski on 28.03.15.
  */
-public class Game implements Screen{
+public class Game implements Screen {
 
 	Map map;
 	AudioPlayer audioPlayer;
@@ -50,6 +53,7 @@ public class Game implements Screen{
 	Label points;
 	Label time;
 	Label message;
+	ProgressBar next;
 	Sound levelUp;
 	Sound sides;
 	Sound go;
@@ -98,7 +102,13 @@ public class Game implements Screen{
 		points = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 30));
 		points.layout();
 		stage.addActor(points);
+		
+		next = new HProgressBar(0f, 1f, 0.0001f, false);
+		next.setSize(200, 8);
+		next.layout();
 
+		stage.addActor(next);
+		
 		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
 
 
@@ -137,6 +147,7 @@ public class Game implements Screen{
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
 		renderer.setProjectionMatrix(camera.combined);
 		renderer.identity();
 		renderer.translate(0, 0, 0);
@@ -145,6 +156,7 @@ public class Game implements Screen{
 		background.render(renderer, delta, true);
 		renderer.end();
 
+		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
 		for(int j = 1; j <= CurrentMap.layers; ++j){
 			renderer.identity();
@@ -169,7 +181,7 @@ public class Game implements Screen{
 		renderer.end();
 
 		message.setPosition((stage.getWidth() - message.getWidth()) / 2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
-
+		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		stage.getCamera().position.set(camera.rumbleX + stage.getWidth() / 2, camera.rumbleZ + stage.getHeight() / 2, 0);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -223,6 +235,10 @@ public class Game implements Screen{
 	float delta0;
 	boolean escClick = false;
 	Color tmpColor = new Color();
+	int framesps = 0;
+	int[] fpsBuffer = new int[64];
+	int index = 0;
+
 	public void updateGame(float delta){
 
 		if(!player.dead)
@@ -264,6 +280,17 @@ public class Game implements Screen{
 		renderers.forEach(o -> o.update(delta));
 		while (this.delta0 >= (1f / 60)) {
 
+			/*fpsBuffer[index++] = (int)(1f / delta);
+
+			if(index>=fpsBuffer.length)
+				index = 0;
+
+			framesps = 0;
+			for(int i : fpsBuffer){
+				framesps += i;
+			}
+			framesps /= fpsBuffer.length;*/
+
 			updateText(1f / 60);
 			updateSkew(1f / 60);
 			updatePulse(1f/60);
@@ -304,7 +331,9 @@ public class Game implements Screen{
 		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
-		points.setPosition(stage.getWidth() - points.getWidth() - 5 , stage.getHeight() - points.getHeight());
+		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight());
+		next.setPosition(stage.getWidth() - next.getWidth() - 5 , stage.getHeight() - next.getHeight() - points.getHeight() + 5);
+		
 		fps.pack();
 		time.pack();
 		message.pack();
@@ -347,6 +376,8 @@ public class Game implements Screen{
 			CurrentMap.delayMult += CurrentMap.delayMultInc;
 			delta3 = 0;
 		}
+
+		next.setValue(delta3 / CurrentMap.levelIncrement);
 
 		if (CurrentMap.wallTimeline.isEmpty() && CurrentMap.mustChangeSides) {
 			CurrentMap.sides = MathUtils.random(CurrentMap.minSides, CurrentMap.maxSides);
