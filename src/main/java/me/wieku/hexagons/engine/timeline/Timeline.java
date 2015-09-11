@@ -10,7 +10,7 @@ public class Timeline <T extends TimelineObject> {
 
 	float currentTime;
 	float delayTime;
-
+	boolean firstRemoved = false;
 	class QueueObject {
 		Float time;
 		T object;
@@ -45,11 +45,16 @@ public class Timeline <T extends TimelineObject> {
 
 			if(object.toRemove){
 				update.remove(object);
+				firstRemoved = true;
 				--i;
 			}
 
 		}
 
+	}
+
+	public boolean isFirstRemoved(){
+		return firstRemoved;
 	}
 
 	public void wait(float seconds){
@@ -89,6 +94,7 @@ public class Timeline <T extends TimelineObject> {
 		resetAll();
 		currentTime = 0f;
 		delayTime = 0f;
+		firstRemoved = false;
 	}
 
 }

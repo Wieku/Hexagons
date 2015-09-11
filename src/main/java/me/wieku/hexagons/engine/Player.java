@@ -49,10 +49,10 @@ public class Player implements Renderer {
 		float oldRot = rot;
 
 		if(!dead)
-			if(Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isButtonPressed(Buttons.LEFT)){
+			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isButtonPressed(Buttons.LEFT)){
 				rot -= (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
 				dir = -1;
-			} else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isButtonPressed(Buttons.RIGHT)){
+			} else if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isButtonPressed(Buttons.RIGHT)){
 				rot += (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
 				dir = 1;
 			} else {

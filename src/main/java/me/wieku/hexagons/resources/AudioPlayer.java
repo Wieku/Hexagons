@@ -44,7 +44,7 @@ public class AudioPlayer {
 
 	public void play(float time){
 		music.play();
-		if(!firstStart && time > 0){
+		if(firstStart || time > 0){
 			new Thread(() -> setPosition(time)).start();
 		}
 		firstStart = true;

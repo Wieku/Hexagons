@@ -6,10 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -27,7 +25,6 @@ import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.resources.ArchiveFileHandle;
 import me.wieku.hexagons.resources.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
-import org.lwjgl.opengl.GL11;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -73,7 +70,7 @@ public class Game implements Screen {
 	private int inc = 1;
 
 	DecimalFormat timeFormat = new DecimalFormat("0.000");
-
+	DecimalFormat delayFormat = new DecimalFormat("0.00");
 	public void playSound(Sound sound){
 		long id = sound.play();
 		sound.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
@@ -237,11 +234,10 @@ public class Game implements Screen {
 	Color tmpColor = new Color();
 	int framesps = 0;
 	int[] fpsBuffer = new int[64];
-	int index = 0;
-
+	int fpsIndex = 0;
 	public void updateGame(float delta){
 
-		if(!player.dead)
+		if(!player.dead && CurrentMap.wallTimeline.isFirstRemoved())
 			score += delta * (CurrentMap.difficulty * CurrentMap.speed * (((int)CurrentMap.currentTime) * 5 + 300));
 
 		updateTimeline(delta);
@@ -282,10 +278,10 @@ public class Game implements Screen {
 		renderers.forEach(o -> o.update(delta));
 		while (this.delta0 >= (1f / 60)) {
 
-			fpsBuffer[index++] = (int)(1f / delta);
+			fpsBuffer[fpsIndex++] = (int)(1f / delta);
 
-			if(index>=fpsBuffer.length)
-				index = 0;
+			if(fpsIndex >=fpsBuffer.length)
+				fpsIndex = 0;
 
 			framesps = 0;
 			for(int i : fpsBuffer){
@@ -329,18 +325,18 @@ public class Game implements Screen {
 			}
 		}
 
-		fps.setText("FPS: " + framesps);
+		fps.setText(framesps + "FPS\n" + delayFormat.format(1000f/framesps)+"ms");
 		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
-		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight());
+		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
 		next.setPosition(stage.getWidth() - next.getWidth() - 5 , stage.getHeight() - next.getHeight() - points.getHeight() + 5);
 		
 		fps.pack();
 		time.pack();
 		message.pack();
 
-		time.setY(fps.getHeight());
+		time.setY(stage.getHeight()-time.getHeight());
 	}
 
 	float delta2;
