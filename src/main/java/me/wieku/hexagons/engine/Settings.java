@@ -16,5 +16,5 @@ public class Settings implements Serializable{
 	public int masterVolume = 100;
 	public int effectVolume = 100;
 	public int musicVolume = 100;
-
+	public int menuMusicVolume = 100;
 }

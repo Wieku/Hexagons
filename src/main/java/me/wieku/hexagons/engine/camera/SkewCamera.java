@@ -66,6 +66,6 @@ public class SkewCamera extends PerspectiveCamera {
 		rumblePower = 0;
 		rumbleTime = 1;
 		currentRumbleTime = 0;
+		currentRotation = 0;
 	}
-
 }

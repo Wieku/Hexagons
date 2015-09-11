@@ -40,6 +40,8 @@ public class Game implements Screen {
 	Map map;
 	AudioPlayer audioPlayer;
 
+	public float exitPosition;
+
 	ShapeRenderer renderer;
 	SkewCamera camera = new SkewCamera();
 	Stage stage;
@@ -217,9 +219,7 @@ public class Game implements Screen {
 		player.reset();
 		camera.reset();
 		audioPlayer.setVolume((float) Settings.instance.masterVolume * (float) Settings.instance.musicVolume / 10000f);
-		audioPlayer.play();
-		if(startTime != 0)
-			audioPlayer.setPosition(startTime);
+		audioPlayer.play(startTime);
 
 		map.script.onInit();
 		map.script.initColors();
@@ -252,6 +252,7 @@ public class Game implements Screen {
 				playSound(death);
 				playSound(gameOver);
 				camera.rumble(20f, 1f);
+				exitPosition = audioPlayer.getPosition();
 				audioPlayer.stop();
 			}
 
@@ -260,6 +261,7 @@ public class Game implements Screen {
 			}
 
 			if(Gdx.input.isKeyPressed(Keys.ESCAPE) && !escClick){
+				audioPlayer.dispose();
 				Main.getInstance().setScreen(Menu.getInstance());
 			}
 

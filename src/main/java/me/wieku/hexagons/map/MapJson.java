@@ -16,4 +16,5 @@ public class MapJson {
 	public String pack = "default";
 	public String tags = "";
 	public float[] startTimes = {0};
+	public float previewTime = 0;
 }

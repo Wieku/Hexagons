@@ -38,7 +38,7 @@ public class Main extends Game{
 	static Main instance = new Main();
 	static LwjglApplication app;
 	public static boolean noupdate = false;
-	public static final String version = "0.1.0";
+	public static final String version = "0.1.1";
 	private Main(){
 
 	}

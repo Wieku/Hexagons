@@ -22,6 +22,8 @@ import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.options.Options;
 import me.wieku.hexagons.map.Map;
+import me.wieku.hexagons.resources.ArchiveFileHandle;
+import me.wieku.hexagons.resources.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.util.ArrayList;
@@ -36,10 +38,10 @@ public class Menu implements Screen {
 
 	ArrayList<Map> maps;
 	Stage stage;
-
+	Map currentMap;
 	Table logo, info, credits;
 	Label number, name, description, author, music, creditLabel;
-
+	Game game;
 	String[] creditArray = {"Programmed by:", "Sebastian Krajewski", "Lukasz Magiera", "Original ideas by:", "Vittorio Romeo", "Terry Cavanagh"/*, "Music by:", "BOSSFIGHT", "Chipzel"*/};
 	int index = -1;
 	float time = 1.5f;
@@ -54,6 +56,7 @@ public class Menu implements Screen {
 	private static int mapIndex = 0;
 
 	static Menu instance;
+	public AudioPlayer audioPlayer;
 
 	public Menu(ArrayList<Map> maps){
 		this.maps = maps;
@@ -76,8 +79,8 @@ public class Menu implements Screen {
 
 						selectIndex(mapIndex);
 
-						CurrentMap.reset();
-						maps.get(mapIndex).script.initColors();
+						//CurrentMap.reset();
+						//maps.get(mapIndex).script.initColors();
 
 						playBeep();
 					}
@@ -98,8 +101,8 @@ public class Menu implements Screen {
 
 						selectIndex(mapIndex);
 
-						CurrentMap.reset();
-						maps.get(mapIndex).script.initColors();
+						//CurrentMap.reset();
+						//maps.get(mapIndex).script.initColors();
 
 						playBeep();
 					}
@@ -107,7 +110,8 @@ public class Menu implements Screen {
 					if(keycode == Keys.ENTER){
 						playBeep();
 						Gdx.input.setInputProcessor(null);
-						Main.getInstance().setScreen(new Game(maps.get(mapIndex)));
+						audioPlayer.pause();
+						Main.getInstance().setScreen(game = new Game(maps.get(mapIndex)));
 					}
 
 				}
@@ -174,7 +178,7 @@ public class Menu implements Screen {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		updateSkew(delta);
-		camera.rotate(90f * delta);
+		camera.rotate(CurrentMap.rotationSpeed * 360f * delta);
 		camera.update(delta);
 
 		if((delta0 += delta)>=1f/60){
@@ -241,10 +245,17 @@ public class Menu implements Screen {
 
 		Main.config.foregroundFPS = 120;
 
-		CurrentMap.reset();
+		//CurrentMap.reset();
 
-		if(!maps.isEmpty())
-			maps.get(mapIndex).script.initColors();
+		selectIndex(mapIndex);
+
+		if(game != null){
+			audioPlayer.play();
+			audioPlayer.setPosition(game.exitPosition);
+		}
+
+		//if(!maps.isEmpty())
+			//maps.get(mapIndex).script.initColors();
 
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -261,6 +272,22 @@ public class Menu implements Screen {
 			info.setPosition(5, 5);
 		} else {
 			Map map = maps.get(index);
+			CurrentMap.reset();
+			maps.get(mapIndex).script.initColors();
+			maps.get(mapIndex).script.onInit();
+			camera.reset();
+
+			if (audioPlayer == null || !currentMap.equals(map)) {
+				if(audioPlayer != null){
+					audioPlayer.stop();
+					audioPlayer.dispose();
+				}
+
+				audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
+				audioPlayer.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f) / 2f);
+				audioPlayer.play(map.info.previewTime);
+			}
+
 			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
 			name.setText(map.info.name);
 			description.setText(map.info.description);
@@ -268,6 +295,7 @@ public class Menu implements Screen {
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
 			info.setPosition(5, 5);
+			currentMap = map;
 		}
 
 	}

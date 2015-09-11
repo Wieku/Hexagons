@@ -79,13 +79,13 @@ public class Graphics extends Section{
 		};
 
 		addButton(vsync);
-		//addButton(fullScreen);
+		addButton(fullScreen);
 		addButton(msaa);
 		addButton(exit);
 
 		add(new Label("Graphics", GUIHelper.getLabelStyle(Color.WHITE, 22))).colspan(2).padLeft(20).padBottom(20).left().fillX().row();
 		add(vsync).fillX().row();
-		//add(fullScreen).fillX().row();
+		add(fullScreen).fillX().row();
 		add(msaa).fillX().row();
 		add(exit).fillX().colspan(2).padTop(22).row();
 	}

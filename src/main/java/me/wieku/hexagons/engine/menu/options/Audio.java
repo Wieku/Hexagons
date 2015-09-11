@@ -3,6 +3,7 @@ package me.wieku.hexagons.engine.menu.options;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import me.wieku.hexagons.engine.Settings;
+import me.wieku.hexagons.engine.menu.Menu;
 import me.wieku.hexagons.engine.menu.buttons.Action;
 import me.wieku.hexagons.engine.menu.buttons.Slider;
 import me.wieku.hexagons.utils.GUIHelper;
@@ -22,6 +23,8 @@ public class Audio extends Section{
 			@Override
 			public void writeValue(Integer value) {
 				Settings.instance.masterVolume = value;
+				if(Menu.getInstance().audioPlayer != null)
+					Menu.getInstance().audioPlayer.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f) / 2f);
 			}
 
 			@Override
@@ -56,6 +59,20 @@ public class Audio extends Section{
 			}
 		};
 
+		Slider menuMusic = new Slider("Menu Music", 0, 100, 5, 100) {
+			@Override
+			public void writeValue(Integer value) {
+				Settings.instance.menuMusicVolume = value;
+				if(Menu.getInstance().audioPlayer != null)
+					Menu.getInstance().audioPlayer.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f) / 2f);
+			}
+
+			@Override
+			public Integer loadValue() {
+				return Settings.instance.menuMusicVolume;
+			}
+		};
+
 		Action exit = new Action("Back") {
 			@Override
 			public void action() {
@@ -66,12 +83,14 @@ public class Audio extends Section{
 		addButton(main);
 		addButton(effect);
 		addButton(music);
+		addButton(menuMusic);
 		addButton(exit);
 
 		add(new Label("Audio", GUIHelper.getLabelStyle(Color.WHITE, 22))).colspan(2).padLeft(20).padBottom(20).left().fillX().row();
 		add(main).fillX().row();
 		add(effect).fillX().row();
 		add(music).fillX().row();
+		add(menuMusic).fillX().row();
 		add(exit).fillX().colspan(2).padTop(22).row();
 
 	}
