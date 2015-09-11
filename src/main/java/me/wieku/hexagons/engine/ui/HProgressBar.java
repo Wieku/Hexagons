@@ -20,8 +20,15 @@ public class HProgressBar extends ProgressBar {
 		batch.end();
 		shape.setProjectionMatrix(batch.getProjectionMatrix());
 		shape.begin(ShapeType.Filled);
+
+		float scale = getHeight() / 6f;
+
+		shape.setColor(CurrentMap.walls.r * 0.5f, CurrentMap.walls.g * 0.5f, CurrentMap.walls.b * 0.5f, CurrentMap.walls.a);
+		shape.rect(getX() + scale, getY(), (getWidth() - scale) * (getValue() / getMaxValue()), getHeight() - scale);
+
 		shape.setColor(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
-		shape.rect(getX(), getY(), getWidth()*(getValue()/getMaxValue()), getHeight());
+		shape.rect(getX(), getY() + scale, (getWidth() - scale) * (getValue() / getMaxValue()), getHeight() - scale);
+
 		shape.end();
 
 		batch.begin();

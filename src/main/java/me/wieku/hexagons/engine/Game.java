@@ -104,7 +104,7 @@ public class Game implements Screen {
 		stage.addActor(points);
 		
 		next = new HProgressBar(0f, 1f, 0.0001f, false);
-		next.setSize(200, 8);
+		next.setSize(200, 14);
 		next.layout();
 
 		stage.addActor(next);

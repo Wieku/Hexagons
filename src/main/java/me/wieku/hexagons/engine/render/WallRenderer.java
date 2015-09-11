@@ -9,7 +9,6 @@ import me.wieku.hexagons.api.Wall;
  * @author Sebastian Krajewski on 21.03.15.
  */
 public class WallRenderer implements Renderer {
-	String h = "»";
 	Color shadow = new Color();
 
 	@Override
@@ -29,7 +28,6 @@ public class WallRenderer implements Renderer {
 				else
 					renderer.setColor(shadow.r, shadow.g, shadow.b, shadow.a * (Math.max(wall.position - 400, 0) / 100f));
 			}*/
-			//renderer.
 			renderer.triangle(wall.tmp.x, wall.tmp.y, wall.tmp2.x, wall.tmp2.y, wall.tmp4.x, wall.tmp4.y);
 			renderer.triangle(wall.tmp4.x, wall.tmp4.y, wall.tmp3.x, wall.tmp3.y, wall.tmp.x, wall.tmp.y);
 			/*if(wall.position < 500) {
