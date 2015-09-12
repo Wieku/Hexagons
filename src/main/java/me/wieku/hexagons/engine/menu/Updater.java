@@ -3,10 +3,14 @@ package me.wieku.hexagons.engine.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
@@ -35,6 +39,11 @@ public class Updater implements Screen {
 		loadTable = new Table();
 		loadTable.setBackground(GUIHelper.getTxRegion(new Color(0.1f, 0.1f, 0.1f, 1f)));
 		loadTable.top();
+		Texture texture = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true);
+		texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
+		Image image = new Image(texture);
+		image.setScaling(Scaling.fit);
+		loadTable.add(image).top().size(512).padTop(64).center().row();
 
 		loadTable.add(status = new Label("Checking for updates...", GUIHelper.getLabelStyle(Color.WHITE, 10))).left().padLeft(5).padBottom(5).bottom().expand().row();
 		loadTable.add(bar = new ProgressBar(0, 100, 1, false, GUIHelper.getProgressBarStyle(Color.DARK_GRAY, Color.WHITE,20))).fillX().center().bottom().height(20).colspan(2).row();

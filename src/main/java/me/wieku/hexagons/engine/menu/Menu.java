@@ -252,6 +252,7 @@ public class Menu implements Screen {
 		if(game != null){
 			audioPlayer.play();
 			audioPlayer.setPosition(game.exitPosition);
+			game = null;
 		}
 
 		//if(!maps.isEmpty())
