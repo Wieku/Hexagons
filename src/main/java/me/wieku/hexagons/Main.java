@@ -118,7 +118,7 @@ public class Main extends Game{
 		config.fullscreen = false;
 		config.title = "Hexagons! " + Main.version;
 		config.foregroundFPS = 120;
-		config.addIcon("assets/icon.png", FileType.Internal);
+		config.addIcon("assets/hexlogo.png", FileType.Internal);
 		config.samples = Settings.instance.msaa;
 		config.vSyncEnabled = Settings.instance.vSync;
 		app = new LwjglApplication(instance, config);
