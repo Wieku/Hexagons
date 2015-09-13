@@ -7,6 +7,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,6 +25,7 @@ import me.wieku.hexagons.engine.Game;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.options.Options;
+import me.wieku.hexagons.engine.render.BlurEffect;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.resources.ArchiveFileHandle;
 import me.wieku.hexagons.resources.AudioPlayer;
@@ -58,8 +63,14 @@ public class Menu implements Screen {
 	static Menu instance;
 	public AudioPlayer audioPlayer;
 
+	BlurEffect effect;
+
 	public Menu(ArrayList<Map> maps){
 		this.maps = maps;
+
+		effect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		effect.setPower(5f);
+		effect.setDarkness(1.5f);
 		instance = this;
 		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
 		shapeRenderer = new ShapeRenderer();
@@ -79,9 +90,6 @@ public class Menu implements Screen {
 
 						selectIndex(mapIndex);
 
-						//CurrentMap.reset();
-						//maps.get(mapIndex).script.initColors();
-
 						playBeep();
 					}
 				}
@@ -97,7 +105,7 @@ public class Menu implements Screen {
 					if(keycode == Keys.LEFT || keycode == Keys.RIGHT){
 
 						if(keycode == Keys.LEFT && --mapIndex < 0) mapIndex = maps.size() - 1;
-						if(keycode == Keys.RIGHT && ++mapIndex > maps.size() - 1) mapIndex = 0;
+						if (keycode == Keys.RIGHT && ++mapIndex > maps.size() - 1) mapIndex = 0;
 
 						selectIndex(mapIndex);
 
@@ -172,11 +180,6 @@ public class Menu implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		shapeRenderer.identity();
-		shapeRenderer.rotate(1, 0, 0, 90);
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
 		updateSkew(delta);
 		camera.rotate(CurrentMap.rotationSpeed * 360f * delta);
 		camera.update(delta);
@@ -199,14 +202,25 @@ public class Menu implements Screen {
 			delta0 = 0;
 		}
 
+		effect.bind();
+
+
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.identity();
+		shapeRenderer.rotate(1, 0, 0, 90);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		background.render(shapeRenderer, delta, true);
 		shapeRenderer.end();
 
+		effect.unbind();
+
+		effect.render(stage.getBatch());
+
 		if((toChange -= delta) <= 0){
 
 			++index;
-
+			System.out.println(Gdx.graphics.getFramesPerSecond());
 			if(index == creditArray.length) index = 0;
 
 			creditLabel.setText(creditArray[index]);
@@ -238,6 +252,7 @@ public class Menu implements Screen {
 		conf.setPosition(2, height - 2 - conf.getHeight());
 		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
 		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
+		effect.resize(width, height);
 	}
 
 	@Override
