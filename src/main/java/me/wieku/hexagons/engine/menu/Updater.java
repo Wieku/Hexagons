@@ -3,6 +3,7 @@ package me.wieku.hexagons.engine.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -56,12 +57,15 @@ public class Updater implements Screen {
 	@Override
 	public void render(float delta) {
 
+		Gdx.gl20.glClearColor(0, 0, 0, 1);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+
 		if((delta1+=delta) >= 1f/60){
 			status.setText(text);
 			delta1 = 0;
 			if(ended){
 				Main.getInstance().maps = MapLoader.load();
-				Main.getInstance().setScreen(new Menu(Main.getInstance().maps));
+				Main.getInstance().setScreen(new MainMenu());
 				ended = false;
 			}
 		}

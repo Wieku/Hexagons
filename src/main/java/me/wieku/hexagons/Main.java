@@ -7,10 +7,14 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.wieku.hexagons.animation.AnimationManager;
+import me.wieku.hexagons.animation.animations.Animation;
+import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.menu.Updater;
 import me.wieku.hexagons.map.MapLoader;
 import me.wieku.hexagons.resources.FontManager;
@@ -39,6 +43,8 @@ public class Main extends Game{
 	static LwjglApplication app;
 	public static boolean noupdate = false;
 	public static final String version = "0.1.1";
+	private AnimationManager animationManager = new AnimationManager();
+
 	private Main(){
 
 	}
@@ -50,6 +56,7 @@ public class Main extends Game{
 	@Override
 	public void create() {
 		FontManager.init();
+		Animation.addAccessor(Actor.class, new ActorAccessor());
 		setScreen(Updater.instance);
 		if(Settings.instance.fullscreen){
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
@@ -68,6 +75,7 @@ public class Main extends Game{
 
 	@Override
 	public void render() {
+		animationManager.update(Gdx.graphics.getDeltaTime());
 		super.render();
 	}
 
@@ -123,9 +131,9 @@ public class Main extends Game{
 		config.vSyncEnabled = Settings.instance.vSync;
 		app = new LwjglApplication(instance, config);
 
-		/*Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width,
-				Gdx.graphics.getDesktopDisplayMode().height, true);*/
-
 	}
 
+	public AnimationManager getAnimationManager() {
+		return animationManager;
+	}
 }
