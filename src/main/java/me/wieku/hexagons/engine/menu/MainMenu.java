@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,9 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.Main;
+import me.wieku.hexagons.api.CurrentMap;
 import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.Settings;
+import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.buttons.MenuButton;
+import me.wieku.hexagons.engine.render.Background;
+import me.wieku.hexagons.engine.render.BlurEffect;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.utils.GUIHelper;
 
@@ -35,9 +40,20 @@ public class MainMenu implements Screen {
 	Image icon;
 	Sound beep;
 
+	BlurEffect effect;
+	SkewCamera camera = new SkewCamera();
+	ShapeRenderer shapeRenderer;
+	Background background = new Background();
+
 	public MainMenu(){
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+
+		effect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		effect.setPower(5f);
+		effect.setDarkness(1.5f);
+
+		shapeRenderer = new ShapeRenderer();
 
 		stage.addListener(new InputListener() {
 			@Override
@@ -64,9 +80,9 @@ public class MainMenu implements Screen {
 		});
 
 		mainTable = new Table();
-		mainTable.setBackground(GUIHelper.getTxRegion(new Color(0x0f0f0fff)));
+		//mainTable.setBackground(GUIHelper.getTxRegion(new Color(0x0f0f0fff)));
 		mainTable.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		stage.addActor(mainTable);
+		//stage.addActor(mainTable);
 
 		version = new Label("Version: "+Main.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
 		version.pack();
@@ -99,6 +115,13 @@ public class MainMenu implements Screen {
 		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/menuclick.ogg"));
 
 		selectIndex(0);
+
+		CurrentMap.reset();
+		if(!Main.getInstance().maps.isEmpty()){
+			Main.getInstance().maps.get(0).script.initColors();
+			Main.getInstance().maps.get(0).script.onInit();
+		}
+
 	}
 
 		@Override
@@ -107,11 +130,39 @@ public class MainMenu implements Screen {
 			Gdx.input.setInputProcessor(stage);
 	}
 
+	float delta0 = 0;
 	@Override
 	public void render(float delta) {
 
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+
+		camera.rotate(CurrentMap.rotationSpeed * 360f * delta);
+		camera.update(delta);
+
+		if((delta0 += delta)>=1f/60) {
+			background.update(delta0);
+			CurrentMap.walls.update(delta0);
+			CurrentMap.skew = 1f;
+			CurrentMap.setMinSkew(0.9999f);
+			CurrentMap.setMaxSkew(1);
+			CurrentMap.setSkewTime(1);
+			delta0 = 0;
+		}
+
+		effect.bind();
+
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.identity();
+		shapeRenderer.rotate(1, 0, 0, 90);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		background.render(shapeRenderer, delta, true);
+		shapeRenderer.end();
+
+		effect.unbind();
+
+		effect.render(stage.getBatch());
 
 		stage.act(delta);
 		stage.draw();
@@ -120,7 +171,7 @@ public class MainMenu implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		mainTable.setBounds(0, 0, width, height);
+		//mainTable.setBounds(0, 0, width, height);
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		icon.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
@@ -128,6 +179,7 @@ public class MainMenu implements Screen {
 		button.setBounds(/*(715f/1024)**/stage.getWidth() - 309 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
 		button2.setBounds(/*(645f/1024)**/stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
 		button3.setBounds(/*(575f/1024)**/stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex?20:0), 32, 512, 100);
+		effect.resize(width, height);
 	}
 
 	private void selectIndex(int index){

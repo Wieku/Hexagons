@@ -36,7 +36,7 @@ vec4 blur(sampler2D iChannel0, vec2 iResolution, vec2 fragCoord) {
  			for (int j=-kSize; j <= kSize; ++j)
  			{
  				vec2 blurTC = (fragCoord.xy+vec2(float(i),float(j)) * power) / iResolution.xy;
-				blurTC.y = 1.0 - blurTC.y;
+				//blurTC.y = 1.0 - blurTC.y;
 
 				blurTC = clamp(blurTC, vec2(0.0), vec2(1.0));
 

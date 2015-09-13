@@ -63,14 +63,9 @@ public class Menu implements Screen {
 	static Menu instance;
 	public AudioPlayer audioPlayer;
 
-	BlurEffect effect;
-
 	public Menu(ArrayList<Map> maps){
 		this.maps = maps;
 
-		effect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		effect.setPower(5f);
-		effect.setDarkness(1.5f);
 		instance = this;
 		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
 		shapeRenderer = new ShapeRenderer();
@@ -109,9 +104,6 @@ public class Menu implements Screen {
 
 						selectIndex(mapIndex);
 
-						//CurrentMap.reset();
-						//maps.get(mapIndex).script.initColors();
-
 						playBeep();
 					}
 
@@ -149,18 +141,18 @@ public class Menu implements Screen {
 		info.setPosition(5, 5);
 		stage.addActor(info);
 
-		conf = GUIHelper.getTable(Color.BLACK);
-		conf.add(new Label("Press F3 to open settings", GUIHelper.getLabelStyle(Color.BLACK, Color.WHITE, 8))).pad(5);
+		conf = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
+		conf.add(new Label("Press F3 to open settings", GUIHelper.getLabelStyle(Color.WHITE, 8))).pad(5);
 		conf.pack();
 		stage.addActor(conf);
 
-		logo = GUIHelper.getTable(Color.BLACK);
+		logo = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
 		logo.add(new Label(Main.version, GUIHelper.getLabelStyle(Color.WHITE, 12))).pad(5).padTop(0).right();
 		logo.pack();
 		stage.addActor(logo);
 
-		credits = GUIHelper.getTable(Color.BLACK);
+		credits = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		credits.add(creditLabel = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).pad(5).padBottom(10);
 		credits.pack();
 
@@ -202,7 +194,7 @@ public class Menu implements Screen {
 			delta0 = 0;
 		}
 
-		effect.bind();
+		//effect.bind();
 
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -213,9 +205,9 @@ public class Menu implements Screen {
 		background.render(shapeRenderer, delta, true);
 		shapeRenderer.end();
 
-		effect.unbind();
+		//effect.unbind();
 
-		effect.render(stage.getBatch());
+		//effect.render(stage.getBatch());
 
 		if((toChange -= delta) <= 0){
 
@@ -252,7 +244,6 @@ public class Menu implements Screen {
 		conf.setPosition(2, height - 2 - conf.getHeight());
 		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
 		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
-		effect.resize(width, height);
 	}
 
 	@Override
