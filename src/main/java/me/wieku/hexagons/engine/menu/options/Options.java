@@ -40,6 +40,7 @@ public class Options implements Screen {
 
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.ESCAPE && currentSection.equals(OptionMenu.instance)) {
+					Menu.playBeep();
 					Main.getInstance().setScreen(Menu.getInstance());
 				}
 				return super.keyDown(event, keycode);

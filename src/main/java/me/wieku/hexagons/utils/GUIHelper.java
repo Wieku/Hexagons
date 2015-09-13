@@ -53,15 +53,22 @@ public class GUIHelper{
 	
 	public static ProgressBarStyle getProgressBarStyle(Color bg,Color bar, int weight){
 		ProgressBarStyle stl = new ProgressBarStyle();
-		stl.background = getTxHRegion(bg.cpy(),weight);
+		stl.background = getTxHRegion(bg.cpy(), weight);
 		stl.knobBefore = getTxHRegion(bar.cpy(),weight);
 		return stl;
 	}
-	
+
+	public static ProgressBarStyle getProgressBarStyleUB(Color bg, Color bar, Color upBorder, int height){
+		ProgressBarStyle stl = new ProgressBarStyle();
+		stl.background = getTxHRegion(bg.cpy(), height);
+		stl.knobBefore = getTxHRegionUB(bar.cpy(), upBorder.cpy(), height);
+		return stl;
+	}
+
 	public static SliderStyle getProgressSliderStyle(Color bg,Color bar, int weight){
 		SliderStyle stl = new SliderStyle();
 		stl.background = getTxHRegion(bg.cpy(),weight);
-		stl.knobBefore = getTxHRegion(bar.cpy(),weight);
+		stl.knobBefore = getTxHRegion(bar.cpy(), weight);
 		return stl;
 	}
 	
@@ -144,7 +151,16 @@ public class GUIHelper{
 	public static TextureRegionDrawable getTxHRegion(Color color, int height){
 		return getTxRegion(color, 1, height);
 	}
-	
+
+	public static TextureRegionDrawable getTxHRegionUB(Color color, Color uB, int height){
+		Pixmap pixMap = new Pixmap(1, height, Format.RGBA8888);
+		pixMap.setColor(color);
+		pixMap.fillRectangle(0, 0, 1, height);
+		pixMap.setColor(uB);
+		pixMap.fillRectangle(0, 0, 1, height/8);
+		return getTxRegion(pixMap);
+	}
+
 	private static TextureRegionDrawable getTxRegion(Color color, int width, int height) {
 		
 		Pixmap pixMap = new Pixmap(width, height, Format.RGBA8888);

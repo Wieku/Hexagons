@@ -18,13 +18,19 @@ import java.io.BufferedInputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 public enum FontManager{
-	MAIN("ffforward"/*"Pixel-UniCode"*/);
+	MAIN("Orbitron-Medium"/*"Pixel-UniCode"*/, 128, 70, 78);
+	//FF("ffforward"/*"Pixel-UniCode"*/, 16, 11, 12);
 	protected static HashMap<FontManager, FontData> fonts = new HashMap<>();
 	protected String name;
+	protected int genSize;
+	protected float widthScale;
+	protected float heightScale;
 
-
-	private FontManager (String name) {
+	private FontManager(String name, int genSize, float widthScale, float heightScale) {
 		this.name = name;
+		this.genSize = genSize;
+		this.widthScale = widthScale;
+		this.heightScale = heightScale;
 	}
 
 	public static BitmapFont getFont(FontManager val, int size) {
@@ -40,7 +46,7 @@ public enum FontManager{
 		}
 
 		BitmapFont font = new BitmapFont(dataCopy, fonts.get(val).regions, false);
-		font.getData().setScale((float) size / /*7*/11, (float) size / /*8*/12);
+		font.getData().setScale((float) size / /*7*/val.widthScale, (float) size / /*8*/val.heightScale);
 		return font;
 	}
 
@@ -69,16 +75,16 @@ public enum FontManager{
 
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
 				FreeTypeFontParameter pam = new FreeTypeFontParameter();
-				pam.size = 16;
+				pam.size = val.genSize;
 				pam.genMipMaps = true;
 				//pam.borderColor = Color.BLACK;//new Color(0.5f, 0.5f, 0.5f, 1f);
 				pam.shadowColor = new Color(0.5f, 0.5f, 0.5f, 1f);
 				//pam.borderWidth = 1f;
 				//pam.borderColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-				pam.shadowOffsetX = 1;
-				pam.shadowOffsetY = 1;
-				pam.magFilter = TextureFilter.Nearest;
-				pam.minFilter = TextureFilter.MipMapNearestNearest;
+				pam.shadowOffsetX = 3;
+				pam.shadowOffsetY = 3;
+				pam.magFilter = TextureFilter.Linear;
+				pam.minFilter = TextureFilter.MipMapLinearLinear;
 				pam.characters = chars;
 
 				FreeTypeBitmapFontData d = generator.generateData(pam);

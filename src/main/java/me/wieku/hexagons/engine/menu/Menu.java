@@ -147,7 +147,7 @@ public class Menu implements Screen {
 		stage.addActor(conf);
 
 		logo = GUIHelper.getTable(Color.BLACK);
-		logo.add(new Label("Hexagons!", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
+		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
 		logo.add(new Label(Main.version, GUIHelper.getLabelStyle(Color.WHITE, 12))).pad(5).padTop(0).right();
 		logo.pack();
 		stage.addActor(logo);
