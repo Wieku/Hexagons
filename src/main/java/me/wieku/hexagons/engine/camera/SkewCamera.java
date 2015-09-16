@@ -1,5 +1,6 @@
 package me.wieku.hexagons.engine.camera;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -46,7 +47,7 @@ public class SkewCamera extends PerspectiveCamera {
 		position.set(0, 1200f, 0).rotate(Vector3.X, Math.max(0.00001f, 50f * CurrentMap.skew)).rotate(Vector3.Y, currentRotation).add(rumbleX, 0, rumbleZ);
 
 		lookAt(rumbleX, 0, rumbleZ);
-		up.set(0, (CurrentMap.skew >= 0 ? 1 : -1) , 0);
+		up.set(0, (CurrentMap.skew >= 0 ? 1 : -1), 0);
 
 		update();
 	}

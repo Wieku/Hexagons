@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;
+import me.wieku.hexagons.config.SettingsTab;
 import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
@@ -45,6 +47,8 @@ public class MainMenu implements Screen {
 	ShapeRenderer shapeRenderer;
 	Background background = new Background();
 
+	//SettingsTab tab = SettingsTab.getInstance();
+
 	public MainMenu(){
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -71,6 +75,10 @@ public class MainMenu implements Screen {
 						Main.getInstance().setScreen(new Menu(Main.getInstance().maps));
 					}
 
+					if(currentIndex == 1){
+						//tab.show();
+					}
+
 					if(currentIndex == 2){
 						Gdx.app.exit();
 					}
@@ -94,7 +102,9 @@ public class MainMenu implements Screen {
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		stage.addActor(copyright);
 
-		icon = new Image(new Texture(Gdx.files.internal("assets/hexlogobig.png"), true));
+		Texture tex;
+		icon = new Image(tex = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true));
+		tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 		icon.setScaling(Scaling.fit);
 		icon.setOrigin((3 * stage.getWidth()) / 5, (3 * stage.getHeight()) / 5);
 		icon.setSize((3 * stage.getWidth()) / 5, (4 * stage.getHeight()) / 5);
@@ -106,12 +116,11 @@ public class MainMenu implements Screen {
 		list.add(button3 = new MenuButton("Exit"));
 
 		button.setBounds(/*(715f/1024)**/stage.getWidth() - 309, 252, 512, 100);
-		button2.setBounds(/*(645f/1024)**/stage.getWidth()-379,142,512,100);
-		button3.setBounds(/*(575f/1024)**/stage.getWidth()-449,32,512,100);
+		button2.setBounds(/*(645f/1024)**/stage.getWidth() - 379,142,512,100);
+		button3.setBounds(/*(575f/1024)**/stage.getWidth() - 449, 32, 512, 100);
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
-
 		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/menuclick.ogg"));
 
 		selectIndex(0);
@@ -122,6 +131,7 @@ public class MainMenu implements Screen {
 			Main.getInstance().maps.get(0).script.onInit();
 		}
 
+		//stage.addActor(tab);
 	}
 
 		@Override
@@ -185,7 +195,7 @@ public class MainMenu implements Screen {
 	private void selectIndex(int index){
 		if(currentIndex != -1){
 			list.get(currentIndex).select(false);
-			ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX()+20, 0f));
+			ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX()+20 , 0f));
 		}
 		currentIndex = index;
 		playBeep();
