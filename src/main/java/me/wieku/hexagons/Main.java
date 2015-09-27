@@ -6,28 +6,29 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import me.wieku.hexagons.animation.AnimationManager;
 import me.wieku.hexagons.animation.animations.Animation;
+import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.menu.Updater;
 import me.wieku.hexagons.map.MapLoader;
 import me.wieku.hexagons.resources.FontManager;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.map.Map;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
+
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -46,7 +47,6 @@ public class Main extends Game{
 	private AnimationManager animationManager = new AnimationManager();
 
 	private Main(){
-
 	}
 
 	public static Main getInstance(){
@@ -73,8 +73,16 @@ public class Main extends Game{
 		super.resize(width, height);
 	}
 
+	float delta0;
+
 	@Override
 	public void render() {
+
+		if((delta0+=Gdx.graphics.getDeltaTime()) >=1f/60){
+			MenuPlaylist.update(delta0);
+			delta0 = 0;
+		}
+
 		animationManager.update(Gdx.graphics.getDeltaTime());
 		super.render();
 	}
@@ -121,6 +129,8 @@ public class Main extends Game{
 					current.bitsPerPixel + " " + current.refreshRate + "Hz");
 		}
 
+
+
 		config.width = 1024;
 		config.height = 768;
 		config.fullscreen = false;
@@ -136,4 +146,5 @@ public class Main extends Game{
 	public AnimationManager getAnimationManager() {
 		return animationManager;
 	}
+
 }

@@ -23,7 +23,7 @@ import me.wieku.hexagons.engine.render.WallRenderer;
 import me.wieku.hexagons.engine.ui.HProgressBar;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.resources.ArchiveFileHandle;
-import me.wieku.hexagons.resources.AudioPlayer;
+import me.wieku.hexagons.audio.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.text.DecimalFormat;

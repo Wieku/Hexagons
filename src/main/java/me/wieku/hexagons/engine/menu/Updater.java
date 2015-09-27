@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import me.wieku.hexagons.Main;
+import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.map.MapLoader;
 import me.wieku.hexagons.utils.GUIHelper;
 import me.wieku.hexagons.utils.Json;
@@ -65,7 +66,8 @@ public class Updater implements Screen {
 			delta1 = 0;
 			if(ended){
 				Main.getInstance().maps = MapLoader.load();
-				Main.getInstance().setScreen(new MainMenu());
+				MenuPlaylist.start();
+				Main.getInstance().setScreen(MainMenu.instance);
 				ended = false;
 			}
 		}

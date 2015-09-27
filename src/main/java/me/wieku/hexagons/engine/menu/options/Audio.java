@@ -2,6 +2,7 @@ package me.wieku.hexagons.engine.menu.options;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.menu.Menu;
 import me.wieku.hexagons.engine.menu.buttons.Action;
@@ -23,8 +24,9 @@ public class Audio extends Section{
 			@Override
 			public void writeValue(Integer value) {
 				Settings.instance.masterVolume = value;
-				if(Menu.getInstance().audioPlayer != null)
-					Menu.getInstance().audioPlayer.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f) / 2f);
+				//if(Menu.getInstance().audioPlayer != null)
+					/*Menu.getInstance().audioPlayer*/
+					MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f));
 			}
 
 			@Override
@@ -63,8 +65,8 @@ public class Audio extends Section{
 			@Override
 			public void writeValue(Integer value) {
 				Settings.instance.menuMusicVolume = value;
-				if(Menu.getInstance().audioPlayer != null)
-					Menu.getInstance().audioPlayer.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f) / 2f);
+				//if(Menu.getInstance().audioPlayer != null)
+					/*Menu.getInstance().audioPlayer*/MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f));
 			}
 
 			@Override

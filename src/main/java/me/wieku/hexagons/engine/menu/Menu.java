@@ -7,10 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -20,15 +16,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;
+import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.Game;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.options.Options;
-import me.wieku.hexagons.engine.render.BlurEffect;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.resources.ArchiveFileHandle;
-import me.wieku.hexagons.resources.AudioPlayer;
+import me.wieku.hexagons.audio.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.util.ArrayList;
@@ -43,7 +39,7 @@ public class Menu implements Screen {
 
 	ArrayList<Map> maps;
 	Stage stage;
-	Map currentMap;
+	//Map currentMap;
 	Table logo, info, credits;
 	Label number, name, description, author, music, creditLabel;
 	Game game;
@@ -53,7 +49,7 @@ public class Menu implements Screen {
 	float toChange = 0f;
 
 	Table conf;
-
+	Color color = new Color(0x02EAFAFF);
 	SkewCamera camera = new SkewCamera();
 	ShapeRenderer shapeRenderer;
 	Background background = new Background();
@@ -61,7 +57,9 @@ public class Menu implements Screen {
 	private static int mapIndex = 0;
 
 	static Menu instance;
-	public AudioPlayer audioPlayer;
+	//public AudioPlayer audioPlayer;
+
+	float[] varbuff = new float[60];
 
 	public Menu(ArrayList<Map> maps){
 		this.maps = maps;
@@ -110,7 +108,8 @@ public class Menu implements Screen {
 					if(keycode == Keys.ENTER){
 						playBeep();
 						Gdx.input.setInputProcessor(null);
-						audioPlayer.pause();
+						//audioPlayer.pause();
+						MenuPlaylist.pause();
 						Main.getInstance().setScreen(game = new Game(maps.get(mapIndex)));
 					}
 
@@ -123,7 +122,8 @@ public class Menu implements Screen {
 
 				if(keycode == Keys.ESCAPE){
 					playBeep();
-					Gdx.app.exit();
+					/*Gdx.app.exit();*/
+					Main.getInstance().setScreen(MainMenu.instance);
 				}
 
 				return false;
@@ -158,7 +158,7 @@ public class Menu implements Screen {
 
 		stage.addActor(credits);
 
-		selectIndex(mapIndex);
+		//selectIndex(mapIndex);
 		if(Settings.instance.fullscreen == true)
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
@@ -166,6 +166,7 @@ public class Menu implements Screen {
 	float delta0 = 0;
 
 	Color tmpC = new Color();
+	float[] tbuf = new float[60];
 	@Override
 	public void render(float delta) {
 
@@ -179,6 +180,20 @@ public class Menu implements Screen {
 		if((delta0 += delta)>=1f/60){
 			background.update(delta0);
 			CurrentMap.walls.update(delta0);
+
+			/*if(audioPlayer != null){
+				audioPlayer.update(delta0);
+				tbuf = audioPlayer.analyze();
+				for(int i=0; i< tbuf.length; i++){
+					varbuff[i] = Math.max(varbuff[i], tbuf[i]);
+				}
+			}*/
+
+			MenuPlaylist.update(delta0);
+
+			/*for(int i=0; i < varbuff.length; i++){
+				varbuff[i] = Math.max(0, varbuff[i]-10*delta0);
+			}*/
 
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
@@ -204,7 +219,16 @@ public class Menu implements Screen {
 
 		background.render(shapeRenderer, delta, true);
 		shapeRenderer.end();
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.identity();
 
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(color);
+		for(int i=0; i < varbuff.length; i++){
+			float var = varbuff[i];
+			shapeRenderer.rect(0, (i/60f)*stage.getHeight(), Math.min(var*30*((i+5)/3f), (stage.getWidth()*3f)/4), (1/60f)*stage.getHeight()-2);
+		}
+		shapeRenderer.end();
 		//effect.unbind();
 
 		//effect.render(stage.getBatch());
@@ -212,7 +236,7 @@ public class Menu implements Screen {
 		if((toChange -= delta) <= 0){
 
 			++index;
-			System.out.println(Gdx.graphics.getFramesPerSecond());
+			//System.out.println(Gdx.graphics.getFramesPerSecond());
 			if(index == creditArray.length) index = 0;
 
 			creditLabel.setText(creditArray[index]);
@@ -253,11 +277,13 @@ public class Menu implements Screen {
 
 		//CurrentMap.reset();
 
-		selectIndex(mapIndex);
+		selectIndex(mapIndex=Main.getInstance().maps.indexOf(MenuPlaylist.getCurrent()));
 
 		if(game != null){
-			audioPlayer.play();
-			audioPlayer.setPosition(game.exitPosition);
+			MenuPlaylist.play();
+			MenuPlaylist.setPosition(game.exitPosition);
+			/*audioPlayer.play();
+			audioPlayer.setPosition(*//*game.exitPosition*//*20);*/
 			game = null;
 		}
 
@@ -283,16 +309,9 @@ public class Menu implements Screen {
 			maps.get(mapIndex).script.initColors();
 			maps.get(mapIndex).script.onInit();
 			camera.reset();
-
-			if (audioPlayer == null || !currentMap.equals(map)) {
-				if(audioPlayer != null){
-					audioPlayer.stop();
-					audioPlayer.dispose();
-				}
-
-				audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
-				audioPlayer.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f) / 2f);
-				audioPlayer.play(map.info.previewTime);
+			if(MenuPlaylist.getCurrent() == null || !MenuPlaylist.getCurrent().equals(map)){
+				MenuPlaylist.replaceCurrent(map);
+				MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume) / 10000f);
 			}
 
 			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
@@ -302,7 +321,7 @@ public class Menu implements Screen {
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
 			info.setPosition(5, 5);
-			currentMap = map;
+			//currentMap = map;
 		}
 
 	}

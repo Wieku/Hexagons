@@ -51,6 +51,6 @@ vec4 blur(sampler2D iChannel0, vec2 iResolution, vec2 fragCoord) {
 }
 
 void main(){
-	gl_FragColor = vColor * blur(u_texture, resolution, gl_FragCoord) / darkness;
+	gl_FragColor = (vColor * blur(u_texture, resolution, gl_FragCoord.xy)) / darkness;
 }
 

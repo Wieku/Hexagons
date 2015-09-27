@@ -1,6 +1,7 @@
 package me.wieku.hexagons.utils;
 
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 
@@ -125,4 +126,16 @@ public class Utils {
 		}
 		return null;
 	}
+
+
+	static public void byteToFloat(byte[] src, int offsetSrc, float[] dst, int offsetDst, int numBytes) {
+		if (numBytes % 2 != 0) throw new GdxRuntimeException("bytes must be even (2 bytes 16-bit PCM expected)");
+		float scale = 1.0f / Short.MAX_VALUE;
+		for (int i = offsetSrc, ii = offsetDst; i < numBytes;) {
+			int b1 = src[i++] & 0xff;
+			int b2 = src[i++] & 0xff;
+			dst[ii++] = (short)(b1 | (b2 << 8)) * scale;
+		}
+	}
+
 }

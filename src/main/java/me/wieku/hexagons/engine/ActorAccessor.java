@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.Align;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.animation.AnimationEquations;
 import me.wieku.hexagons.animation.animations.Animation;
@@ -18,6 +19,7 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 	public static final int SIZEX = 3;
 	public static final int FADETABLE = 4;
 	public static final int TEXTCOLOR = 5;
+	public static final int SIZEC = 6;
 
 	@Override
 	public int getValues(Actor target, int tweenType, float[] returnValues) {
@@ -33,6 +35,9 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 				return 1;
 			case SLIDEY:
 				returnValues[0] = target.getY();
+				return 1;
+			case SIZEC:
+				returnValues[0] = target.getScaleX();
 				return 1;
 			case FADETABLE:
 				returnValues[0] = target.getColor().a;
@@ -75,6 +80,16 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 					colr = child.getColor();
 					child.setColor(colr.r, colr.g, colr.b, newValues[0]);
 				}
+				return;
+			case SIZEC:
+				float posX = target.getX(Align.center);
+				float posY = target.getY(Align.center);
+				float sizeX = target.getWidth()*target.getScaleX();
+				float sizeY = target.getHeight()*target.getScaleY();
+				target.setScale(newValues[0]);
+				target.setOrigin(target.getWidth()/2, target.getHeight()/2);
+				target.setPosition(target.getX(), target.getY());
+				//target.setPosition(target.getX() + (target.getWidth() * target.getScaleX() - sizeX) / 2 , target.getY() + (target.getHeight()*target.getScaleY()-sizeY) / 2);
 				return;
 			case TEXTCOLOR:
 				Color col1 = ((TextField) target).getStyle().fontColor;

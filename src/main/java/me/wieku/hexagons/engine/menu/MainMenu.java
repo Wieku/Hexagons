@@ -14,11 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.Main;
+import me.wieku.hexagons.animation.timeline.Timeline;
 import me.wieku.hexagons.api.CurrentMap;
+import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.config.SettingsTab;
 import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.Settings;
@@ -26,12 +29,13 @@ import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.buttons.MenuButton;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.render.BlurEffect;
-import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.util.ArrayList;
 
 public class MainMenu implements Screen {
+
+	public static MainMenu instance = new MainMenu();
 
 	Stage stage;
 	Table mainTable;
@@ -39,7 +43,8 @@ public class MainMenu implements Screen {
 	ArrayList<MenuButton> list = new ArrayList<>();
 	Label version, copyright;
 	int currentIndex = -1;
-	Image icon;
+	Image beatIHigh;
+	Image beatILow;
 	Sound beep;
 
 	BlurEffect effect;
@@ -47,7 +52,12 @@ public class MainMenu implements Screen {
 	ShapeRenderer shapeRenderer;
 	Background background = new Background();
 
-	//SettingsTab tab = SettingsTab.getInstance();
+
+	Table music;
+	Label title;
+	ProgressBar bar;
+	boolean escclick = false;
+	SettingsTab tab = SettingsTab.getInstance();
 
 	public MainMenu(){
 		stage = new Stage(new ScreenViewport());
@@ -70,6 +80,7 @@ public class MainMenu implements Screen {
 					int index = (currentIndex == list.size() - 1 ? 0 : currentIndex + 1);
 					selectIndex(index);
 				}
+
 				if(keycode == Keys.ENTER){
 					if(currentIndex == 0){
 						Main.getInstance().setScreen(new Menu(Main.getInstance().maps));
@@ -83,14 +94,26 @@ public class MainMenu implements Screen {
 						Gdx.app.exit();
 					}
 				}
+				if(keycode == Keys.ESCAPE)
+					escclick = true;
+				return false;
+			}
+
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				if(keycode == Keys.ESCAPE){
+					if(escclick == true) {
+						if(tab.isShowed()){
+							tab.hide();
+						} else {
+							Gdx.app.exit();
+						}
+					}
+					escclick = false;
+				}
 				return false;
 			}
 		});
-
-		mainTable = new Table();
-		//mainTable.setBackground(GUIHelper.getTxRegion(new Color(0x0f0f0fff)));
-		mainTable.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		//stage.addActor(mainTable);
 
 		version = new Label("Version: "+Main.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
 		version.pack();
@@ -102,22 +125,32 @@ public class MainMenu implements Screen {
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		stage.addActor(copyright);
 
-		Texture tex;
-		icon = new Image(tex = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true));
+		Texture tex = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true);
 		tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
-		icon.setScaling(Scaling.fit);
-		icon.setOrigin((3 * stage.getWidth()) / 5, (3 * stage.getHeight()) / 5);
-		icon.setSize((3 * stage.getWidth()) / 5, (4 * stage.getHeight()) / 5);
-		stage.addActor(icon);
+		beatIHigh = new Image(tex);
+		beatIHigh.setScaling(Scaling.fit);
 
+		beatILow = new Image(tex);
+		beatILow.setColor(1, 1, 1, 0.5f);
+		beatILow.setScaling(Scaling.fit);
+
+		stage.addActor(beatIHigh);
+		stage.addActor(beatILow);
+
+
+		music = new Table();
+		music.setBackground(GUIHelper.getTxRegion(new Color(0.1f, 0.1f, 0.1f, 0.5f)));
+
+		music.add(title = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 12))).row();
+		music.add(bar = new ProgressBar(0f, 100f, 1f, false, GUIHelper.getProgressBarStyle(Color.DARK_GRAY, new Color(0x02eafaff), 10)));
 
 		list.add(button = new MenuButton("Start"));
 		list.add(button2 = new MenuButton("Options"));
 		list.add(button3 = new MenuButton("Exit"));
 
-		button.setBounds(/*(715f/1024)**/stage.getWidth() - 309, 252, 512, 100);
-		button2.setBounds(/*(645f/1024)**/stage.getWidth() - 379,142,512,100);
-		button3.setBounds(/*(575f/1024)**/stage.getWidth() - 449, 32, 512, 100);
+		button.setBounds(stage.getWidth() - 309, 252, 512, 100);
+		button2.setBounds(stage.getWidth() - 379,142,512,100);
+		button3.setBounds(stage.getWidth() - 449, 32, 512, 100);
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
@@ -126,20 +159,32 @@ public class MainMenu implements Screen {
 		selectIndex(0);
 
 		CurrentMap.reset();
-		if(!Main.getInstance().maps.isEmpty()){
-			Main.getInstance().maps.get(0).script.initColors();
-			Main.getInstance().maps.get(0).script.onInit();
-		}
 
-		//stage.addActor(tab);
+		stage.addActor(tab);
 	}
 
-		@Override
+	boolean first = false;
+
+	@Override
 	public void show() {
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-			Gdx.input.setInputProcessor(stage);
+		Gdx.input.setInputProcessor(stage);
+
+		if(!first){
+			MenuPlaylist.start();
+			first = true;
+		}
+
+		if(!Main.getInstance().maps.isEmpty()){
+			int index = Main.getInstance().maps.indexOf(MenuPlaylist.getCurrent());
+			Main.getInstance().maps.get(index).script.initColors();
+			Main.getInstance().maps.get(index).script.onInit();
+		}
+
 	}
 
+	Timeline beatHigh;
+	Timeline beatLow;
 	float delta0 = 0;
 	@Override
 	public void render(float delta) {
@@ -149,7 +194,6 @@ public class MainMenu implements Screen {
 
 		camera.rotate(CurrentMap.rotationSpeed * 360f * delta);
 		camera.update(delta);
-
 		if((delta0 += delta)>=1f/60) {
 			background.update(delta0);
 			CurrentMap.walls.update(delta0);
@@ -157,6 +201,21 @@ public class MainMenu implements Screen {
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
 			CurrentMap.setSkewTime(1);
+
+			if(beatHigh == null || beatHigh.isFinished()){
+				
+				beatHigh = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.04f/2*(0.96f/ beatIHigh.getScaleX()), 0.96f, 0))
+						.push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.3f, 1f, 0)).end();
+				beatHigh.start(Main.getInstance().getAnimationManager());
+			}
+			
+			if(beatLow == null || beatLow.isFinished()){
+				
+				beatLow = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.1f*(1.025f/beatILow.getScaleX()), 1.025f, 0))
+						.push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.3f, 1f, 0)).end();
+				beatLow.start(Main.getInstance().getAnimationManager());
+			}
+
 			delta0 = 0;
 		}
 
@@ -181,14 +240,20 @@ public class MainMenu implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		//mainTable.setBounds(0, 0, width, height);
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
-		icon.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
-		icon.setPosition((401f / 1024) * stage.getWidth() - icon.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - icon.getHeight() / 2);
-		button.setBounds(/*(715f/1024)**/stage.getWidth() - 309 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
-		button2.setBounds(/*(645f/1024)**/stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
-		button3.setBounds(/*(575f/1024)**/stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex?20:0), 32, 512, 100);
+		
+		beatIHigh.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
+		beatIHigh.setPosition((401f / 1024) * stage.getWidth() - beatIHigh.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - beatIHigh.getHeight() / 2);
+
+
+		beatILow.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
+		beatILow.setPosition((401f / 1024) * stage.getWidth() - beatIHigh.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - beatIHigh.getHeight() / 2);
+
+		//beatIHigh.setOrigin((401f / 1024) * stage.getWidth(), ((768f - 301f) / 768) * stage.getHeight());
+		button.setBounds(stage.getWidth() - 309 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
+		button2.setBounds(stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
+		button3.setBounds(stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex?20:0), 32, 512, 100);
 		effect.resize(width, height);
 	}
 
