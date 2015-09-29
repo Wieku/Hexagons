@@ -41,7 +41,7 @@ public class Wall extends TimelineObject {
 	}
 
 	public Wall(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax){
-		this(side, thickness, speed, acceleration, speedMin, speedMax, true);
+		this(side, thickness, speed, acceleration, speedMin, speedMax, false);
 	}
 
 	public Wall(int side, float thickness, float speed) {
@@ -63,10 +63,9 @@ public class Wall extends TimelineObject {
 			visible = true;
 		}
 
-		//while(delta0 >= 1f / 60){
+			if(acceleration != 0) {
+				speed += acceleration * 60f * delta;
 
-			if(acceleration > 0) {
-				speed += acceleration * delta * 60f;
 				if(speed > speedMax) {
 					speed = speedMax;
 					if(pingPong)
@@ -77,6 +76,7 @@ public class Wall extends TimelineObject {
 					if(pingPong)
 						acceleration *= -1f;
 				}
+
 			}
 
 			position -= speed * 5 * 60f * delta;
