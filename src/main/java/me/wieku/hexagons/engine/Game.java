@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import me.wieku.hexagons.engine.menu.Menu;
+import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;
 import me.wieku.hexagons.engine.camera.SkewCamera;
@@ -109,7 +109,7 @@ public class Game implements Screen {
 		stage.addActor(next);
 		
 		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
-
+		audioPlayer.setLooping(true);
 
 
 		levelUp = Gdx.audio.newSound(Gdx.files.internal("assets/sound/levelUp.ogg"));
@@ -258,7 +258,7 @@ public class Game implements Screen {
 
 			if(Gdx.input.isKeyPressed(Keys.ESCAPE) && !escClick){
 				audioPlayer.dispose();
-				Main.getInstance().setScreen(Menu.getInstance());
+				Main.getInstance().setScreen(MapSelect.getInstance());
 			}
 
 		} else {

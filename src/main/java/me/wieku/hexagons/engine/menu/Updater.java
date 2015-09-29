@@ -66,7 +66,6 @@ public class Updater implements Screen {
 			delta1 = 0;
 			if(ended){
 				Main.getInstance().maps = MapLoader.load();
-				MenuPlaylist.start();
 				Main.getInstance().setScreen(MainMenu.instance);
 				ended = false;
 			}

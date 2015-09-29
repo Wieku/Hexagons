@@ -38,13 +38,13 @@ public class AudioPlayer {
 		handle = file;
 
 		musicPlayer = Gdx.audio.newMusic(handle);
-		musicPlayer.setLooping(true);
+		//musicPlayer.setLooping(true);
 		musicPlayer.setOnCompletionListener(m -> ended = true);
 
-		fft = new FFT(1024, ((OpenALMusic)musicPlayer).getRate());
+		/*fft = new FFT(1024, ((OpenALMusic)musicPlayer).getRate());
 		fft.linAverages(60);
 
-		detect = new BeatDetect(1024, ((OpenALMusic)musicPlayer).getRate());
+		detect = new BeatDetect(1024, ((OpenALMusic)musicPlayer).getRate());*/
 
 		try {
 			Field bsize = OpenALMusic.class.getDeclaredField("secondsPerBuffer");
@@ -174,5 +174,9 @@ public class AudioPlayer {
 
 	public boolean isPaused() {
 		return !musicPlayer.isPlaying() && !ended;
+	}
+
+	public void setLooping(boolean looping) {
+		musicPlayer.setLooping(looping);
 	}
 }

@@ -20,7 +20,7 @@ public class MenuPlaylist {
 	static Map current;
 	static float volume = 0f;
 	static AudioPlayer player;
-
+	static boolean looping = false;
 	private static float speed = 1f;
 
 	public static void previousSong(){
@@ -142,6 +142,7 @@ public class MenuPlaylist {
 	public static void play(){
 		if(player != null){
 			player.setVolume(volume);
+			player.setLooping(looping);
 			//player.setSpeed(1.5f);
 			player.play();
 		}
@@ -189,6 +190,10 @@ public class MenuPlaylist {
 		play();
 	}
 
+	public static void setLooping(boolean state) {
+		if(player != null)
+			player.setLooping(looping = state);
+	}
 
 	public static void replacePreview(Map map){
 		replaceCurrent(map);

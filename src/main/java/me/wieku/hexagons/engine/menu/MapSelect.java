@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;
+import me.wieku.hexagons.audio.AudioPlayer;
 import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.Game;
@@ -23,8 +24,6 @@ import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.options.Options;
 import me.wieku.hexagons.map.Map;
-import me.wieku.hexagons.resources.ArchiveFileHandle;
-import me.wieku.hexagons.audio.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.util.ArrayList;
@@ -32,9 +31,9 @@ import java.util.ArrayList;
 /**
  * @author Sebastian Krajewski on 04.04.15.
  */
-public class Menu implements Screen {
+public class MapSelect implements Screen {
 
-	public static Options options;
+	//public static Options options;
 	static Sound beep;
 
 	ArrayList<Map> maps;
@@ -48,7 +47,7 @@ public class Menu implements Screen {
 	float time = 1.5f;
 	float toChange = 0f;
 
-	Table conf;
+	//Table conf;
 	Color color = new Color(0x02EAFAFF);
 	SkewCamera camera = new SkewCamera();
 	ShapeRenderer shapeRenderer;
@@ -56,19 +55,19 @@ public class Menu implements Screen {
 
 	private static int mapIndex = 0;
 
-	static Menu instance;
+	static MapSelect instance;
 	//public AudioPlayer audioPlayer;
 
 	float[] varbuff = new float[60];
 
-	public Menu(ArrayList<Map> maps){
+	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
 
 		instance = this;
 		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
 		shapeRenderer = new ShapeRenderer();
 
-		options = new Options();
+		//options = new Options();
 		stage = new Stage(new ScreenViewport());
 		stage.addListener(new InputListener(){
 			@Override
@@ -115,10 +114,10 @@ public class Menu implements Screen {
 
 				}
 
-				if(keycode == Keys.F3){
+				/*if(keycode == Keys.F3){
 					playBeep();
-					Main.getInstance().setScreen(options);
-				}
+					//Main.getInstance().setScreen(options);
+				}*/
 
 				if(keycode == Keys.ESCAPE){
 					playBeep();
@@ -141,10 +140,10 @@ public class Menu implements Screen {
 		info.setPosition(5, 5);
 		stage.addActor(info);
 
-		conf = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
-		conf.add(new Label("Press F3 to open settings", GUIHelper.getLabelStyle(Color.WHITE, 8))).pad(5);
-		conf.pack();
-		stage.addActor(conf);
+		//conf = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
+		//conf.add(new Label("Press F3 to open settings", GUIHelper.getLabelStyle(Color.WHITE, 8))).pad(5);
+		//conf.pack();
+		//stage.addActor(conf);
 
 		logo = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
@@ -265,7 +264,7 @@ public class Menu implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		conf.setPosition(2, height - 2 - conf.getHeight());
+		//conf.setPosition(2, height - 2 - conf.getHeight());
 		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
 		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
 	}
@@ -286,7 +285,7 @@ public class Menu implements Screen {
 			audioPlayer.setPosition(*//*game.exitPosition*//*20);*/
 			game = null;
 		}
-
+		MenuPlaylist.setLooping(true);
 		//if(!maps.isEmpty())
 			//maps.get(mapIndex).script.initColors();
 
@@ -311,6 +310,7 @@ public class Menu implements Screen {
 			camera.reset();
 			if(MenuPlaylist.getCurrent() == null || !MenuPlaylist.getCurrent().equals(map)){
 				MenuPlaylist.replaceCurrent(map);
+				MenuPlaylist.skipToPreview();
 				MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume) / 10000f);
 			}
 
@@ -331,7 +331,7 @@ public class Menu implements Screen {
 		beep.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
 	}
 
-	public static Menu getInstance() {
+	public static MapSelect getInstance() {
 		return instance;
 	}
 

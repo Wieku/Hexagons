@@ -3,7 +3,8 @@ package me.wieku.hexagons.engine.menu.options;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import me.wieku.hexagons.Main;
-import me.wieku.hexagons.engine.menu.Menu;
+import me.wieku.hexagons.engine.menu.MainMenu;
+import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.engine.menu.buttons.Action;
 import me.wieku.hexagons.utils.GUIHelper;
 
@@ -44,7 +45,7 @@ public class OptionMenu extends Section{
 		Action exit = new Action("Exit") {
 			@Override
 			public void action() {
-				Main.getInstance().setScreen(Menu.getInstance());
+				Main.getInstance().setScreen(MainMenu.instance);
 			}
 		};
 

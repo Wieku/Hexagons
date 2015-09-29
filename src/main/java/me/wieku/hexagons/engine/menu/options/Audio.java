@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import me.wieku.hexagons.audio.MenuPlaylist;
 import me.wieku.hexagons.engine.Settings;
-import me.wieku.hexagons.engine.menu.Menu;
 import me.wieku.hexagons.engine.menu.buttons.Action;
 import me.wieku.hexagons.engine.menu.buttons.Slider;
 import me.wieku.hexagons.utils.GUIHelper;

@@ -27,8 +27,10 @@ import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.buttons.MenuButton;
+import me.wieku.hexagons.engine.menu.options.Options;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.render.BlurEffect;
+import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class MainMenu implements Screen {
 	int currentIndex = -1;
 	Image beatIHigh;
 	Image beatILow;
+	Sound beepClick;
 	Sound beep;
 
 	BlurEffect effect;
@@ -59,6 +62,8 @@ public class MainMenu implements Screen {
 	boolean escclick = false;
 	SettingsTab tab = SettingsTab.getInstance();
 
+	Options options;
+
 	public MainMenu(){
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -69,6 +74,8 @@ public class MainMenu implements Screen {
 
 		shapeRenderer = new ShapeRenderer();
 
+		options = new Options();
+
 		stage.addListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
@@ -76,18 +83,30 @@ public class MainMenu implements Screen {
 					int index = (currentIndex == 0 ? list.size() - 1 : currentIndex - 1);
 					selectIndex(index);
 				}
+
 				if (keycode == Keys.DOWN) {
 					int index = (currentIndex == list.size() - 1 ? 0 : currentIndex + 1);
 					selectIndex(index);
 				}
 
+				if(keycode == Keys.LEFT){
+					playBeepClick();
+					MenuPlaylist.previousSong();
+				}
+
+				if(keycode == Keys.RIGHT){
+					playBeepClick();
+					MenuPlaylist.nextSong();
+				}
+
 				if(keycode == Keys.ENTER){
 					if(currentIndex == 0){
-						Main.getInstance().setScreen(new Menu(Main.getInstance().maps));
+						Main.getInstance().setScreen(new MapSelect(Main.getInstance().maps));
 					}
 
 					if(currentIndex == 1){
 						//tab.show();
+						Main.getInstance().setScreen(options);
 					}
 
 					if(currentIndex == 2){
@@ -141,8 +160,11 @@ public class MainMenu implements Screen {
 		music = new Table();
 		music.setBackground(GUIHelper.getTxRegion(new Color(0.1f, 0.1f, 0.1f, 0.5f)));
 
-		music.add(title = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 12))).row();
-		music.add(bar = new ProgressBar(0f, 100f, 1f, false, GUIHelper.getProgressBarStyle(Color.DARK_GRAY, new Color(0x02eafaff), 10)));
+		music.add(title = new Label("", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 12))).pad(5).row();
+		//music.add(bar = new ProgressBar(0f, 100f, 1f, false, GUIHelper.getProgressBarStyle(Color.DARK_GRAY, new Color(0x02eafaff), 10)));
+		music.pack();
+
+		stage.addActor(music);
 
 		list.add(button = new MenuButton("Start"));
 		list.add(button2 = new MenuButton("Options"));
@@ -154,7 +176,8 @@ public class MainMenu implements Screen {
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
-		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/menuclick.ogg"));
+		beepClick = Gdx.audio.newSound(Gdx.files.internal("assets/sound/menuclick.ogg"));
+		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
 
 		selectIndex(0);
 
@@ -165,9 +188,12 @@ public class MainMenu implements Screen {
 
 	boolean first = false;
 
+
+	Map currentPlaying;
 	@Override
 	public void show() {
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+
 		Gdx.input.setInputProcessor(stage);
 
 		if(!first){
@@ -176,10 +202,13 @@ public class MainMenu implements Screen {
 		}
 
 		if(!Main.getInstance().maps.isEmpty()){
-			int index = Main.getInstance().maps.indexOf(MenuPlaylist.getCurrent());
-			Main.getInstance().maps.get(index).script.initColors();
-			Main.getInstance().maps.get(index).script.onInit();
+			CurrentMap.reset();
+			MenuPlaylist.getCurrent().script.initColors();
+			MenuPlaylist.getCurrent().script.onInit();
 		}
+
+		MenuPlaylist.setLooping(false);
+		currentPlaying = MenuPlaylist.getCurrent();
 
 	}
 
@@ -201,6 +230,23 @@ public class MainMenu implements Screen {
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
 			CurrentMap.setSkewTime(1);
+
+
+			if(currentPlaying != MenuPlaylist.getCurrent()){
+
+				currentPlaying = MenuPlaylist.getCurrent();
+				if(!Main.getInstance().maps.isEmpty()){
+					CurrentMap.reset();
+					MenuPlaylist.getCurrent().script.initColors();
+					MenuPlaylist.getCurrent().script.onInit();
+				}
+			}
+
+
+			title.setText(MenuPlaylist.getCurrent().info.songAuthor + " - " + MenuPlaylist.getCurrent().info.songName);
+			music.pack();
+
+			music.setPosition(Gdx.graphics.getWidth()-music.getWidth(), Gdx.graphics.getHeight()-music.getHeight());
 
 			if(beatHigh == null || beatHigh.isFinished()){
 				
@@ -253,8 +299,9 @@ public class MainMenu implements Screen {
 		//beatIHigh.setOrigin((401f / 1024) * stage.getWidth(), ((768f - 301f) / 768) * stage.getHeight());
 		button.setBounds(stage.getWidth() - 309 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
 		button2.setBounds(stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
-		button3.setBounds(stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex?20:0), 32, 512, 100);
+		button3.setBounds(stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
 		effect.resize(width, height);
+		music.setPosition(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
 	}
 
 	private void selectIndex(int index){
@@ -263,12 +310,17 @@ public class MainMenu implements Screen {
 			ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX()+20 , 0f));
 		}
 		currentIndex = index;
-		playBeep();
+		playBeepClick();
 		list.get(currentIndex).select(true);
-		ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX()-20, 0f));
+		ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX() - 20, 0f));
 	}
 
-	void playBeep(){
+	void playBeepClick(){
+		long id = beepClick.play();
+		beepClick.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
+	}
+
+	public void playBeep(){
 		long id = beep.play();
 		beep.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
 	}
