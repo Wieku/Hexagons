@@ -12,12 +12,14 @@ public class WallRenderer implements Renderer {
 	Color shadow = new Color();
 
 	@Override
-	public void render(ShapeRenderer renderer, float delta, boolean shadows){
+	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev){
 
 		if(!shadows)
 			renderer.setColor(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
-		else
-			renderer.setColor(shadow.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a).lerp(Color.BLACK, 0.4f));
+		else{
+			shadow.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a).lerp(Color.BLACK, 0.4f);
+			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.alphaMultiplier)-shadLev*CurrentMap.alphaFalloff);
+		}
 
 		for(Wall wall : CurrentMap.wallTimeline.getObjects()){
 			if(!wall.visible) continue;

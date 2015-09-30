@@ -272,7 +272,7 @@ public class MainMenu implements Screen {
 		shapeRenderer.rotate(1, 0, 0, 90);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-		background.render(shapeRenderer, delta, true);
+		background.render(shapeRenderer, delta, true, 0);
 		shapeRenderer.end();
 
 		effect.unbind();

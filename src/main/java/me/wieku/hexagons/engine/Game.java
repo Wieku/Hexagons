@@ -153,7 +153,7 @@ public class Game implements Screen {
 		renderer.translate(0, 0, 0);
 		renderer.rotate(1, 0, 0, 90);
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
-		background.render(renderer, delta, true);
+		background.render(renderer, delta, true, 0);
 		renderer.end();
 
 		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
@@ -165,7 +165,7 @@ public class Game implements Screen {
 			renderer.rotate(1, 0, 0, 90);
 			renderer.begin(ShapeRenderer.ShapeType.Filled);
 			for(Renderer render : renderers){
-				render.render(renderer, delta, true);
+				render.render(renderer, delta, true, j);
 			}
 			renderer.end();
 		}
@@ -176,7 +176,7 @@ public class Game implements Screen {
 
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 		for(Renderer render : renderers){
-			render.render(renderer, delta, false);
+			render.render(renderer, delta, false, 0);
 		}
 		renderer.end();
 

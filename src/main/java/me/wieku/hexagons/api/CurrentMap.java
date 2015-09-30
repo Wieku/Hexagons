@@ -64,6 +64,8 @@ public abstract class CurrentMap {
 	public static float skewTime = 5f;
 	public static float wallSkewLeft = 0f;
 	public static float wallSkewRight = 0f;
+	public static float alphaMultiplier = 1f;
+	public static float alphaFalloff = 0f;
 
 	public static Timeline<Wall> wallTimeline = new Timeline<>();
 	public static Timeline<TimelineRunnable> eventTimeline = new Timeline<>();
@@ -128,6 +130,8 @@ public abstract class CurrentMap {
 		skewTime = 5f;
 		wallSkewLeft = 0f;
 		wallSkewRight = 0f;
+		alphaMultiplier = 1f;
+		alphaFalloff = 0f;
 	}
 	
 	
@@ -301,4 +305,11 @@ public abstract class CurrentMap {
 		CurrentMap.wallSkewRight = wallSkewRight;
 	}
 
+	public static void setAlphaMultiplier(float alphaMultiplier) {
+		CurrentMap.alphaMultiplier = alphaMultiplier;
+	}
+
+	public static void setAlphaFalloff(float alphaFalloff) {
+		CurrentMap.alphaFalloff = alphaFalloff;
+	}
 }

@@ -19,7 +19,7 @@ public class Center implements Renderer {
 	Vector2 tmp2 = new Vector2();
 
 	@Override
-	public void render(ShapeRenderer renderer, float delta, boolean shadows) {
+	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
 		shadow.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a).lerp(Color.BLACK, 0.4f);
 		float pulseSpeed =  CurrentMap.pulseMin / CurrentMap.pulse;
@@ -32,7 +32,7 @@ public class Center implements Renderer {
 				} else
 					renderer.setColor(Color.WHITE);
 			else
-				renderer.setColor(shadow);
+				renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.alphaMultiplier)-shadLev*CurrentMap.alphaFalloff);
 
 
 			tmp.set(0, Main.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.sides * -360f);

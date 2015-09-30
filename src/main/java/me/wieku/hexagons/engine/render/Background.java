@@ -21,7 +21,7 @@ public class Background implements Renderer {
 	float delta1;
 
 	@Override
-	public void render(ShapeRenderer renderer, float delta, boolean shadows) {
+	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
 		if(shadows)
 			for(float i = 0; i < CurrentMap.sides; ++i) {
