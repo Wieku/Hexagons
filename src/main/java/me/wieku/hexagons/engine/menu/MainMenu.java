@@ -22,7 +22,6 @@ import me.wieku.hexagons.Main;
 import me.wieku.hexagons.animation.timeline.Timeline;
 import me.wieku.hexagons.api.CurrentMap;
 import me.wieku.hexagons.audio.MenuPlaylist;
-import me.wieku.hexagons.config.SettingsTab;
 import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
@@ -50,7 +49,7 @@ public class MainMenu implements Screen {
 	Sound beepClick;
 	Sound beep;
 
-	BlurEffect effect;
+	BlurEffect blurEffect;
 	SkewCamera camera = new SkewCamera();
 	ShapeRenderer shapeRenderer;
 	Background background = new Background();
@@ -68,9 +67,9 @@ public class MainMenu implements Screen {
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
-		effect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		effect.setPower(5f);
-		effect.setDarkness(1.5f);
+		blurEffect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		blurEffect.setPower(5f);
+		blurEffect.setDarkness(1.5f);
 
 		shapeRenderer = new ShapeRenderer();
 
@@ -265,7 +264,7 @@ public class MainMenu implements Screen {
 			delta0 = 0;
 		}
 
-		effect.bind();
+		blurEffect.bind();
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.identity();
@@ -275,9 +274,9 @@ public class MainMenu implements Screen {
 		background.render(shapeRenderer, delta, true, 0);
 		shapeRenderer.end();
 
-		effect.unbind();
+		blurEffect.unbind();
 
-		effect.render(stage.getBatch());
+		blurEffect.render(stage.getBatch());
 
 		stage.act(delta);
 		stage.draw();
@@ -300,7 +299,7 @@ public class MainMenu implements Screen {
 		button.setBounds(stage.getWidth() - 309 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
 		button2.setBounds(stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
 		button3.setBounds(stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
-		effect.resize(width, height);
+		blurEffect.resize(width, height);
 		music.setPosition(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
 	}
 

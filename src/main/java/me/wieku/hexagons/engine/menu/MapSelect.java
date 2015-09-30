@@ -208,7 +208,7 @@ public class MapSelect implements Screen {
 			delta0 = 0;
 		}
 
-		//effect.bind();
+		//blurEffect.bind();
 
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -228,9 +228,9 @@ public class MapSelect implements Screen {
 			shapeRenderer.rect(0, (i/60f)*stage.getHeight(), Math.min(var*30*((i+5)/3f), (stage.getWidth()*3f)/4), (1/60f)*stage.getHeight()-2);
 		}
 		shapeRenderer.end();
-		//effect.unbind();
+		//blurEffect.unbind();
 
-		//effect.render(stage.getBatch());
+		//blurEffect.render(stage.getBatch());
 
 		if((toChange -= delta) <= 0){
 
