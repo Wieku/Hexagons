@@ -31,8 +31,8 @@ public class MenuPlaylist {
 		if(Main.getInstance().maps.size()>0){
 			nextSong();
 			skipToPreview();
-			//player.setVolume(0f);
-			player.glideVolume(volume = ((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume) / 10000f, 4f);
+			player.setVolume(0f);
+			player.glideVolume(volume = ((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume) / 10000f, 5f);
 		}
 	}
 

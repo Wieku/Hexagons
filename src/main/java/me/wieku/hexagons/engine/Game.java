@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import me.wieku.hexagons.api.HColor;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;

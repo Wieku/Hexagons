@@ -110,7 +110,6 @@ public class Options implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		System.out.println(name.getWidth());
 		name.setHeight((float) Gdx.graphics.getHeight() * 0.75f / 3);
 		name.setPosition((Gdx.graphics.getWidth() - name.getWidth()) / 2, (float) Gdx.graphics.getHeight() * 2.25f / 3);
 		image.setBounds(0, ((float) Gdx.graphics.getHeight() * 2.25f / 3)-image.getHeight(), width, 2);

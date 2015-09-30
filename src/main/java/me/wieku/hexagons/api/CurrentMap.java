@@ -85,9 +85,9 @@ public abstract class CurrentMap {
 		difficulty = 1f;
 		levelIncrement = 15f;
 		delayMult = 1f;
-		delayMultInc = 0.01f;
+		delayMultInc = 0.00f;
 		speed = 1f;
-		speedInc = 0.125f;
+		speedInc = 0f;
 		currentTime = 0f;
 		
 		/** sides */

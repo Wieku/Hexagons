@@ -90,7 +90,6 @@ public class HColor {
 			}
 
 			percent = delta0 / CurrentMap.colorPulse;
-
 		}
 
 		if(dynamic){
@@ -129,10 +128,6 @@ public class HColor {
 	}
 
 	static float clamp(float value, float min, float max){
-		/*while (value > max)
-			value -= max;
-		while (value < min)
-			value += max;*/
 		return value < min ? min : value > max ? max : value;
 	}
 

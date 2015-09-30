@@ -60,7 +60,7 @@ public class MainMenu implements Screen {
 	Label title;
 	ProgressBar bar;
 	boolean escclick = false;
-	SettingsTab tab = SettingsTab.getInstance();
+	//SettingsTab tab = SettingsTab.getInstance();
 
 	Options options;
 
@@ -122,11 +122,11 @@ public class MainMenu implements Screen {
 			public boolean keyUp(InputEvent event, int keycode) {
 				if(keycode == Keys.ESCAPE){
 					if(escclick == true) {
-						if(tab.isShowed()){
-							tab.hide();
-						} else {
+						//if(tab.isShowed()){
+						//	tab.hide();
+						//} else {
 							Gdx.app.exit();
-						}
+						//}
 					}
 					escclick = false;
 				}
@@ -183,7 +183,7 @@ public class MainMenu implements Screen {
 
 		CurrentMap.reset();
 
-		stage.addActor(tab);
+		//stage.addActor(tab);
 	}
 
 	boolean first = false;
