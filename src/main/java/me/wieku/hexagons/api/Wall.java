@@ -10,29 +10,28 @@ import me.wieku.hexagons.engine.timeline.TimelineObject;
  */
 public class Wall extends TimelineObject {
 
-	public int side;
+	public static float pulseSpeed = 1f;
+
+	public float angle1;
+	public float angle2;
 	public float thickness;
-	public float speed;
-	public float acceleration;
-	public float speedMin;
-	public float speedMax;
-	public boolean pingPong;
 	public float position;
 
-	private float delta0;
 	public boolean visible = false;
+
+	SpeedData speed;
+	SpeedData curve;
 
 	public Vector2 tmp = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2(), tmp4 = new Vector2();
 	public Array<Vector2> vecs = new Array<>();
 
-	public Wall(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax, boolean pingPong) {
-		this.side = side;
+	public Wall(int side, float thickness, SpeedData speedData, SpeedData curveData) {
+		angle1 = side / (float) CurrentMap.sides * 360f;
+		angle2 = (side+1) / (float) CurrentMap.sides * 360f;
+
 		this.thickness = thickness;
-		this.speed = speed;
-		this.acceleration = acceleration;
-		this.speedMin = speedMin;
-		this.speedMax = speedMax;
-		this.pingPong = pingPong;
+		this.speed = speedData;
+		this.curve = curveData;
 
 		vecs.add(tmp);
 		vecs.add(tmp2);
@@ -40,63 +39,39 @@ public class Wall extends TimelineObject {
 		vecs.add(tmp3);
 	}
 
-	public Wall(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax){
-		this(side, thickness, speed, acceleration, speedMin, speedMax, false);
+	public Wall(int side, float thickness, SpeedData speedData) {
+		this(side, thickness, speedData, new SpeedData(0f));
 	}
-
-	public Wall(int side, float thickness, float speed) {
-		this(side, thickness, speed, 0, 0, 0, true);
-	}
-
-	public static float pulseSpeed = 1f;
-	private static float scale = 0f;
 
 	@Override
 	public void update(float delta){
 
 		pulseSpeed = CurrentMap.pulse / CurrentMap.pulseMin;
 
-		//delta0 += delta;
-
 		if(!visible){
 			position = Main.diagonal;
 			visible = true;
 		}
 
-			if(acceleration != 0) {
-				speed += acceleration * 60f * delta;
+		speed.update(delta);
+		curve.update(delta);
 
-				if(speed > speedMax) {
-					speed = speedMax;
-					if(pingPong)
-						acceleration *= -1f;
-				}
-				else if(speed < speedMin) {
-					speed = speedMin;
-					if(pingPong)
-						acceleration *= -1f;
-				}
+		position -= speed.getSpeed() * 5 * 60f * delta;
 
-			}
+		if (position + thickness <= 0){
+			setToRemove(true);
+		}
 
-			position -= speed * 5 * 60f * delta;
+		angle1 += delta * curve.getSpeed();
+		angle2 += delta * curve.getSpeed();
 
-			if (position + thickness <= 0){
-				setToRemove(true);
-			}
+		angle1 = (angle1 < 0 ? angle1 + 360f : (angle1 > 360f ? angle1 - 360f : angle1));
+		angle2 = (angle2 < 0 ? angle2 + 360f : (angle2 > 360f ? angle2 - 360f : angle2));
 
-			float angle1 = side / (float) CurrentMap.sides * 360f;
-			float angle2 = (side + 1) / (float) CurrentMap.sides * 360f;
-
-			tmp.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle1);
-			tmp2.set(0, Math.max(0, position + thickness + CurrentMap.wallSkewLeft) * pulseSpeed).rotate(-angle1);
-			tmp3.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle2);
-			tmp4.set(0, Math.max(0, position + thickness + CurrentMap.wallSkewRight) * pulseSpeed).rotate(-angle2);
-
-		/*	delta0 -= 0.016666668f;
-		}*/
-
-
+		tmp.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle1);
+		tmp2.set(0, Math.max(0, position + thickness + CurrentMap.wallSkewLeft) * pulseSpeed).rotate(-angle1);
+		tmp3.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle2);
+		tmp4.set(0, Math.max(0, position + thickness + CurrentMap.wallSkewRight) * pulseSpeed).rotate(-angle2);
 	}
 
 }

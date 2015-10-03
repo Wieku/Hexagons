@@ -274,6 +274,7 @@ public class Game implements Screen {
 		}
 
 		updateRotation(delta);
+		updatePulse(delta);
 		camera.update(delta);
 		this.delta0 += delta;
 		renderers.forEach(o -> o.update(delta));
@@ -292,7 +293,7 @@ public class Game implements Screen {
 
 			updateText(1f / 60);
 			updateSkew(1f / 60);
-			updatePulse(1f/60);
+			//updatePulse(1f/60);
 
 			if (!player.dead) {
 				CurrentMap.walls.update(1f/60);

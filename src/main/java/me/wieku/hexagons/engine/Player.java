@@ -19,8 +19,10 @@ public class Player implements Renderer {
 
 	float rot;
 	Vector2 tmp = new Vector2();
+	Vector2 tmp1 = new Vector2();
 	Vector2 tmp2 = new Vector2();
 	Vector2 tmp3 = new Vector2();
+
 	Vector2 fCh = new Vector2();
 	Vector2 lCh = new Vector2();
 	Vector2 rCh = new Vector2();
@@ -39,9 +41,9 @@ public class Player implements Renderer {
 
 		renderer.triangle(tmp3.x, tmp3.y, tmp.x, tmp.y, tmp2.x, tmp2.y);
 		/*renderer.setColor(Color.CYAN);
-		renderer.circle(lCh.x, lCh.y, 5);
+		renderer.circle(lCh.x, lCh.y, 1);
 		renderer.setColor(Color.RED);
-		renderer.circle(rCh.x, rCh.y, 5);*/
+		renderer.circle(rCh.x, rCh.y, 1);*/
 	}
 
 	float delta;
@@ -65,8 +67,8 @@ public class Player implements Renderer {
 		rot = (rot < 0 ? rot + 360f : (rot > 360f ? rot - 360f : rot));
 
 		fCh.set(0, 0.061f * Main.diagonal * Game.scale).rotate(rot);
-		lCh.set(0, 5f).rotate(rot-90).add(fCh);
-		rCh.set(0, 5f).rotate(rot+90).add(fCh);
+		lCh.set(0, 0.01f).rotate(rot-90).add(fCh);
+		rCh.set(0, 0.01f).rotate(rot+90).add(fCh);
 
 		for(Wall wall : CurrentMap.wallTimeline.getObjects()){
 
@@ -80,7 +82,7 @@ public class Player implements Renderer {
 		}
 
 		tmp.set(0, 0.061f * Main.diagonal * Game.scale).rotate(rot);
-		tmp2.set(0,  0.055f * Main.diagonal * Game.scale).rotate(rot - 6);
+		tmp2.set(0, 0.055f * Main.diagonal * Game.scale).rotate(rot - 6);
 		tmp3.set(0, 0.055f * Main.diagonal * Game.scale).rotate(rot + 6);
 
 	}

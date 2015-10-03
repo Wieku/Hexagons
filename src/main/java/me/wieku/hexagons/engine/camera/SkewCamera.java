@@ -43,7 +43,6 @@ public class SkewCamera extends PerspectiveCamera {
 			rumbleX = 0;
 			rumbleZ = 0;
 		}
-
 		position.set(0, 1200f, 0).rotate(Vector3.X, Math.max(0.00001f, 50f * CurrentMap.skew)).rotate(Vector3.Y, currentRotation).add(rumbleX, 0, rumbleZ);
 
 		lookAt(rumbleX, 0, rumbleZ);

@@ -62,11 +62,11 @@ public abstract class Patterns {
 	}
 
 	public static void wallAcc(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax) {
-		CurrentMap.wallTimeline.submit(new Wall(side, thickness, speed * getSpeedMultDM(), acceleration, speedMin * getSpeedMultDM(), speedMax * getSpeedMultDM()));
+		CurrentMap.wallTimeline.submit(new Wall(side, thickness, new SpeedData(speed * getSpeedMultDM(), acceleration, speedMin * getSpeedMultDM(), speedMax * getSpeedMultDM())));
 	}
 
 	//cWall: creates a wall with the common THICKNESS
-	public static void cWall(int mSide){ CurrentMap.wallTimeline.submit(new Wall(mSide, THICKNESS, getSpeedMultDM())); }
+	public static void cWall(int mSide){ CurrentMap.wallTimeline.submit(new Wall(mSide, THICKNESS, new SpeedData(getSpeedMultDM()))); }
 
 	//oWall: creates a wall opposite to the mSide passed
 	public static void oWall(int mSide){ cWall(mSide + getHalfSides()); }
@@ -293,14 +293,14 @@ public abstract class Patterns {
 	public static void pTunnel(int mTimes){
 		float oldThickness = THICKNESS;
 		float myThickness = getPerfectThickness(THICKNESS);
-		float delay = getPerfectDelay(myThickness) * 4;
+		float delay = getPerfectDelay(myThickness) * 5;
 		int startSide = getRandomSide();
 		int loopDir = getRandomDir();
 
 		THICKNESS = myThickness;
 
 		for (int i = 0; i < mTimes; ++i) {
-			CurrentMap.wallTimeline.submit(new Wall(startSide, myThickness + 5 * getSpeedMultDM() * delay, getSpeedMultDM()));
+			CurrentMap.wallTimeline.submit(new Wall(startSide, myThickness + 5 * getSpeedMultDM() * delay, new SpeedData(getSpeedMultDM())));
 
 			cBarrage(startSide + loopDir);
 			t_wait(delay);
