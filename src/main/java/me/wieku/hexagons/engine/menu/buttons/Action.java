@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.menu.MainMenu;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.utils.GUIHelper;
@@ -40,7 +41,7 @@ public abstract class Action extends Table implements Element<Boolean> {
 	@Override
 	public void onEvent(InputEvent e) {
 		if(e.getType() == Type.keyDown && e.getKeyCode() == Keys.ENTER){
-			MainMenu.instance.playBeep();
+			SoundManager.playSound("beep");
 			action();
 		}
 	}

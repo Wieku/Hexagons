@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.menu.MainMenu;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.utils.GUIHelper;
@@ -55,7 +56,7 @@ public abstract class State extends Table implements Element<Boolean> {
 			if(e.getKeyCode() == Keys.ENTER){
 				value = !value;
 				valueLabel.setText(value?"ON":"OFF");
-				MainMenu.instance.playBeep();
+				SoundManager.playSound("beep");
 				writeValue(value);
 			}
 		}

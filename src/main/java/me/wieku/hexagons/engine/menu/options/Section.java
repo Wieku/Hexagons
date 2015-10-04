@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.menu.MainMenu;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.engine.menu.buttons.Element;
@@ -32,7 +33,7 @@ public class Section extends Table {
 
 					elements.get(selectedIndex).select(true);
 
-					MainMenu.instance.playBeep();
+					SoundManager.playSound("beep");
 
 				} else if (keycode == Keys.UP) {
 					elements.get(selectedIndex).select(false);
@@ -41,7 +42,7 @@ public class Section extends Table {
 
 					elements.get(selectedIndex).select(true);
 
-					MainMenu.instance.playBeep();
+					SoundManager.playSound("beep");
 
 				} else {
 					event.setKeyCode(keycode);
@@ -55,7 +56,7 @@ public class Section extends Table {
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.ESCAPE) {
 					Options.getInstance().setMenu(OptionMenu.instance);
-					MainMenu.instance.playBeep();
+					SoundManager.playSound("beep");
 				}
 				return false;
 			}

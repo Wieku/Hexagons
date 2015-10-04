@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import me.wieku.hexagons.animation.AnimationManager;
 import me.wieku.hexagons.animation.animations.Animation;
 import me.wieku.hexagons.audio.MenuPlaylist;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.ActorAccessor;
 import me.wieku.hexagons.engine.menu.Updater;
 import me.wieku.hexagons.map.MapLoader;
@@ -57,6 +58,15 @@ public class Main extends Game{
 	public void create() {
 		FontManager.init();
 		Animation.addAccessor(Actor.class, new ActorAccessor());
+
+		SoundManager.registerSound("death", "assets/sound/death.ogg", true);
+		SoundManager.registerSound("start", "assets/sound/go.ogg", true);
+		SoundManager.registerSound("gameover", "assets/sound/gameOver.ogg", true);
+		SoundManager.registerSound("swap", "assets/sound/swap.ogg", true);
+		SoundManager.registerSound("beep", "assets/sound/beep.ogg", true);
+		SoundManager.registerSound("click", "assets/sound/menuclick.ogg", true);
+		SoundManager.registerSound("levelup", "assets/sound/levelUp.ogg", true);
+
 		setScreen(Updater.instance);
 		if(Settings.instance.fullscreen){
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
@@ -123,13 +133,6 @@ public class Main extends Game{
 		}
 
 		config = new LwjglApplicationConfiguration();
-
-		for (DisplayMode current : LwjglApplicationConfiguration.getDisplayModes()) {
-			System.out.println(current.width + "x" + current.height + "x" +
-					current.bitsPerPixel + " " + current.refreshRate + "Hz");
-		}
-
-
 
 		config.width = 1024;
 		config.height = 768;

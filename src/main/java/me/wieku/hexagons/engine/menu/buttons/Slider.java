@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.menu.MainMenu;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.utils.GUIHelper;
@@ -58,14 +59,14 @@ public abstract class Slider extends Table implements Element<Integer> {
 				value = Math.max(min, value - jump);
 				valueLabel.setText(Integer.toString(value));
 				writeValue(value);
-				MainMenu.instance.playBeep();
+				SoundManager.playSound("beep");
 			}
 
 			if(e.getKeyCode() == Keys.RIGHT){
 				value = Math.min(max, value + jump);
 				valueLabel.setText(Integer.toString(value));
 				writeValue(value);
-				MainMenu.instance.playBeep();
+				SoundManager.playSound("beep");
 			}
 		}
 	}

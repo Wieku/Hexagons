@@ -18,6 +18,7 @@ import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;
 import me.wieku.hexagons.audio.AudioPlayer;
 import me.wieku.hexagons.audio.MenuPlaylist;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.Game;
 import me.wieku.hexagons.engine.Settings;
@@ -33,12 +34,9 @@ import java.util.ArrayList;
  */
 public class MapSelect implements Screen {
 
-	//public static Options options;
-	static Sound beep;
-
 	ArrayList<Map> maps;
 	Stage stage;
-	//Map currentMap;
+
 	Table logo, info, credits;
 	Label number, name, description, author, music, creditLabel;
 	Game game;
@@ -47,7 +45,7 @@ public class MapSelect implements Screen {
 	float time = 1.5f;
 	float toChange = 0f;
 
-	//Table conf;
+
 	Color color = new Color(0x02EAFAFF);
 	SkewCamera camera = new SkewCamera();
 	ShapeRenderer shapeRenderer;
@@ -56,18 +54,13 @@ public class MapSelect implements Screen {
 	private static int mapIndex = 0;
 
 	static MapSelect instance;
-	//public AudioPlayer audioPlayer;
-
-	float[] varbuff = new float[60];
 
 	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
 
 		instance = this;
-		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
 		shapeRenderer = new ShapeRenderer();
 
-		//options = new Options();
 		stage = new Stage(new ScreenViewport());
 		stage.addListener(new InputListener(){
 			@Override
@@ -82,7 +75,7 @@ public class MapSelect implements Screen {
 
 						selectIndex(mapIndex);
 
-						playBeep();
+						SoundManager.playSound("beep");
 					}
 				}
 
@@ -101,11 +94,11 @@ public class MapSelect implements Screen {
 
 						selectIndex(mapIndex);
 
-						playBeep();
+						SoundManager.playSound("beep");
 					}
 
 					if(keycode == Keys.ENTER){
-						playBeep();
+						SoundManager.playSound("beep");
 						Gdx.input.setInputProcessor(null);
 						//audioPlayer.pause();
 						MenuPlaylist.pause();
@@ -114,14 +107,10 @@ public class MapSelect implements Screen {
 
 				}
 
-				/*if(keycode == Keys.F3){
-					playBeep();
-					//Main.getInstance().setScreen(options);
-				}*/
+
 
 				if(keycode == Keys.ESCAPE){
-					playBeep();
-					/*Gdx.app.exit();*/
+					SoundManager.playSound("beep");
 					Main.getInstance().setScreen(MainMenu.instance);
 				}
 
@@ -140,11 +129,6 @@ public class MapSelect implements Screen {
 		info.setPosition(5, 5);
 		stage.addActor(info);
 
-		//conf = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
-		//conf.add(new Label("Press F3 to open settings", GUIHelper.getLabelStyle(Color.WHITE, 8))).pad(5);
-		//conf.pack();
-		//stage.addActor(conf);
-
 		logo = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
 		logo.add(new Label(Main.version, GUIHelper.getLabelStyle(Color.WHITE, 12))).pad(5).padTop(0).right();
@@ -157,7 +141,6 @@ public class MapSelect implements Screen {
 
 		stage.addActor(credits);
 
-		//selectIndex(mapIndex);
 		if(Settings.instance.fullscreen == true)
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
@@ -180,19 +163,7 @@ public class MapSelect implements Screen {
 			background.update(delta0);
 			CurrentMap.walls.update(delta0);
 
-			/*if(audioPlayer != null){
-				audioPlayer.update(delta0);
-				tbuf = audioPlayer.analyze();
-				for(int i=0; i< tbuf.length; i++){
-					varbuff[i] = Math.max(varbuff[i], tbuf[i]);
-				}
-			}*/
-
 			MenuPlaylist.update(delta0);
-
-			/*for(int i=0; i < varbuff.length; i++){
-				varbuff[i] = Math.max(0, varbuff[i]-10*delta0);
-			}*/
 
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
@@ -208,9 +179,6 @@ public class MapSelect implements Screen {
 			delta0 = 0;
 		}
 
-		//blurEffect.bind();
-
-
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.identity();
 		shapeRenderer.rotate(1, 0, 0, 90);
@@ -221,21 +189,10 @@ public class MapSelect implements Screen {
 		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 		shapeRenderer.identity();
 
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(color);
-		for(int i=0; i < varbuff.length; i++){
-			float var = varbuff[i];
-			shapeRenderer.rect(0, (i/60f)*stage.getHeight(), Math.min(var*30*((i+5)/3f), (stage.getWidth()*3f)/4), (1/60f)*stage.getHeight()-2);
-		}
-		shapeRenderer.end();
-		//blurEffect.unbind();
-
-		//blurEffect.render(stage.getBatch());
-
 		if((toChange -= delta) <= 0){
 
 			++index;
-			//System.out.println(Gdx.graphics.getFramesPerSecond());
+
 			if(index == creditArray.length) index = 0;
 
 			creditLabel.setText(creditArray[index]);
@@ -264,7 +221,6 @@ public class MapSelect implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		//conf.setPosition(2, height - 2 - conf.getHeight());
 		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
 		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
 	}
@@ -274,20 +230,14 @@ public class MapSelect implements Screen {
 
 		Main.config.foregroundFPS = 120;
 
-		//CurrentMap.reset();
-
 		selectIndex(mapIndex=Main.getInstance().maps.indexOf(MenuPlaylist.getCurrent()));
 
 		if(game != null){
 			MenuPlaylist.play();
 			MenuPlaylist.setPosition(game.exitPosition);
-			/*audioPlayer.play();
-			audioPlayer.setPosition(*//*game.exitPosition*//*20);*/
 			game = null;
 		}
 		MenuPlaylist.setLooping(true);
-		//if(!maps.isEmpty())
-			//maps.get(mapIndex).script.initColors();
 
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -321,14 +271,8 @@ public class MapSelect implements Screen {
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
 			info.setPosition(5, 5);
-			//currentMap = map;
 		}
 
-	}
-
-	public static void playBeep(){
-		long id = beep.play();
-		beep.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
 	}
 
 	public static MapSelect getInstance() {

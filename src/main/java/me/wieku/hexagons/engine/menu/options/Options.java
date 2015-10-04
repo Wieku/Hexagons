@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.menu.MainMenu;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.Main;
@@ -43,7 +44,7 @@ public class Options implements Screen {
 
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.ESCAPE && currentSection.equals(OptionMenu.instance)) {
-					MainMenu.instance.playBeep();
+					SoundManager.playSound("beep");
 					Main.getInstance().setScreen(MainMenu.instance);
 				}
 				return super.keyDown(event, keycode);

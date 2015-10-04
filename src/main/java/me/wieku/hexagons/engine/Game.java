@@ -3,7 +3,6 @@ package me.wieku.hexagons.engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,11 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import me.wieku.hexagons.api.HColor;
-import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.Main;
 import me.wieku.hexagons.api.CurrentMap;
+import me.wieku.hexagons.audio.AudioPlayer;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.camera.SkewCamera;
+import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.render.Center;
 import me.wieku.hexagons.engine.render.Renderer;
@@ -24,7 +24,6 @@ import me.wieku.hexagons.engine.render.WallRenderer;
 import me.wieku.hexagons.engine.ui.HProgressBar;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.resources.ArchiveFileHandle;
-import me.wieku.hexagons.audio.AudioPlayer;
 import me.wieku.hexagons.utils.GUIHelper;
 
 import java.text.DecimalFormat;
@@ -54,11 +53,6 @@ public class Game implements Screen {
 	Label time;
 	Label message;
 	ProgressBar next;
-	Sound levelUp;
-	Sound sides;
-	Sound go;
-	Sound death;
-	Sound gameOver;
 
 	LinkedList<Renderer> renderers = new LinkedList<>();
 
@@ -72,10 +66,6 @@ public class Game implements Screen {
 
 	DecimalFormat timeFormat = new DecimalFormat("0.000");
 	DecimalFormat delayFormat = new DecimalFormat("0.00");
-	public void playSound(Sound sound){
-		long id = sound.play();
-		sound.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
-	}
 
 	public Game (Map map){
 		this.map = map;
@@ -111,13 +101,6 @@ public class Game implements Screen {
 		
 		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
 		audioPlayer.setLooping(true);
-
-
-		levelUp = Gdx.audio.newSound(Gdx.files.internal("assets/sound/levelUp.ogg"));
-		sides = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
-		go = Gdx.audio.newSound(Gdx.files.internal("assets/sound/go.ogg"));
-		death = Gdx.audio.newSound(Gdx.files.internal("assets/sound/death.ogg"));
-		gameOver = Gdx.audio.newSound(Gdx.files.internal("assets/sound/gameOver.ogg"));
 
 		addRenderer(center);
 		addRenderer(wallRenderer);
@@ -156,8 +139,6 @@ public class Game implements Screen {
 		background.render(renderer, delta, true, 0);
 		renderer.end();
 
-		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-
 		for(int j = 1; j <= CurrentMap.layers; ++j){
 			renderer.identity();
 			renderer.translate(0, -j * CurrentMap.depth * 1.4f * Math.abs(CurrentMap.skew / CurrentMap.maxSkew), 0);
@@ -181,7 +162,6 @@ public class Game implements Screen {
 		renderer.end();
 
 		message.setPosition((stage.getWidth() - message.getWidth()) / 2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
-		//GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 		stage.getCamera().position.set(camera.rumbleX + stage.getWidth() / 2, camera.rumbleZ + stage.getHeight() / 2, 0);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -222,7 +202,7 @@ public class Game implements Screen {
 		map.script.onInit();
 		map.script.initColors();
 		map.script.initEvents();
-		playSound(go);
+		SoundManager.playSound("start");
 	}
 
 	public void restart(){
@@ -246,8 +226,8 @@ public class Game implements Screen {
 		if(player.dead){
 
 			if (audioPlayer != null && !audioPlayer.hasEnded()) {
-				playSound(death);
-				playSound(gameOver);
+				SoundManager.playSound("death");
+				SoundManager.playSound("gameover");
 				camera.rumble(20f, 1f);
 				exitPosition = audioPlayer.getPosition();
 				audioPlayer.stop();
@@ -363,7 +343,7 @@ public class Game implements Screen {
 
 			fastRotate = CurrentMap.fastRotate;
 
-			playSound(levelUp);
+			SoundManager.playSound("levelup");
 
 			CurrentMap.isFastRotation = true;
 			CurrentMap.rotationSpeed += (CurrentMap.rotationSpeed > 0 ? CurrentMap.rotationIncrement: -CurrentMap.rotationIncrement );
@@ -381,7 +361,7 @@ public class Game implements Screen {
 
 		if (CurrentMap.wallTimeline.isEmpty() && CurrentMap.mustChangeSides) {
 			CurrentMap.sides = MathUtils.random(CurrentMap.minSides, CurrentMap.maxSides);
-			playSound(sides);
+			SoundManager.playSound("beep");
 			CurrentMap.mustChangeSides = false;
 		}
 

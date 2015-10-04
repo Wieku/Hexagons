@@ -3,7 +3,6 @@ package me.wieku.hexagons.engine.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,8 +21,8 @@ import me.wieku.hexagons.Main;
 import me.wieku.hexagons.animation.timeline.Timeline;
 import me.wieku.hexagons.api.CurrentMap;
 import me.wieku.hexagons.audio.MenuPlaylist;
+import me.wieku.hexagons.audio.SoundManager;
 import me.wieku.hexagons.engine.ActorAccessor;
-import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.buttons.MenuButton;
 import me.wieku.hexagons.engine.menu.options.Options;
@@ -39,15 +38,12 @@ public class MainMenu implements Screen {
 	public static MainMenu instance = new MainMenu();
 
 	Stage stage;
-	Table mainTable;
 	MenuButton button, button2, button3;
 	ArrayList<MenuButton> list = new ArrayList<>();
 	Label version, copyright;
 	int currentIndex = -1;
 	Image beatIHigh;
 	Image beatILow;
-	Sound beepClick;
-	Sound beep;
 
 	BlurEffect blurEffect;
 	SkewCamera camera = new SkewCamera();
@@ -59,7 +55,6 @@ public class MainMenu implements Screen {
 	Label title;
 	ProgressBar bar;
 	boolean escclick = false;
-	//SettingsTab tab = SettingsTab.getInstance();
 
 	Options options;
 
@@ -89,12 +84,12 @@ public class MainMenu implements Screen {
 				}
 
 				if(keycode == Keys.LEFT){
-					playBeepClick();
+					SoundManager.playSound("click");
 					MenuPlaylist.previousSong();
 				}
 
 				if(keycode == Keys.RIGHT){
-					playBeepClick();
+					SoundManager.playSound("click");
 					MenuPlaylist.nextSong();
 				}
 
@@ -104,7 +99,6 @@ public class MainMenu implements Screen {
 					}
 
 					if(currentIndex == 1){
-						//tab.show();
 						Main.getInstance().setScreen(options);
 					}
 
@@ -121,11 +115,7 @@ public class MainMenu implements Screen {
 			public boolean keyUp(InputEvent event, int keycode) {
 				if(keycode == Keys.ESCAPE){
 					if(escclick == true) {
-						//if(tab.isShowed()){
-						//	tab.hide();
-						//} else {
-							Gdx.app.exit();
-						//}
+						Gdx.app.exit();
 					}
 					escclick = false;
 				}
@@ -175,14 +165,11 @@ public class MainMenu implements Screen {
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
-		beepClick = Gdx.audio.newSound(Gdx.files.internal("assets/sound/menuclick.ogg"));
-		beep = Gdx.audio.newSound(Gdx.files.internal("assets/sound/beep.ogg"));
 
 		selectIndex(0);
 
 		CurrentMap.reset();
 
-		//stage.addActor(tab);
 	}
 
 	boolean first = false;
@@ -309,19 +296,9 @@ public class MainMenu implements Screen {
 			ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX()+20 , 0f));
 		}
 		currentIndex = index;
-		playBeepClick();
+		SoundManager.playSound("click");
 		list.get(currentIndex).select(true);
 		ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX() - 20, 0f));
-	}
-
-	void playBeepClick(){
-		long id = beepClick.play();
-		beepClick.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
-	}
-
-	public void playBeep(){
-		long id = beep.play();
-		beep.setVolume(id, (float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
 	}
 
 	@Override
