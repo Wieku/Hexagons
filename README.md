@@ -1,7 +1,4 @@
-JHexagon
-=======
 
-Java Port of [Open Hexagon](https://github.com/SuperV1234/SSVOpenHexagon)
+<img src="graphics/baner.png" width="100%"/>
 
-
-<center><img src="http://git.starchasers.ovh/starchasers/Hexagons/raw/master/resources/assets/hexlogobig.png" alt="img" style="width: 512px;"/></center>
+Music game based on [Open Hexagon](https://github.com/SuperV1234/SSVOpenHexagon) and [Super Hexagon](http://superhexagon.com/)
