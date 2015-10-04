@@ -165,7 +165,7 @@ public class Game implements Screen {
 			renderer.rotate(1, 0, 0, 90);
 			renderer.begin(ShapeRenderer.ShapeType.Filled);
 			for(Renderer render : renderers){
-				render.render(renderer, delta, true, j);
+				render.render(renderer, delta, true, j-1);
 			}
 			renderer.end();
 		}
