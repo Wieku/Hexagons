@@ -24,11 +24,11 @@ public class Background implements Renderer {
 	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
 		if(shadows)
-			for(float i = 0; i < CurrentMap.sides; ++i) {
+			for(float i = 0; i < CurrentMap.data.sides; ++i) {
 
-				if(CurrentMap.colors.size() > 0){
-					HColor col = CurrentMap.colors.get(((int)i + CurrentMap.colorOffset) % CurrentMap.colors.size());
-					if(i+1==CurrentMap.sides && CurrentMap.sides % 2 == 1)
+				if(CurrentMap.data.colors.size() > 0){
+					HColor col = CurrentMap.data.colors.get(((int)i + CurrentMap.data.colorOffset) % CurrentMap.data.colors.size());
+					if(i+1==CurrentMap.data.sides && CurrentMap.data.sides % 2 == 1)
 						tmpC.set(col.r / 1.4f, col.g / 1.4f, col.b / 1.4f, col.a);
 					else
 						tmpC.set(col.r, col.g, col.b, col.a);
@@ -37,8 +37,8 @@ public class Background implements Renderer {
 					renderer.setColor(0, 0, 0, 1);
 				}
 
-				tmp.set(0, Main.diagonal * 2).rotate(i / CurrentMap.sides * -360f);
-				tmp2.set(0, Main.diagonal * 2).rotate((i + 1) / CurrentMap.sides * -360f);
+				tmp.set(0, Main.diagonal * 2).rotate(i / CurrentMap.data.sides * -360f);
+				tmp2.set(0, Main.diagonal * 2).rotate((i + 1) / CurrentMap.data.sides * -360f);
 
 				renderer.triangle(0, 0, tmp.x, tmp.y, tmp2.x, tmp2.y);
 
@@ -48,14 +48,14 @@ public class Background implements Renderer {
 
 	@Override
 	public void update(float delta){
-		CurrentMap.colors.forEach(o -> o.update(delta));
+		CurrentMap.data.colors.forEach(o -> o.update(delta));
 
-		if((delta1 += delta) >= CurrentMap.colorSwitch){
+		if((delta1 += delta) >= CurrentMap.data.colorSwitch){
 
-			++CurrentMap.colorOffset;
+			++CurrentMap.data.colorOffset;
 
-			if(CurrentMap.colorOffset == CurrentMap.colors.size()){
-				CurrentMap.colorOffset = 0;
+			if(CurrentMap.data.colorOffset == CurrentMap.data.colors.size()){
+				CurrentMap.data.colorOffset = 0;
 			}
 
 			delta1 = 0;

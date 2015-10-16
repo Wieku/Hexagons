@@ -33,10 +33,10 @@ public class Player implements Renderer {
 	@Override
 	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 		if(!shadows)
-			renderer.setColor(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
+			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 		else {
-			shadow.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a).lerp(Color.BLACK, 0.4f);
-			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.alphaMultiplier)-shadLev*CurrentMap.alphaFalloff);
+			shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
+			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 		}
 
 		renderer.triangle(tmp3.x, tmp3.y, tmp.x, tmp.y, tmp2.x, tmp2.y);
@@ -70,7 +70,7 @@ public class Player implements Renderer {
 		lCh.set(0, 0.01f).rotate(rot-90).add(fCh);
 		rCh.set(0, 0.01f).rotate(rot+90).add(fCh);
 
-		for(Wall wall : CurrentMap.wallTimeline.getObjects()){
+		for(Wall wall : CurrentMap.data.wallTimeline.getObjects()){
 
 			if((dir == -1 && Intersector.isPointInPolygon(wall.vecs, lCh)) || (dir == 1 && Intersector.isPointInPolygon(wall.vecs, rCh))){
 				rot = oldRot;

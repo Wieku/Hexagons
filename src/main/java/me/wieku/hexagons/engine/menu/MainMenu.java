@@ -207,12 +207,12 @@ public class MainMenu implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		camera.rotate(CurrentMap.rotationSpeed * 360f * delta);
+		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
 		camera.update(delta);
 		if((delta0 += delta)>=1f/60) {
 			background.update(delta0);
-			CurrentMap.walls.update(delta0);
-			CurrentMap.skew = 1f;
+			CurrentMap.data.walls.update(delta0);
+			CurrentMap.data.skew = 1f;
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
 			CurrentMap.setSkewTime(1);

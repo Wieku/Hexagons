@@ -21,14 +21,14 @@ public abstract class Patterns {
 	}
 
 	//getHalfSides: returns half the number of sides (integer)
-	public static int getHalfSides() { return (int) Math.ceil(CurrentMap.sides / 2); }
+	public static int getHalfSides() { return (int) Math.ceil(CurrentMap.data.sides / 2); }
 
 	//getRandomSide: returns random mSide
-	public static int getRandomSide() { return random(0, CurrentMap.sides - 1); }
+	public static int getRandomSide() { return random(0, CurrentMap.data.sides - 1); }
 
-	public static float getSpeedMultDM() { return CurrentMap.speed * (float)(Math.pow(CurrentMap.difficulty, 0.65f)); }
+	public static float getSpeedMultDM() { return CurrentMap.data.speed * (float)(Math.pow(CurrentMap.data.difficulty, 0.65f)); }
 
-	public static float getDelayMultDM() { return CurrentMap.delayMult / (float)(Math.pow(CurrentMap.difficulty, 0.10f)); }
+	public static float getDelayMultDM() { return CurrentMap.data.delayMult / (float)(Math.pow(CurrentMap.data.difficulty, 0.10f)); }
 
 	//getPerfectDelayDM: returns getPerfectDelay calculated with difficulty mutliplier
 	public static float getPerfectDelay(float mThickness) { return mThickness / (5.02f * getSpeedMultDM()) * getDelayMultDM(); }
@@ -46,7 +46,7 @@ public abstract class Patterns {
 		while (start != mSide2) {
 			rightSteps = rightSteps + 1;
 			start = start + 1;
-			if (start > CurrentMap.sides - 1 ){ start = 0;}
+			if (start > CurrentMap.data.sides - 1 ){ start = 0;}
 		}
 
 		start = mSide1;
@@ -54,7 +54,7 @@ public abstract class Patterns {
 		while (start != mSide2) {
 			leftSteps = leftSteps + 1;
 			start = start - 1;
-			if (start < 0 ) { start = CurrentMap.sides - 1; }
+			if (start < 0 ) { start = CurrentMap.data.sides - 1; }
 		}
 
 		if (rightSteps < leftSteps) { return rightSteps; }
@@ -62,11 +62,11 @@ public abstract class Patterns {
 	}
 
 	public static void wallAcc(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax) {
-		CurrentMap.wallTimeline.submit(new Wall(side, thickness, new SpeedData(speed * getSpeedMultDM(), acceleration, speedMin * getSpeedMultDM(), speedMax * getSpeedMultDM())));
+		CurrentMap.data.wallTimeline.submit(new Wall(side, thickness, new SpeedData(speed * getSpeedMultDM(), acceleration, speedMin * getSpeedMultDM(), speedMax * getSpeedMultDM())));
 	}
 
 	//cWall: creates a wall with the common THICKNESS
-	public static void cWall(int mSide){ CurrentMap.wallTimeline.submit(new Wall(mSide, THICKNESS, new SpeedData(getSpeedMultDM()))); }
+	public static void cWall(int mSide){ CurrentMap.data.wallTimeline.submit(new Wall(mSide, THICKNESS, new SpeedData(getSpeedMultDM()))); }
 
 	//oWall: creates a wall opposite to the mSide passed
 	public static void oWall(int mSide){ cWall(mSide + getHalfSides()); }
@@ -99,7 +99,7 @@ public abstract class Patterns {
 
 	//cBarrageN: spawns a barrage of walls, with a free mSide plus mNeighbors
 	public static void cBarrageN(int mSide, int mNeighbors) {
-		for (int i = mNeighbors; i <= CurrentMap.sides - 2 - mNeighbors; ++i) {
+		for (int i = mNeighbors; i <= CurrentMap.data.sides - 2 - mNeighbors; ++i) {
 			cWall(mSide + i + 1);
 		}
 	}
@@ -115,7 +115,7 @@ public abstract class Patterns {
 
 	//cAltBarrage: spawns a barrage of alternate walls
 	public static void  cAltBarrage(int mSide, int mStep) {
-		for (int i = 0; i <= CurrentMap.sides / mStep; ++i ) {
+		for (int i = 0; i <= CurrentMap.data.sides / mStep; ++i ) {
 			cWall(mSide + i * mStep);
 		}
 	}
@@ -196,7 +196,7 @@ public abstract class Patterns {
 			cBarrage(startSide + j);
 			j = j + loopDir;
 			t_wait(delay);
-			if(CurrentMap.sides < 6) { t_wait(delay * 0.6f); }
+			if(CurrentMap.data.sides < 6) { t_wait(delay * 0.6f); }
 		}
 
 		t_wait(getPerfectDelayDM(THICKNESS) * 6.1f);
@@ -204,7 +204,7 @@ public abstract class Patterns {
 	
 	//pDMBarrageSpiral: spawns a spiral of cBarrage, with static delay
 	public static void  pDMBarrageSpiral(int mTimes, float mDelayMult, int mStep) {
-		float delay = (getPerfectDelayDM(THICKNESS) * 5.42f) * (mDelayMult / (float) Math.pow(CurrentMap.difficulty, 0.4)) * (float)Math.pow(getSpeedMultDM(), 0.35);
+		float delay = (getPerfectDelayDM(THICKNESS) * 5.42f) * (mDelayMult / (float) Math.pow(CurrentMap.data.difficulty, 0.4)) * (float)Math.pow(getSpeedMultDM(), 0.35);
 		int  startSide = getRandomSide();
 		int loopDir = mStep * getRandomDir();
 		int j = 0;
@@ -213,10 +213,10 @@ public abstract class Patterns {
 			cBarrage(startSide + j);
 			j = j + loopDir;
 			t_wait(delay);
-			if(CurrentMap.sides < 6) { t_wait(delay * 0.49f); }
+			if(CurrentMap.data.sides < 6) { t_wait(delay * 0.49f); }
 		}
 
-		t_wait(getPerfectDelayDM(THICKNESS) * (6.7f * (float)Math.pow(CurrentMap.difficulty, 0.7)));
+		t_wait(getPerfectDelayDM(THICKNESS) * (6.7f * (float)Math.pow(CurrentMap.data.difficulty, 0.7)));
 	}
 	
 	//pWallExVortex: spawns left-left right-right spiral patters
@@ -253,7 +253,7 @@ public abstract class Patterns {
 		for (int i = 0; i<= mTimes; ++i) {
 			cBarrage(startSide);
 			t_wait(delay);
-			if(CurrentMap.sides < 6) { t_wait(delay * 0.8f); }
+			if(CurrentMap.data.sides < 6) { t_wait(delay * 0.8f); }
 			cBarrage(startSide + getHalfSides());
 			t_wait(delay);
 		}
@@ -300,7 +300,7 @@ public abstract class Patterns {
 		THICKNESS = myThickness;
 
 		for (int i = 0; i < mTimes; ++i) {
-			CurrentMap.wallTimeline.submit(new Wall(startSide, myThickness + 5 * getSpeedMultDM() * delay, new SpeedData(getSpeedMultDM())));
+			CurrentMap.data.wallTimeline.submit(new Wall(startSide, myThickness + 5 * getSpeedMultDM() * delay, new SpeedData(getSpeedMultDM())));
 
 			cBarrage(startSide + loopDir);
 			t_wait(delay);
@@ -313,7 +313,7 @@ public abstract class Patterns {
 
 	public static void t_wait(float delay){
 		//System.out.println(delay / 60);
-		CurrentMap.wallTimeline.wait(delay / 60);
+		CurrentMap.data.wallTimeline.wait(delay / 60);
 	}
 
 }

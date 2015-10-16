@@ -78,23 +78,23 @@ public class HColor {
 
 		if(pulse){
 
-			delta0 += delta * 60 * CurrentMap.colorPulseInc;
+			delta0 += delta * 60 * CurrentMap.data.colorPulseInc;
 
 			if(delta0 < 0){
 				delta0 = 0;
-				CurrentMap.colorPulseInc *= -1f;
+				CurrentMap.data.colorPulseInc *= -1f;
 			}
-			if(delta0 > CurrentMap.colorPulse){
-				delta0 = CurrentMap.colorPulse;
-				CurrentMap.colorPulseInc *= -1f;
+			if(delta0 > CurrentMap.data.colorPulse){
+				delta0 = CurrentMap.data.colorPulse;
+				CurrentMap.data.colorPulseInc *= -1f;
 			}
 
-			percent = delta0 / CurrentMap.colorPulse;
+			percent = delta0 / CurrentMap.data.colorPulse;
 		}
 
 		if(dynamic){
 
-			hue += hueInc * delta * 60f * Math.pow(CurrentMap.difficulty, 0.8);
+			hue += hueInc * delta * 60f * Math.pow(CurrentMap.data.difficulty, 0.8);
 
 			if(hue < hueMin)
 			{

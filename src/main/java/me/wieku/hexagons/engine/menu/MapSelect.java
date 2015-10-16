@@ -156,19 +156,19 @@ public class MapSelect implements Screen {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		updateSkew(delta);
-		camera.rotate(CurrentMap.rotationSpeed * 360f * delta);
+		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
 		camera.update(delta);
 
 		if((delta0 += delta)>=1f/60){
 			background.update(delta0);
-			CurrentMap.walls.update(delta0);
+			CurrentMap.data.walls.update(delta0);
 
 			MenuPlaylist.update(delta0);
 
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
 			CurrentMap.setSkewTime(1);
-			tmpC.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
+			tmpC.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 
 			number.getStyle().fontColor = tmpC;
 			name.getStyle().fontColor = tmpC;
@@ -211,11 +211,11 @@ public class MapSelect implements Screen {
 	int inc;
 	float delta2;
 	public void updateSkew(float delta) {
-		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.skewTime ? -1 : inc));
+		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.data.skewTime ? -1 : inc));
 		delta2 += delta * inc;
-		delta2 = Math.min(CurrentMap.skewTime, Math.max(delta2, 0));
-		float percent = delta2 / CurrentMap.skewTime;
-		CurrentMap.skew = CurrentMap.minSkew + (CurrentMap.maxSkew - CurrentMap.minSkew) * percent;
+		delta2 = Math.min(CurrentMap.data.skewTime, Math.max(delta2, 0));
+		float percent = delta2 / CurrentMap.data.skewTime;
+		CurrentMap.data.skew = CurrentMap.data.minSkew + (CurrentMap.data.maxSkew - CurrentMap.data.minSkew) * percent;
 	}
 
 	@Override

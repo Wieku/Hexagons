@@ -26,8 +26,8 @@ public class Wall extends TimelineObject {
 	public Array<Vector2> vecs = new Array<>();
 
 	public Wall(int side, float thickness, SpeedData speedData, SpeedData curveData) {
-		angle1 = side / (float) CurrentMap.sides * 360f;
-		angle2 = (side+1) / (float) CurrentMap.sides * 360f;
+		angle1 = side / (float) CurrentMap.data.sides * 360f;
+		angle2 = (side+1) / (float) CurrentMap.data.sides * 360f;
 
 		this.thickness = thickness;
 		this.speed = speedData;
@@ -46,7 +46,7 @@ public class Wall extends TimelineObject {
 	@Override
 	public void update(float delta){
 
-		pulseSpeed = CurrentMap.pulse / CurrentMap.pulseMin;
+		pulseSpeed = CurrentMap.data.pulse / CurrentMap.data.pulseMin;
 
 		if(!visible){
 			position = Main.diagonal;
@@ -69,9 +69,9 @@ public class Wall extends TimelineObject {
 		angle2 = (angle2 < 0 ? angle2 + 360f : (angle2 > 360f ? angle2 - 360f : angle2));
 
 		tmp.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle1);
-		tmp2.set(0, Math.max(0, position + thickness + CurrentMap.wallSkewLeft) * pulseSpeed).rotate(-angle1);
+		tmp2.set(0, Math.max(0, position + thickness + CurrentMap.data.wallSkewLeft) * pulseSpeed).rotate(-angle1);
 		tmp3.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle2);
-		tmp4.set(0, Math.max(0, position + thickness + CurrentMap.wallSkewRight) * pulseSpeed).rotate(-angle2);
+		tmp4.set(0, Math.max(0, position + thickness + CurrentMap.data.wallSkewRight) * pulseSpeed).rotate(-angle2);
 	}
 
 }

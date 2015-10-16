@@ -139,9 +139,9 @@ public class Game implements Screen {
 		background.render(renderer, delta, true, 0);
 		renderer.end();
 
-		for(int j = 1; j <= CurrentMap.layers; ++j){
+		for(int j = 1; j <= CurrentMap.data.layers; ++j){
 			renderer.identity();
-			renderer.translate(0, -j * CurrentMap.depth * 1.4f * Math.abs(CurrentMap.skew / CurrentMap.maxSkew), 0);
+			renderer.translate(0, -j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew), 0);
 
 			renderer.rotate(1, 0, 0, 90);
 			renderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -191,7 +191,7 @@ public class Game implements Screen {
 
 		delta0 = delta1 = delta5 = delta4 = delta3 = 0;
 
-		CurrentMap.currentTime = 0f;
+		CurrentMap.data.currentTime = 0f;
 		CurrentMap.reset();
 		score = 0;
 		player.reset();
@@ -218,8 +218,8 @@ public class Game implements Screen {
 	int fpsIndex = 0;
 	public void updateGame(float delta){
 
-		if(!player.dead && CurrentMap.wallTimeline.isFirstRemoved())
-			score += delta * (CurrentMap.difficulty * CurrentMap.speed * (((int)CurrentMap.currentTime) * 5 + 300));
+		if(!player.dead && CurrentMap.data.wallTimeline.isFirstRemoved())
+			score += delta * (CurrentMap.data.difficulty * CurrentMap.data.speed * (((int)CurrentMap.data.currentTime) * 5 + 300));
 
 		updateTimeline(delta);
 
@@ -276,9 +276,9 @@ public class Game implements Screen {
 			//updatePulse(1f/60);
 
 			if (!player.dead) {
-				CurrentMap.walls.update(1f/60);
+				CurrentMap.data.walls.update(1f/60);
 				background.update(1f / 60);
-				tmpColor.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
+				tmpColor.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 				fps.getStyle().fontColor = tmpColor;
 				time.getStyle().fontColor = tmpColor;
 				message.getStyle().fontColor = tmpColor;
@@ -308,7 +308,7 @@ public class Game implements Screen {
 		}
 
 		fps.setText(framesps + "FPS\n" + delayFormat.format(1000f/framesps)+"ms");
-		time.setText("Time: " + timeFormat.format(CurrentMap.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
@@ -323,49 +323,49 @@ public class Game implements Screen {
 
 	float delta2;
 	public void updateSkew(float delta) {
-		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.skewTime ? -1 : inc));
+		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.data.skewTime ? -1 : inc));
 		delta2 += delta * inc;
-		delta2 = Math.min(CurrentMap.skewTime, Math.max(delta2, 0));
-		float percent = delta2 / CurrentMap.skewTime;
-		CurrentMap.skew = CurrentMap.minSkew + (CurrentMap.maxSkew - CurrentMap.minSkew) * percent;
+		delta2 = Math.min(CurrentMap.data.skewTime, Math.max(delta2, 0));
+		float percent = delta2 / CurrentMap.data.skewTime;
+		CurrentMap.data.skew = CurrentMap.data.minSkew + (CurrentMap.data.maxSkew - CurrentMap.data.minSkew) * percent;
 	}
 
 	float delta3;
 	public void updateTimeline(float delta) {
 
 		if(!player.dead){
-			CurrentMap.wallTimeline.update(delta);
-			CurrentMap.eventTimeline.update(delta);
-			CurrentMap.currentTime += delta;
+			CurrentMap.data.wallTimeline.update(delta);
+			CurrentMap.data.eventTimeline.update(delta);
+			CurrentMap.data.currentTime += delta;
 		}
 
-		if(!player.dead && (delta3 +=delta) >= CurrentMap.levelIncrement){
+		if(!player.dead && (delta3 +=delta) >= CurrentMap.data.levelIncrement){
 
-			fastRotate = CurrentMap.fastRotate;
+			fastRotate = CurrentMap.data.fastRotate;
 
 			SoundManager.playSound("levelup");
 
-			CurrentMap.isFastRotation = true;
-			CurrentMap.rotationSpeed += (CurrentMap.rotationSpeed > 0 ? CurrentMap.rotationIncrement: -CurrentMap.rotationIncrement );
-			CurrentMap.rotationSpeed *= -1;
-			CurrentMap.rotationSpeed = Math.min(CurrentMap.rotationSpeedMax, Math.max(-CurrentMap.rotationSpeedMax, CurrentMap.rotationSpeed));
+			CurrentMap.data.isFastRotation = true;
+			CurrentMap.data.rotationSpeed += (CurrentMap.data.rotationSpeed > 0 ? CurrentMap.data.rotationIncrement: -CurrentMap.data.rotationIncrement );
+			CurrentMap.data.rotationSpeed *= -1;
+			CurrentMap.data.rotationSpeed = Math.min(CurrentMap.data.rotationSpeedMax, Math.max(-CurrentMap.data.rotationSpeedMax, CurrentMap.data.rotationSpeed));
 
-			CurrentMap.mustChangeSides = true;
+			CurrentMap.data.mustChangeSides = true;
 
-			CurrentMap.speed += CurrentMap.speedInc;
-			CurrentMap.delayMult += CurrentMap.delayMultInc;
+			CurrentMap.data.speed += CurrentMap.data.speedInc;
+			CurrentMap.data.delayMult += CurrentMap.data.delayMultInc;
 			delta3 = 0;
 		}
 
-		next.setValue(delta3 / CurrentMap.levelIncrement);
+		next.setValue(delta3 / CurrentMap.data.levelIncrement);
 
-		if (CurrentMap.wallTimeline.isEmpty() && CurrentMap.mustChangeSides) {
-			CurrentMap.sides = MathUtils.random(CurrentMap.minSides, CurrentMap.maxSides);
+		if (CurrentMap.data.wallTimeline.isEmpty() && CurrentMap.data.mustChangeSides) {
+			CurrentMap.data.sides = MathUtils.random(CurrentMap.data.minSides, CurrentMap.data.maxSides);
 			SoundManager.playSound("beep");
-			CurrentMap.mustChangeSides = false;
+			CurrentMap.data.mustChangeSides = false;
 		}
 
-		if (CurrentMap.wallTimeline.isAllSpawned() && !CurrentMap.mustChangeSides) {
+		if (CurrentMap.data.wallTimeline.isAllSpawned() && !CurrentMap.data.mustChangeSides) {
 			map.script.nextPattern();
 		}
 
@@ -374,45 +374,48 @@ public class Game implements Screen {
 	public void updateRotation(float delta) {
 
 		if(player.dead) {
-			if(CurrentMap.rotationSpeed < 0) {
-				CurrentMap.rotationSpeed = Math.min(-0.02f, CurrentMap.rotationSpeed + 0.002f * 60 * delta);
-			} else if(CurrentMap.rotationSpeed > 0) {
-				CurrentMap.rotationSpeed = Math.max(0.02f, CurrentMap.rotationSpeed - 0.002f * 60 * delta);
+			if(CurrentMap.data.rotationSpeed < 0) {
+				CurrentMap.data.rotationSpeed = Math.min(-0.02f, CurrentMap.data.rotationSpeed + 0.002f * 60 * delta);
+			} else if(CurrentMap.data.rotationSpeed > 0) {
+				CurrentMap.data.rotationSpeed = Math.max(0.02f, CurrentMap.data.rotationSpeed - 0.002f * 60 * delta);
 			}
 		}
-		camera.rotate(CurrentMap.rotationSpeed * 360f * delta + (CurrentMap.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
+		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta + (CurrentMap.data.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.data.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
 		fastRotate = Math.max(0, fastRotate - 60f * delta);
-		if(fastRotate == 0) CurrentMap.isFastRotation = false;
+		if(fastRotate == 0) CurrentMap.data.isFastRotation = false;
 	}
 
 	float delta4;
 	float delta5;
+	float delta6;
 	public void updatePulse(float delta){
 
 		if(player.dead) return;
 
 		if(delta4 <= 0){
-			CurrentMap.beatPulse = CurrentMap.beatPulseMax;
-			delta4 = CurrentMap.beatPulseDelay;
+			CurrentMap.data.beatPulse = CurrentMap.data.beatPulseMax;
+			delta4 = CurrentMap.data.beatPulseDelay;
 		}
 
 		delta4 -= delta;
 
-		if(CurrentMap.beatPulse > CurrentMap.beatPulseMin) scale = CurrentMap.beatPulse -= 1.2f * delta;
+		if(CurrentMap.data.beatPulse > CurrentMap.data.beatPulseMin) scale = CurrentMap.data.beatPulse -= 1.2f * delta;
 
-		if(delta5 <= 0){
+		if(delta5 <= 0 && delta6 <= 0){
 
-			if((CurrentMap.pulseDir < 0 && CurrentMap.pulse <= CurrentMap.pulseMin) || (CurrentMap.pulseDir > 0 && CurrentMap.pulse >= CurrentMap.pulseMax)){
-				CurrentMap.pulse = CurrentMap.pulseDir > 0 ? CurrentMap.pulseMax : CurrentMap.pulseMin;
-				CurrentMap.pulseDir *= -1;
-				if(CurrentMap.pulseDir < 0) delta5 = CurrentMap.pulseDelayMax;
+			if((CurrentMap.data.pulseDir < 0 && CurrentMap.data.pulse <= CurrentMap.data.pulseMin) || (CurrentMap.data.pulseDir > 0 && CurrentMap.data.pulse >= CurrentMap.data.pulseMax)){
+				CurrentMap.data.pulse = CurrentMap.data.pulseDir > 0 ? CurrentMap.data.pulseMax : CurrentMap.data.pulseMin;
+				CurrentMap.data.pulseDir *= -1;
+				delta6 = CurrentMap.data.pulseDelayHalfMax;
+				if(CurrentMap.data.pulseDir < 0) delta5 = CurrentMap.data.pulseDelayMax;
 			}
 
-			CurrentMap.pulse += (CurrentMap.pulseDir > 0 ? CurrentMap.pulseSpeed : -CurrentMap.pulseSpeedR) * 60f * delta;
+			CurrentMap.data.pulse += (CurrentMap.data.pulseDir > 0 ? CurrentMap.data.pulseSpeed : -CurrentMap.data.pulseSpeedR) * 60f * delta;
 
 		}
 
 		delta5 -= delta * 60;
+		delta6 -= delta * 60;
 
 	}
 

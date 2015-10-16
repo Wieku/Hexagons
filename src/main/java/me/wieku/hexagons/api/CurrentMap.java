@@ -10,7 +10,72 @@ import java.util.ArrayList;
  */
 public abstract class CurrentMap {
 
-	/** rotations/s */
+	public static class Data {
+		public float rotationSpeed = 0.5f;
+		public float rotationSpeedMax = 1.5f;
+		public float rotationIncrement = 0.083f;
+		public float fastRotate = 70f;
+		public boolean isFastRotation = false;
+		
+		public float difficulty = 1f;
+		public float levelIncrement = 15f;
+		public float delayMult = 1f;
+		public float delayMultInc = 0.01f;
+		public float speed = 1f ;
+		public float speedInc = 0.125f;
+		public float currentTime = 0f;
+		
+		/** sides */
+		public int sides = 6;
+		public int minSides = 5;
+		public int maxSides = 7;
+		public boolean mustChangeSides = false;
+		
+		/**pulse*/
+		public float beatPulseMin = 1.0f;
+		public float beatPulseMax = 1.2f;
+		public float beatPulseDelay = 0.5f;
+		public float beatPulse = 1.0f;
+		
+		/**wallpulse*/
+		public float pulseMin = 70;
+		public float pulseMax = 90;
+		public float pulseSpeed = 1.0f;
+		public float pulseSpeedR = 0.6f;
+		public float pulseDelayHalfMax = 0;
+		public float pulseDelayMax = 0;
+		public float pulse = 75;
+		public int pulseDir = 1;
+		
+		/**colors*/
+		public ArrayList<HColor> colors = new ArrayList<>();
+		//public float menuColor = 0f;
+		public float colorPulse = 3f;
+		public float colorPulseInc = 1f;
+		public int colorOffset = 0;
+		public float colorSwitch = 1f;
+		public HColor walls = new HColor(1, 1, 1, 1);
+		
+		/**gfx settings */
+		public int layers = 6;
+		public float depth = 1.6f;
+		public float skew = 0f;
+		public float minSkew = 0f;
+		public float maxSkew = 1f;
+		public float skewTime = 5f;
+		public float wallSkewLeft = 0f;
+		public float wallSkewRight = 0f;
+		public float alphaMultiplier = 1f;
+		public float alphaFalloff = 0f;
+		
+		public Timeline<Wall> wallTimeline = new Timeline<>();
+		public Timeline<TimelineRunnable> eventTimeline = new Timeline<>();
+	}
+
+
+
+	public static Data data = new Data();
+	/** rotations/s *//*
 	public static float rotationSpeed = 0.5f;
 	public static float rotationSpeedMax = 1.5f;
 	public static float rotationIncrement = 0.083f;
@@ -25,19 +90,19 @@ public abstract class CurrentMap {
 	public static float speedInc = 0.125f;
 	public static float currentTime = 0f;
 
-	/** sides */
+	*//** sides *//*
 	public static int sides = 6;
 	public static int minSides = 5;
 	public static int maxSides = 7;
 	public static boolean mustChangeSides = false;
 
-	/**pulse*/
+	*//**pulse*//*
 	public static float beatPulseMin = 1.0f;
 	public static float beatPulseMax = 1.2f;
 	public static float beatPulseDelay = 0.5f;
 	public static float beatPulse = 1.0f;
 
-	/**wallpulse*/
+	*//**wallpulse*//*
 	public static float pulseMin = 70;
 	public static float pulseMax = 90;
 	public static float pulseSpeed = 1.0f;
@@ -46,7 +111,7 @@ public abstract class CurrentMap {
 	public static float pulse = 75;
 	public static int pulseDir = 1;
 
-	/**colors*/
+	*//**colors*//*
 	public static ArrayList<HColor> colors = new ArrayList<>();
 	//public static float menuColor = 0f;
 	public static float colorPulse = 3f;
@@ -55,7 +120,7 @@ public abstract class CurrentMap {
 	public static float colorSwitch = 1f;
 	public static HColor walls = new HColor(1, 1, 1, 1);
 
-	/**gfx settings */
+	*//**gfx settings *//*
 	public static int layers = 6;
 	public static float depth = 1.6f;
 	public static float skew = 0f;
@@ -68,16 +133,17 @@ public abstract class CurrentMap {
 	public static float alphaFalloff = 0f;
 
 	public static Timeline<Wall> wallTimeline = new Timeline<>();
-	public static Timeline<TimelineRunnable> eventTimeline = new Timeline<>();
+	public static Timeline<TimelineRunnable> eventTimeline = new Timeline<>();*/
 
 
 	public static void reset(){
-		wallTimeline.reset();
-		eventTimeline.reset();
-		resetValues();
+		//wallTimeline.reset();
+		//eventTimeline.reset();
+		//resetValues();
+		data = new Data();
 	}
 
-	private static void resetValues(){
+	/*private static void resetValues(){
 		rotationSpeed = 0.25f;
 		rotationSpeedMax = 0.5f;
 		rotationIncrement = 0.01f;
@@ -92,19 +158,19 @@ public abstract class CurrentMap {
 		speedInc = 0f;
 		currentTime = 0f;
 		
-		/** sides */
+		*//** sides *//*
 		sides = 6;
 		minSides = 5;
 		maxSides = 7;
 		mustChangeSides = false;
 
-		/**pulse*/
+		*//**pulse*//*
 		beatPulseMin = 1.0f;
 		beatPulseMax = 1.2f;
 		beatPulseDelay = 0.5f;
 		beatPulse = 1.0f;
 
-		/**wallpulse*/
+		*//**wallpulse*//*
 		pulseMin = 70;
 		pulseMax = 90;
 		pulseSpeed = 1.0f;
@@ -113,7 +179,7 @@ public abstract class CurrentMap {
 		pulse = 75;
 		pulseDir = 1;
 
-		/**colors*/
+		*//**colors*//*
 		colors.clear();
 		colorPulse = 3f;
 		colorPulseInc = 1f;
@@ -121,7 +187,7 @@ public abstract class CurrentMap {
 		colorSwitch = 1f;
 		walls = new HColor(1, 1, 1, 1);
 		
-		/**gfx settings */
+		*//**gfx settings *//*
 		layers = 6;
 		depth = 1.6f;
 		skew = 0f;
@@ -132,7 +198,7 @@ public abstract class CurrentMap {
 		wallSkewRight = 0f;
 		alphaMultiplier = 1f;
 		alphaFalloff = 0f;
-	}
+	}*/
 	
 	
 	public static class TextInfo {
@@ -148,168 +214,169 @@ public abstract class CurrentMap {
 	public static TextInfo currentText = null;
 
 	public static void pushText(String text, float duration){
-		CurrentMap.currentText = new TextInfo(text, duration);
+		currentText = new TextInfo(text, duration);
 	}
 
 	public static void setRotationSpeed(float rotationSpeed) {
-		CurrentMap.rotationSpeed = rotationSpeed;
+		data.rotationSpeed = rotationSpeed;
 	}
 
 	public static void setRotationSpeedMax(float rotationSpeedMax) {
-		CurrentMap.rotationSpeedMax = rotationSpeedMax;
+		data.rotationSpeedMax = rotationSpeedMax;
 	}
 
 	public static void setRotationIncrement(float rotationIncrement) {
-		CurrentMap.rotationIncrement = rotationIncrement;
+		data.rotationIncrement = rotationIncrement;
 	}
 
 	public static void setFastRotate(float fastRotate) {
-		CurrentMap.fastRotate = fastRotate;
+		data.fastRotate = fastRotate;
 	}
 
 	public static void setIsFastRotation(boolean isFastRotation) {
-		CurrentMap.isFastRotation = isFastRotation;
+		data.isFastRotation = isFastRotation;
 	}
 
 	public static void setDifficulty(float difficulty) {
-		CurrentMap.difficulty = difficulty;
+		data.difficulty = difficulty;
 	}
 
 	public static void setLevelIncrement(float levelIncrement) {
-		CurrentMap.levelIncrement = levelIncrement;
+		data.levelIncrement = levelIncrement;
 	}
 
 	public static void setDelayMult(float delay) {
-		CurrentMap.delayMult = delay;
+		data.delayMult = delay;
 	}
 
 	public static void setDelayMultInc(float delayInc) {
-		CurrentMap.delayMultInc = delayInc;
+		data.delayMultInc = delayInc;
 	}
 
 	public static void setSpeed(float speed) {
-		CurrentMap.speed = speed;
+		data.speed = speed;
 	}
 
 	public static void setSpeedInc(float speedInc) {
-		CurrentMap.speedInc = speedInc;
+		data.speedInc = speedInc;
 	}
 
 	public static void setCurrentTime(float currentTime) {
-		CurrentMap.currentTime = currentTime;
+		data.currentTime = currentTime;
 	}
 
 	public static void setSides(int sides) {
-		CurrentMap.sides = sides;
+		data.sides = sides;
 	}
 
 	public static void setMinSides(int minSides) {
-		CurrentMap.minSides = minSides;
+		data.minSides = minSides;
 	}
 
 	public static void setMaxSides(int maxSides) {
-		CurrentMap.maxSides = maxSides;
+		data.maxSides = maxSides;
 	}
 
 	public static void setMustChangeSides(boolean mustChangeSides) {
-		CurrentMap.mustChangeSides = mustChangeSides;
+		data.mustChangeSides = mustChangeSides;
 	}
 
 	public static void setBeatPulseMin(float beatPulseMin) {
-		CurrentMap.beatPulseMin = beatPulseMin;
+		data.beatPulseMin = beatPulseMin;
 	}
 
 	public static void setBeatPulseMax(float beatPulseMax) {
-		CurrentMap.beatPulseMax = beatPulseMax;
+		data.beatPulseMax = beatPulseMax;
 	}
 
 	public static void setBeatPulseDelay(float beatPulseDelay) {
-		CurrentMap.beatPulseDelay = beatPulseDelay;
+		data.beatPulseDelay = beatPulseDelay;
 	}
 
 	public static void setPulseMin(float pulseMin) {
-		CurrentMap.pulseMin = pulseMin;
+		data.pulseMin = pulseMin;
 	}
 
 	public static void setPulseMax(float pulseMax) {
-		CurrentMap.pulseMax = pulseMax;
-		CurrentMap.pulse = pulseMax;
-		CurrentMap.pulseDir = 1;
+		data.pulseMax = pulseMax;
+		data.pulse = pulseMax;
+		data.pulseDir = 1;
 	}
 
 	public static void setPulseSpeed(float pulseSpeed) {
-		CurrentMap.pulseSpeed = pulseSpeed;
+		data.pulseSpeed = pulseSpeed;
 	}
 
 	public static void setPulseSpeedR(float pulseSpeedR) {
-		CurrentMap.pulseSpeedR = pulseSpeedR;
+		data.pulseSpeedR = pulseSpeedR;
 	}
 
 	public static void setPulseDelayMax(float pulseDelayMax) {
-		CurrentMap.pulseDelayMax = pulseDelayMax;
+		data.pulseDelayMax = pulseDelayMax;
+		data.pulseDelayHalfMax = pulseDelayMax / 2;
 	}
 
 	public static void setColors(ArrayList<HColor> colors) {
-		CurrentMap.colors = colors;
+		data.colors = colors;
 	}
 
 	public static void setColorPulse(float colorPulse) {
-		CurrentMap.colorPulse = colorPulse;
+		data.colorPulse = colorPulse;
 	}
 
 	public static void setColorPulseInc(float colorPulseInc) {
-		CurrentMap.colorPulseInc = colorPulseInc;
+		data.colorPulseInc = colorPulseInc;
 	}
 
 	public static void setColorOffset(int colorOffset) {
-		CurrentMap.colorOffset = colorOffset;
+		data.colorOffset = colorOffset;
 	}
 
 	public static void setColorSwitch(float colorSwitch) {
-		CurrentMap.colorSwitch = colorSwitch;
+		data.colorSwitch = colorSwitch;
 	}
 
 	public static void setWalls(HColor walls) {
-		CurrentMap.walls = walls;
+		data.walls = walls;
 	}
 
 	public static void setLayers(int layers) {
-		CurrentMap.layers = layers;
+		data.layers = layers;
 	}
 
 	public static void setDepth(float depth) {
-		CurrentMap.depth = depth;
+		data.depth = depth;
 	}
 
 	public static void setSkew(float skew) {
-		CurrentMap.skew = skew;
+		data.skew = skew;
 	}
 
 	public static void setMinSkew(float minSkew) {
-		CurrentMap.minSkew = minSkew;
+		data.minSkew = minSkew;
 	}
 
 	public static void setMaxSkew(float maxSkew) {
-		CurrentMap.maxSkew = maxSkew;
+		data.maxSkew = maxSkew;
 	}
 
 	public static void setSkewTime(float skewTime) {
-		CurrentMap.skewTime = skewTime;
+		data.skewTime = skewTime;
 	}
 
 	public static void setWallSkewLeft(float wallSkewLeft) {
-		CurrentMap.wallSkewLeft = wallSkewLeft;
+		data.wallSkewLeft = wallSkewLeft;
 	}
 
 	public static void setWallSkewRight(float wallSkewRight) {
-		CurrentMap.wallSkewRight = wallSkewRight;
+		data.wallSkewRight = wallSkewRight;
 	}
 
 	public static void setAlphaMultiplier(float alphaMultiplier) {
-		CurrentMap.alphaMultiplier = alphaMultiplier;
+		data.alphaMultiplier = alphaMultiplier;
 	}
 
 	public static void setAlphaFalloff(float alphaFalloff) {
-		CurrentMap.alphaFalloff = alphaFalloff;
+		data.alphaFalloff = alphaFalloff;
 	}
 }

@@ -23,10 +23,10 @@ public class HProgressBar extends ProgressBar {
 
 		float scale = getHeight() / 6f;
 
-		shape.setColor(CurrentMap.walls.r * 0.5f, CurrentMap.walls.g * 0.5f, CurrentMap.walls.b * 0.5f, CurrentMap.walls.a);
+		shape.setColor(CurrentMap.data.walls.r * 0.5f, CurrentMap.data.walls.g * 0.5f, CurrentMap.data.walls.b * 0.5f, CurrentMap.data.walls.a);
 		shape.rect(getX() + scale, getY(), (getWidth() - scale) * (getValue() / getMaxValue()), getHeight() - scale);
 
-		shape.setColor(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
+		shape.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 		shape.rect(getX(), getY() + scale, (getWidth() - scale) * (getValue() / getMaxValue()), getHeight() - scale);
 
 		shape.end();

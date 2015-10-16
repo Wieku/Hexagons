@@ -21,26 +21,26 @@ public class Center implements Renderer {
 	@Override
 	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
-		shadow.set(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a).lerp(Color.BLACK, 0.4f);
-		float pulseSpeed =  CurrentMap.pulseMin / CurrentMap.pulse;
-		for (float i = 0; i < CurrentMap.sides; ++i) {
+		shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
+		float pulseSpeed =  CurrentMap.data.pulseMin / CurrentMap.data.pulse;
+		for (float i = 0; i < CurrentMap.data.sides; ++i) {
 
 			if(!shadows)
-				if(CurrentMap.colors.size() > 0){
-					HColor col = CurrentMap.colors.get(CurrentMap.colorOffset);
+				if(CurrentMap.data.colors.size() > 0){
+					HColor col = CurrentMap.data.colors.get(CurrentMap.data.colorOffset);
 					renderer.setColor(col.r, col.g, col.b, col.a);
 				} else
 					renderer.setColor(Color.WHITE);
 			else
-				renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.alphaMultiplier)-shadLev*CurrentMap.alphaFalloff);
+				renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 
 
-			tmp.set(0, Main.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.sides * -360f);
-			tmp2.set(0, Main.diagonal * 0.048f * Game.scale).rotate((i + 1) / CurrentMap.sides * -360f);
+			tmp.set(0, Main.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.data.sides * -360f);
+			tmp2.set(0, Main.diagonal * 0.048f * Game.scale).rotate((i + 1) / CurrentMap.data.sides * -360f);
 
 			if(!shadows){
 				renderer.triangle(0, 0, tmp.x, tmp.y, tmp2.x, tmp2.y);
-				renderer.setColor(CurrentMap.walls.r, CurrentMap.walls.g, CurrentMap.walls.b, CurrentMap.walls.a);
+				renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 			}
 
 			renderer.circle(tmp.x, tmp.y, 3 * pulseSpeed);
