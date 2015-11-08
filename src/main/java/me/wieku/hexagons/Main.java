@@ -24,6 +24,9 @@ import me.wieku.hexagons.resources.FontManager;
 import me.wieku.hexagons.engine.Settings;
 import me.wieku.hexagons.map.Map;
 
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.JsePlatform;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 
 import java.io.File;
@@ -131,6 +134,11 @@ public class Main extends Game{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		Globals globals = JsePlatform.standardGlobals();
+		LuaValue chunk = globals.load("print 'hello, world'");
+		chunk.call();
+
 
 		config = new LwjglApplicationConfiguration();
 

@@ -3,6 +3,7 @@ package me.wieku.hexagons.api;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import me.wieku.hexagons.Main;
+import me.wieku.hexagons.engine.Game;
 import me.wieku.hexagons.engine.timeline.TimelineObject;
 
 /**
@@ -65,13 +66,12 @@ public class Wall extends TimelineObject {
 		angle1 += delta * curve.getSpeed();
 		angle2 += delta * curve.getSpeed();
 
-		angle1 = (angle1 < 0 ? angle1 + 360f : (angle1 > 360f ? angle1 - 360f : angle1));
-		angle2 = (angle2 < 0 ? angle2 + 360f : (angle2 > 360f ? angle2 - 360f : angle2));
+		float gsc = Main.diagonal * 0.048f * Game.scale;
 
-		tmp.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle1);
-		tmp2.set(0, Math.max(0, position + thickness + CurrentMap.data.wallSkewLeft) * pulseSpeed).rotate(-angle1);
-		tmp3.set(0, Math.max(0, position) * pulseSpeed).rotate(-angle2);
-		tmp4.set(0, Math.max(0, position + thickness + CurrentMap.data.wallSkewRight) * pulseSpeed).rotate(-angle2);
+		tmp.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle1);
+		tmp2.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewLeft) * pulseSpeed)).rotate(-angle1);
+		tmp3.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle2);
+		tmp4.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewRight) * pulseSpeed)).rotate(-angle2);
 	}
 
 }

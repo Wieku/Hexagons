@@ -69,7 +69,7 @@ dependencies {
 	compile 'com.badlogicgames.gdx:gdx-platform:'+gdx+':natives-desktop'
 	compile 'com.badlogicgames.gdx:gdx-freetype:'+gdx
 	compile 'com.badlogicgames.gdx:gdx-freetype-platform:'+gdx+':natives-desktop'
-
+	compile 'org.luaj:luaj-jse:3.0.1'
 }
 
 shadowJar {
