@@ -187,7 +187,7 @@ public class Animation implements AnimationBase<Animation> {
 			starts[j] = buf;
 			values[j] = buf;
 			lengths[j] = targets[j] - buf;
-
+			//System.out.println(buf+" "+targets[j]+" "+lengths[j]);
 		}
 
 
@@ -241,20 +241,20 @@ public class Animation implements AnimationBase<Animation> {
 		if (elapsed > duration)
 			elapsed = duration;
 
-
+		//System.out.println(elapsed+":"+duration);
 		float percent = elapsed / duration;
 
 		float percentStep = getEquation().compute(percent);
 
 		for (int j = 0; j < values.length; j++) {
+			//System.out.println((lengths[j] * percentStep )+ " " + ( starts[j] + lengths[j] * percentStep));
 
 			values[j] = starts[j] + lengths[j] * percentStep;
-
 		}
 
 		getAccessor().setValues(element, type, values);
 
-		if (percent == 1.0f) {
+		if (percent >= 1.0f) {
 			finished = true;
 			ended = true;
 		}

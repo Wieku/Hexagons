@@ -20,6 +20,7 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 	public static final int FADETABLE = 4;
 	public static final int TEXTCOLOR = 5;
 	public static final int SIZEC = 6;
+	public static final int SIZEY = 7;
 
 	@Override
 	public int getValues(Actor target, int tweenType, float[] returnValues) {
@@ -29,6 +30,9 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 				return 1;
 			case SIZEX:
 				returnValues[0] = target.getWidth();
+				return 1;
+			case SIZEY:
+				returnValues[0] = target.getHeight();
 				return 1;
 			case FADE:
 				returnValues[0] = target.getColor().a;
@@ -64,6 +68,12 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 				return;
 			case SIZEX:
 				target.setWidth(newValues[0]);
+				return;
+			case SIZEY:
+
+				float g = (newValues[0] - target.getHeight()) / 2;
+				target.setY(target.getY()-g);
+				target.setHeight(newValues[0]);
 				return;
 			case SLIDEY:
 				target.setY(newValues[0]);
@@ -138,6 +148,10 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 
 	public static Animation createBackTween(Actor ac, int type, float duration, float target, float delay) {
 		return createTween(ac, type, duration, target, delay, AnimationEquations.easeOutBack);
+	}
+
+	public static Animation createElasticEndTween(Actor ac, int type, float duration, float target, float delay) {
+		return createTween(ac, type, duration, target, delay, AnimationEquations.easeOutElastic);
 	}
 
 	public static Animation createTween(Actor ac, int type, float duration, float target, float delay, AnimationEquation e) {

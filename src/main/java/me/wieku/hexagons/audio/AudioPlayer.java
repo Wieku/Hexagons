@@ -73,7 +73,14 @@ public class AudioPlayer {
 	}
 	
 	public void setPosition(float milis){
-		musicPlayer.setPosition(milis);
+		new Thread(()->{
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			musicPlayer.setPosition(milis);
+		}).start();
 	}
 
 	public void play(){

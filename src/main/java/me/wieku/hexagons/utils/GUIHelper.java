@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -75,14 +76,23 @@ public class GUIHelper{
 	public static ScrollPaneStyle getScrollPaneStyle(Color bg, Color knob){
 		ScrollPaneStyle style = new ScrollPaneStyle();
 		
-		style.hScroll = getTxHRegion(bg, 10);
-		style.vScroll = getTxWRegion(bg, 10);
-		style.hScrollKnob = getTxHRegion(knob, 10);
-		style.vScrollKnob = getTxWRegion(knob, 10);
+		style.hScroll = getTxHRegion(bg, 5);
+		style.vScroll = getTxWRegion(bg, 5);
+		style.hScrollKnob = getTxHRegion(knob, 5);
+		style.vScrollKnob = getTxWRegion(knob, 5);
 		
 		return style;
 	}
-	
+
+	public static ScrollPaneStyle getScrollPaneStyle(Color knob){
+		ScrollPaneStyle style = new ScrollPaneStyle();
+
+		style.hScrollKnob = getTxHRegion(knob, 5);
+		style.vScrollKnob = getTxWRegion(knob, 5);
+
+		return style;
+	}
+
 	public static TextFieldStyle getTextFieldStyle(Color bg, Color textColor){
 		TextFieldStyle stl = new TextFieldStyle();
 		stl.background = getTxRegion(bg);
@@ -109,7 +119,12 @@ public class GUIHelper{
 		ImageButtonStyle stl = new ImageButtonStyle(d,d,d,d,d,d);
 		return stl;
 	}
-	
+
+	public static ButtonStyle getBlankButtonStyle(){
+		ButtonStyle style = new ButtonStyle();
+		return style;
+	}
+
 	public static TextButtonStyle getTextButtonStyle(Color background, Color color, int size){
 		TextButtonStyle stl = new TextButtonStyle();
 		stl.font =  FontManager.getFont(FontManager.MAIN, size);

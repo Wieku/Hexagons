@@ -68,7 +68,7 @@ public class MenuPlaylist {
 
 	public static void skipToPreview(){
 		if(current != null){
-			if(current.info.previewTime>0)
+			if(current.info.previewTime > 0)
 				setPosition(current.info.previewTime);
 		}
 	}

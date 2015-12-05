@@ -8,10 +8,12 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.wieku.hexagons.Main;
@@ -27,6 +29,7 @@ import me.wieku.hexagons.engine.menu.options.Options;
 import me.wieku.hexagons.map.Map;
 import me.wieku.hexagons.utils.GUIHelper;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -44,14 +47,17 @@ public class MapSelect implements Screen {
 	int index = -1;
 	float time = 1.5f;
 	float toChange = 0f;
-
+	Table table;
 
 	Color color = new Color(0x02EAFAFF);
 	SkewCamera camera = new SkewCamera();
 	ShapeRenderer shapeRenderer;
 	Background background = new Background();
 
-	private static int mapIndex = 0;
+	ArrayList<MenuMap> mapButtons = new ArrayList<>();
+	ScrollPane scrollPane;
+
+	public static int mapIndex = 0;
 
 	static MapSelect instance;
 
@@ -63,38 +69,45 @@ public class MapSelect implements Screen {
 
 		stage = new Stage(new ScreenViewport());
 		stage.addListener(new InputListener(){
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-				if(!maps.isEmpty()) {
-
-					if (button == Buttons.LEFT || button == Buttons.RIGHT) {
-
-						if (button == Buttons.LEFT && --mapIndex < 0) mapIndex = maps.size() - 1;
-						if (button == Buttons.RIGHT && ++mapIndex > maps.size() - 1) mapIndex = 0;
-
-						selectIndex(mapIndex);
-
-						SoundManager.playSound("beep");
-					}
-				}
-
-				return super.touchDown(event, x, y, pointer, button);
-			}
 
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 
 				if(!maps.isEmpty()){
 
-					if(keycode == Keys.LEFT || keycode == Keys.RIGHT){
+					if(keycode == Keys.UP){
 
-						if(keycode == Keys.LEFT && --mapIndex < 0) mapIndex = maps.size() - 1;
-						if (keycode == Keys.RIGHT && ++mapIndex > maps.size() - 1) mapIndex = 0;
+						mapButtons.get(mapIndex).check(false);
 
+						if(--mapIndex < 0) mapIndex = maps.size()-1;
 						selectIndex(mapIndex);
+						mapButtons.get(mapIndex).check(true);
 
-						SoundManager.playSound("beep");
+						MenuMap ms = mapButtons.get(mapIndex);
+						scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+
+						mapButtons.forEach(MenuMap::update);
+					}
+
+					if(keycode == Keys.DOWN){
+
+						mapButtons.get(mapIndex).check(false);
+						if(++mapIndex > maps.size()-1) mapIndex = 0;
+						selectIndex(mapIndex);
+						mapButtons.get(mapIndex).check(true);
+
+						MenuMap ms = mapButtons.get(mapIndex);
+						scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+
+						mapButtons.forEach(MenuMap::update);
+					}
+
+					if(keycode == Keys.DOWN || keycode == Keys.UP) {
+						try {
+							Method method = scrollPane.getClass().getDeclaredMethod("resetFade");
+							method.setAccessible(true);
+							method.invoke(scrollPane);
+						} catch (Exception e) {}
 					}
 
 					if(keycode == Keys.ENTER){
@@ -127,20 +140,37 @@ public class MapSelect implements Screen {
 		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
 
 		info.setPosition(5, 5);
-		stage.addActor(info);
+		//stage.addActor(info);
 
 		logo = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
 		logo.add(new Label(Main.version, GUIHelper.getLabelStyle(Color.WHITE, 12))).pad(5).padTop(0).right();
 		logo.pack();
-		stage.addActor(logo);
+		//stage.addActor(logo);
 
 		credits = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		credits.add(creditLabel = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).pad(5).padBottom(10);
 		credits.pack();
 
-		stage.addActor(credits);
+		//stage.addActor(credits);
+		
+		table = new Table();
 
+		for(Map map : maps){
+			MenuMap mp = new MenuMap(map);
+			mapButtons.add(mp);
+			table.add(mp).left().top().fillX().pad(1).row();
+		}
+
+		scrollPane = new ScrollPane(table, GUIHelper.getScrollPaneStyle(Color.WHITE));
+		scrollPane.setupFadeScrollBars(1f, 1f);
+		scrollPane.setSmoothScrolling(true);
+		scrollPane.setVelocityY(0.1f);
+		scrollPane.setScrollingDisabled(true, false);
+		((Table) scrollPane.getChildren().get(0)).center().left();
+		scrollPane.setCancelTouchFocus(true);
+		stage.addActor(scrollPane);
+		
 		if(Settings.instance.fullscreen == true)
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
@@ -189,7 +219,7 @@ public class MapSelect implements Screen {
 		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 		shapeRenderer.identity();
 
-		if((toChange -= delta) <= 0){
+		/*if((toChange -= delta) <= 0){
 
 			++index;
 
@@ -202,8 +232,9 @@ public class MapSelect implements Screen {
 
 			credits.setPosition(Gdx.graphics.getWidth() - 5 - credits.getWidth(), Gdx.graphics.getHeight() - 10 - logo.getHeight() - credits.getHeight());
 			toChange = time;
-		}
-
+		}*/
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
+		scrollPane.layout();
 		stage.act(delta);
 		stage.draw();
 	}
@@ -222,6 +253,9 @@ public class MapSelect implements Screen {
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 0, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight());
+		scrollPane.layout();
+		mapButtons.forEach(e->{e.setX(0);e.update();});
 		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
 	}
 
@@ -238,7 +272,15 @@ public class MapSelect implements Screen {
 			game = null;
 		}
 		MenuPlaylist.setLooping(true);
+		if(!mapButtons.isEmpty()){
+			for(int i=0; i<mapButtons.size();i++)mapButtons.get(i).check(i==mapIndex);
+		}
+		mapButtons.forEach(MenuMap::update);
 
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
+		scrollPane.layout();
+		MenuMap ms = mapButtons.get(mapIndex);
+		scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2+ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
 		Gdx.input.setInputProcessor(stage);
 	}
 
