@@ -1,0 +1,331 @@
+package xyz.hexagons.client.engine.menu;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import xyz.hexagons.client.Main;
+import xyz.hexagons.client.api.CurrentMap;
+import xyz.hexagons.client.audio.MenuPlaylist;
+import xyz.hexagons.client.audio.SoundManager;
+import xyz.hexagons.client.engine.render.Background;
+import xyz.hexagons.client.engine.Game;
+import xyz.hexagons.client.engine.Settings;
+import xyz.hexagons.client.engine.camera.SkewCamera;
+import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.utils.GUIHelper;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+/**
+ * @author Sebastian Krajewski on 04.04.15.
+ */
+public class MapSelect implements Screen {
+
+	ArrayList<Map> maps;
+	Stage stage;
+
+	Table logo, info, credits;
+	Label number, name, description, author, music, creditLabel;
+	Game game;
+	String[] creditArray = {"Programmed by:", "Sebastian Krajewski", "Lukasz Magiera", "Original ideas by:", "Vittorio Romeo", "Terry Cavanagh"/*, "Music by:", "BOSSFIGHT", "Chipzel"*/};
+	int index = -1;
+	float time = 1.5f;
+	float toChange = 0f;
+	Table table;
+
+	Color color = new Color(0x02EAFAFF);
+	SkewCamera camera = new SkewCamera();
+	ShapeRenderer shapeRenderer;
+	Background background = new Background();
+
+	ArrayList<MenuMap> mapButtons = new ArrayList<>();
+	ScrollPane scrollPane;
+
+	public static int mapIndex = 0;
+
+	static MapSelect instance;
+
+	public MapSelect(ArrayList<Map> maps){
+		this.maps = maps;
+
+		instance = this;
+		shapeRenderer = new ShapeRenderer();
+
+		stage = new Stage(new ScreenViewport());
+		stage.addListener(new InputListener(){
+
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+
+				if(!maps.isEmpty()){
+
+					if(keycode == Keys.UP){
+
+						mapButtons.get(mapIndex).check(false);
+
+						if(--mapIndex < 0) mapIndex = maps.size()-1;
+						selectIndex(mapIndex);
+						mapButtons.get(mapIndex).check(true);
+
+						MenuMap ms = mapButtons.get(mapIndex);
+						scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+
+						mapButtons.forEach(MenuMap::update);
+					}
+
+					if(keycode == Keys.DOWN){
+
+						mapButtons.get(mapIndex).check(false);
+						if(++mapIndex > maps.size()-1) mapIndex = 0;
+						selectIndex(mapIndex);
+						mapButtons.get(mapIndex).check(true);
+
+						MenuMap ms = mapButtons.get(mapIndex);
+						scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+
+						mapButtons.forEach(MenuMap::update);
+					}
+
+					if(keycode == Keys.DOWN || keycode == Keys.UP) {
+						try {
+							Method method = scrollPane.getClass().getDeclaredMethod("resetFade");
+							method.setAccessible(true);
+							method.invoke(scrollPane);
+						} catch (Exception e) {}
+					}
+
+					if(keycode == Keys.ENTER){
+						SoundManager.playSound("beep");
+						Gdx.input.setInputProcessor(null);
+						//audioPlayer.pause();
+						MenuPlaylist.pause();
+						Main.getInstance().setScreen(game = new Game(maps.get(mapIndex)));
+					}
+
+				}
+
+
+
+				if(keycode == Keys.ESCAPE){
+					SoundManager.playSound("beep");
+					Main.getInstance().setScreen(MainMenu.instance);
+				}
+
+				return false;
+			}
+		});
+
+
+		info = new Table();
+		info.add(number = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 12))).left().row();
+		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 18))).left().row();
+		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 16))).left().row();
+		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
+		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
+
+		info.setPosition(5, 5);
+		//stage.addActor(info);
+
+		logo = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
+		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
+		logo.add(new Label(Main.version, GUIHelper.getLabelStyle(Color.WHITE, 12))).pad(5).padTop(0).right();
+		logo.pack();
+		//stage.addActor(logo);
+
+		credits = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
+		credits.add(creditLabel = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).pad(5).padBottom(10);
+		credits.pack();
+
+		//stage.addActor(credits);
+		
+		table = new Table();
+
+		for(Map map : maps){
+			MenuMap mp = new MenuMap(map);
+			mapButtons.add(mp);
+			table.add(mp).left().top().fillX().pad(1).row();
+		}
+
+		scrollPane = new ScrollPane(table, GUIHelper.getScrollPaneStyle(Color.WHITE));
+		scrollPane.setupFadeScrollBars(1f, 1f);
+		scrollPane.setSmoothScrolling(true);
+		scrollPane.setVelocityY(0.1f);
+		scrollPane.setScrollingDisabled(true, false);
+		((Table) scrollPane.getChildren().get(0)).center().left();
+		scrollPane.setCancelTouchFocus(true);
+		stage.addActor(scrollPane);
+		
+		if(Settings.instance.fullscreen == true)
+			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+	}
+
+	float delta0 = 0;
+
+	Color tmpC = new Color();
+	float[] tbuf = new float[60];
+	@Override
+	public void render(float delta) {
+
+		Gdx.gl20.glClearColor(0, 0, 0, 1);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+
+		updateSkew(delta);
+		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
+		camera.update(delta);
+
+		if((delta0 += delta)>=1f/60){
+			background.update(delta0);
+			CurrentMap.data.walls.update(delta0);
+
+			MenuPlaylist.update(delta0);
+
+			CurrentMap.setMinSkew(0.9999f);
+			CurrentMap.setMaxSkew(1);
+			CurrentMap.setSkewTime(1);
+			tmpC.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+
+			number.getStyle().fontColor = tmpC;
+			name.getStyle().fontColor = tmpC;
+			description.getStyle().fontColor = tmpC;
+			author.getStyle().fontColor = tmpC;
+			music.getStyle().fontColor = tmpC;
+
+			delta0 = 0;
+		}
+
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.identity();
+		shapeRenderer.rotate(1, 0, 0, 90);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		background.render(shapeRenderer, delta, true, 0);
+		shapeRenderer.end();
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.identity();
+
+		/*if((toChange -= delta) <= 0){
+
+			++index;
+
+			if(index == creditArray.length) index = 0;
+
+			creditLabel.setText(creditArray[index]);
+			credits.pack();
+
+			credits.setWidth(Math.max(credits.getWidth(), logo.getWidth()));
+
+			credits.setPosition(Gdx.graphics.getWidth() - 5 - credits.getWidth(), Gdx.graphics.getHeight() - 10 - logo.getHeight() - credits.getHeight());
+			toChange = time;
+		}*/
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
+		scrollPane.layout();
+		stage.act(delta);
+		stage.draw();
+	}
+
+	int inc;
+	float delta2;
+	public void updateSkew(float delta) {
+		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.data.skewTime ? -1 : inc));
+		delta2 += delta * inc;
+		delta2 = Math.min(CurrentMap.data.skewTime, Math.max(delta2, 0));
+		float percent = delta2 / CurrentMap.data.skewTime;
+		CurrentMap.data.skew = CurrentMap.data.minSkew + (CurrentMap.data.maxSkew - CurrentMap.data.minSkew) * percent;
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
+		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 0, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight());
+		scrollPane.layout();
+		mapButtons.forEach(e->{e.setX(0);e.update();});
+		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
+	}
+
+	@Override
+	public void show() {
+
+		Main.config.foregroundFPS = 120;
+
+		selectIndex(mapIndex=Main.getInstance().maps.indexOf(MenuPlaylist.getCurrent()));
+
+		if(game != null){
+			MenuPlaylist.play();
+			MenuPlaylist.setPosition(game.exitPosition);
+			game = null;
+		}
+		MenuPlaylist.setLooping(true);
+		if(!mapButtons.isEmpty()){
+			for(int i=0; i<mapButtons.size();i++)mapButtons.get(i).check(i==mapIndex);
+		}
+		mapButtons.forEach(MenuMap::update);
+
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
+		scrollPane.layout();
+		MenuMap ms = mapButtons.get(mapIndex);
+		scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2+ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+		Gdx.input.setInputProcessor(stage);
+	}
+
+
+	public void selectIndex(int index){
+		if(maps.isEmpty()){
+			number.setText("");
+			name.setText("");
+			description.setText("");
+			author.setText("");
+			music.setText("No maps available!");
+			info.pack();
+			info.setPosition(5, 5);
+		} else {
+			Map map = maps.get(index);
+			CurrentMap.reset();
+			maps.get(mapIndex).script.initColors();
+			maps.get(mapIndex).script.onInit();
+			camera.reset();
+			if(MenuPlaylist.getCurrent() == null || !MenuPlaylist.getCurrent().equals(map)){
+				MenuPlaylist.replaceCurrent(map);
+				MenuPlaylist.skipToPreview();
+				MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume) / 10000f);
+			}
+
+			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
+			name.setText(map.info.name);
+			description.setText(map.info.description);
+			author.setText("Author: " + map.info.author);
+			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
+			info.pack();
+			info.setPosition(5, 5);
+		}
+
+	}
+
+	public static MapSelect getInstance() {
+		return instance;
+	}
+
+	@Override
+	public void pause() {}
+
+	@Override
+	public void resume() {}
+
+	@Override
+	public void hide() {}
+
+	@Override
+	public void dispose() {}
+
+}

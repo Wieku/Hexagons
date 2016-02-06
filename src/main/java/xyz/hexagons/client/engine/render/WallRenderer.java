@@ -1,0 +1,40 @@
+package xyz.hexagons.client.engine.render;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import xyz.hexagons.client.api.CurrentMap;
+import xyz.hexagons.client.api.Wall;
+
+/**
+ * @author Sebastian Krajewski on 21.03.15.
+ */
+public class WallRenderer implements Renderer {
+	Color shadow = new Color();
+
+	@Override
+	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev){
+
+		if(!shadows)
+			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+		else{
+			shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
+			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+		}
+
+		for(Wall wall : CurrentMap.data.wallTimeline.getObjects()){
+			if(!wall.visible) continue;
+			renderer.triangle(wall.tmp.x, wall.tmp.y, wall.tmp2.x, wall.tmp2.y, wall.tmp4.x, wall.tmp4.y);
+			renderer.triangle(wall.tmp4.x, wall.tmp4.y, wall.tmp3.x, wall.tmp3.y, wall.tmp.x, wall.tmp.y);
+		}
+
+	}
+
+	@Override
+	public void update(float delta){}
+
+	@Override
+	public int getIndex(){
+		return 1;
+	}
+
+}
