@@ -45,7 +45,7 @@ public class OptionMenu extends Section{
 		Action exit = new Action("Exit") {
 			@Override
 			public void action() {
-				Main.getInstance().setScreen(MainMenu.instance);
+				MainMenu.instance.optionsShowed = false;
 			}
 		};
 

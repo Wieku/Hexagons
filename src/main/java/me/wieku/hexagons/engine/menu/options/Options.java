@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -29,7 +31,7 @@ public class Options implements Screen {
 	Label name;
 	Label message;
 	Image image;
-
+	ShapeRenderer rend;
 	static Table currentSection;
 
 	static Options instance;
@@ -45,7 +47,8 @@ public class Options implements Screen {
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.ESCAPE && currentSection.equals(OptionMenu.instance)) {
 					SoundManager.playSound("beep");
-					Main.getInstance().setScreen(MainMenu.instance);
+					//Main.getInstance().setScreen(MainMenu.instance);
+					MainMenu.instance.optionsShowed = false;
 				}
 				return super.keyDown(event, keycode);
 			}
@@ -63,6 +66,8 @@ public class Options implements Screen {
 		image.setHeight(2);
 
 		stage.addActor(image);
+
+		rend = new ShapeRenderer();
 
 		setMenu(currentSection != null ? currentSection : OptionMenu.instance);
 
@@ -97,13 +102,19 @@ public class Options implements Screen {
 			}
 		}
 
-		Gdx.gl20.glClearColor(0, 0, 0, 1);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+		//Gdx.gl20.glClearColor(0, 0, 0, 0.5f);
+		//Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		currentSection.setBounds(5, 0, Math.min(Gdx.graphics.getWidth(), 512), (float) Gdx.graphics.getHeight() * 2.25f / 3 - 5);
 		currentSection.layout();
 
 		message.setPosition(Gdx.graphics.getWidth() - 5 - message.getWidth(), 5);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		rend.begin(ShapeType.Filled);
+		rend.setColor(0, 0, 0, 0.7f);
+		rend.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		rend.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		stage.act(delta);
 		stage.draw();
 	}

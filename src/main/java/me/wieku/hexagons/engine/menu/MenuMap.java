@@ -77,7 +77,7 @@ public class MenuMap extends Button {
 
 		float g = 30*Math.abs(MapSelect.mapIndex-MapSelect.instance.mapButtons.indexOf(this));
 
-		animation = new Timeline().beginParallel().push(ActorAccessor.createSineTween(this, ActorAccessor.SLIDEX, 0.5f, g, 0))
+		animation = new Timeline().beginParallel().push(ActorAccessor.createQuadTween(this, ActorAccessor.SLIDEX, 0.5f, g, 0))
 				.push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEY, 0.2f, origHeight, 0)).end();
 
 		animation.start(Main.getInstance().getAnimationManager());

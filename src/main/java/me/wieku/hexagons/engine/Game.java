@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,6 +18,7 @@ import me.wieku.hexagons.engine.camera.SkewCamera;
 import me.wieku.hexagons.engine.menu.MapSelect;
 import me.wieku.hexagons.engine.render.Background;
 import me.wieku.hexagons.engine.render.Center;
+import me.wieku.hexagons.engine.render.ObjRender;
 import me.wieku.hexagons.engine.render.Renderer;
 import me.wieku.hexagons.engine.render.WallRenderer;
 import me.wieku.hexagons.engine.ui.HProgressBar;
@@ -39,7 +39,7 @@ public class Game implements Screen {
 
 	public float exitPosition;
 
-	ShapeRenderer renderer;
+	ObjRender renderer;
 	SkewCamera camera = new SkewCamera();
 	Stage stage;
 
@@ -70,7 +70,7 @@ public class Game implements Screen {
 	public Game (Map map){
 		this.map = map;
 
-		renderer = new ShapeRenderer();
+		renderer = new ObjRender();
 
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(width, height, true);
@@ -133,29 +133,20 @@ public class Game implements Screen {
 
 		renderer.setProjectionMatrix(camera.combined);
 		renderer.identity();
-		renderer.translate(0, 0, 0);
-		renderer.rotate(1, 0, 0, 90);
-		renderer.begin(ShapeRenderer.ShapeType.Filled);
+		renderer.setHeight(0);
+		renderer.begin(ObjRender.ShapeType.Filled);
 		background.render(renderer, delta, true, 0);
-		renderer.end();
+
 
 		for(int j = 1; j <= CurrentMap.data.layers; ++j){
-			renderer.identity();
-			renderer.translate(0, -j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew), 0);
-
-			renderer.rotate(1, 0, 0, 90);
-			renderer.begin(ShapeRenderer.ShapeType.Filled);
+			renderer.setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew));
 			for(Renderer render : renderers){
 				render.render(renderer, delta, true, j-1);
 			}
-			renderer.end();
 		}
 
-		renderer.identity();
-		renderer.translate(0, 0, 0);
-		renderer.rotate(1, 0, 0, 90);
+		renderer.setHeight(0);
 
-		renderer.begin(ShapeRenderer.ShapeType.Filled);
 		for(Renderer render : renderers){
 			render.render(renderer, delta, false, 0);
 		}

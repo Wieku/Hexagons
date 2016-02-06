@@ -56,6 +56,7 @@ public class MainMenu implements Screen {
 	ProgressBar bar;
 	boolean escclick = false;
 
+	public boolean optionsShowed;
 	Options options;
 
 	public MainMenu(){
@@ -98,8 +99,10 @@ public class MainMenu implements Screen {
 						Main.getInstance().setScreen(new MapSelect(Main.getInstance().maps));
 					}
 
-					if(currentIndex == 1){
-						Main.getInstance().setScreen(options);
+					if(currentIndex == 1) {
+						optionsShowed = true;
+						options.show();
+						/*Main.getInstance().setScreen(options);*/
 					}
 
 					if(currentIndex == 2){
@@ -267,6 +270,11 @@ public class MainMenu implements Screen {
 
 		stage.act(delta);
 		stage.draw();
+
+		if(optionsShowed)
+			options.render(delta);
+		else
+			if(!Gdx.input.getInputProcessor().equals(stage)) Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -288,6 +296,10 @@ public class MainMenu implements Screen {
 		button3.setBounds(stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
 		blurEffect.resize(width, height);
 		music.setPosition(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
+
+		if(optionsShowed)
+			options.resize(width, height);
+
 	}
 
 	private void selectIndex(int index){

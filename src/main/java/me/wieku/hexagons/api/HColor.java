@@ -1,5 +1,8 @@
 package me.wieku.hexagons.api;
 
+import me.wieku.hexagons.map.Hue;
+import me.wieku.hexagons.utils.Utils;
+
 /**
  * @author Sebastian Krajewski on 21.03.15.
  */
@@ -7,7 +10,10 @@ public class HColor {
 
 	float fr, fg, fb, fa;
 	float pr, pg, pb, pa;
-	float hue, hueMin, hueMax, hueInc, hueShift;
+	float hueShift;
+
+	Hue hue;
+
 	float offset = 1f, darkness = 1f;
 	boolean pingPong, dynamic, dynamicDarknes, main = false;
 	boolean pulse = false;
@@ -31,22 +37,19 @@ public class HColor {
 		return this;
 	}
 
-	public HColor addHue(float hueMin, float hueMax, float hueInc, boolean pingPong) {
-		this.hueMin = hueMin;
-		this.hueMax = hueMax;
-		this.hueInc = hueInc;
+	public HColor addHue(Hue hue) {
 		dynamic = true;
-		this.pingPong = pingPong;
+		this.hue = hue;
 		return this;
 	}
 
 	public HColor setHueInc(float inc){
-		hueInc = inc;
+		hue.hueInc = inc;
 		return this;
 	}
 
 	public float getHueInc(){
-		return hueInc;
+		return hue.hueInc;
 	}
 
 	public HColor addHueOffset(float offset){
@@ -94,20 +97,9 @@ public class HColor {
 
 		if(dynamic){
 
-			hue += hueInc * delta * 60f * Math.pow(CurrentMap.data.difficulty, 0.8);
+			if(!hue.shared) hue.update(delta);
 
-			if(hue < hueMin)
-			{
-				if(pingPong) { hue = hueMin; hueInc *= -1.f; }
-				else hue = hueMax;
-			}
-			if(hue > hueMax)
-			{
-				if(pingPong) { hue = hueMax; hueInc *= -1.f; }
-				else hue = hueMin;
-			}
-
-			float[] rgb = getFromHSV((hue + hueShift) / 360f, 1f, 1f);
+			float[] rgb = Utils.getFromHSV((hue.hue + hueShift) / 360f, 1f, 1f);
 
 			if(dynamicDarknes || main) {
 				gr = rgb[0] / darkness;
@@ -131,50 +123,6 @@ public class HColor {
 		return value < min ? min : value > max ? max : value;
 	}
 
-	public static float[] getFromHSV(float hue, float saturation, float brightness) {
-		int r = 0, g = 0, b = 0;
-		if (saturation == 0) {
-			r = g = b = (int)(brightness * 255.0f + 0.5f);
-		} else {
-			float h = (hue - (float)Math.floor(hue)) * 6.0f;
-			float f = h - (float)Math.floor(h);
-			float p = brightness * (1.0f - saturation);
-			float q = brightness * (1.0f - saturation * f);
-			float t = brightness * (1.0f - (saturation * (1.0f - f)));
-			switch ((int)h) {
-				case 0:
-					r = (int)(brightness * 255.0f + 0.5f);
-					g = (int)(t * 255.0f + 0.5f);
-					b = (int)(p * 255.0f + 0.5f);
-					break;
-				case 1:
-					r = (int)(q * 255.0f + 0.5f);
-					g = (int)(brightness * 255.0f + 0.5f);
-					b = (int)(p * 255.0f + 0.5f);
-					break;
-				case 2:
-					r = (int)(p * 255.0f + 0.5f);
-					g = (int)(brightness * 255.0f + 0.5f);
-					b = (int)(t * 255.0f + 0.5f);
-					break;
-				case 3:
-					r = (int)(p * 255.0f + 0.5f);
-					g = (int)(q * 255.0f + 0.5f);
-					b = (int)(brightness * 255.0f + 0.5f);
-					break;
-				case 4:
-					r = (int)(t * 255.0f + 0.5f);
-					g = (int)(p * 255.0f + 0.5f);
-					b = (int)(brightness * 255.0f + 0.5f);
-					break;
-				case 5:
-					r = (int)(brightness * 255.0f + 0.5f);
-					g = (int)(p * 255.0f + 0.5f);
-					b = (int)(q * 255.0f + 0.5f);
-					break;
-			}
-		}
-		return new float[]{r/255f, g/255f, b/255f};
-	}
+
 
 }
