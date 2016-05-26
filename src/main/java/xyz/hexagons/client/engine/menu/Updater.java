@@ -156,7 +156,7 @@ public class Updater implements Screen {
 
 		String newPath = Utils.getGameFile()+".download";
 
-		Utils.downloadFileWithProgressBar("https://upd.hexagons.wieku.me/"+json.getString(version+".file"), newPath, bar);
+		Utils.downloadFileWithProgressBar("https://upd.hexagons.xyz/"+json.getString(version+".file"), newPath, bar);
 
 		String sha1 = Files.hash(new File(newPath), Hashing.sha1()).toString();
 

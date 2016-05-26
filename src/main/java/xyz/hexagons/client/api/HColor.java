@@ -67,7 +67,7 @@ public class HColor {
 		return this;
 	}
 
-	public HColor addDynamicDarkness(float darkness){
+	public HColor addDynamicDarkness(float darkness) {
 		this.darkness = darkness;
 		dynamicDarknes = true;
 		return this;
@@ -75,7 +75,7 @@ public class HColor {
 
 	float delta0;
 	float percent;
-	public void update (float delta){
+	public void update (float delta) {
 
 		float gr = fr, gg = fg, gb = fb;
 
@@ -95,7 +95,7 @@ public class HColor {
 			percent = delta0 / CurrentMap.data.colorPulse;
 		}
 
-		if(dynamic){
+		if(dynamic) {
 
 			if(!hue.shared) hue.update(delta);
 
@@ -117,6 +117,51 @@ public class HColor {
 		b = clamp(gb + percent * pb, 0f, 1f);
 		a = clamp(fa + percent * pa, 0, 1f);
 
+	}
+
+	public float update (float delta, int increment, float pulseMax) {
+
+		float gr = fr, gg = fg, gb = fb;
+
+		if(pulse){
+
+			delta0 += delta * increment;
+
+			if(delta0 < 0){
+				delta0 = 0;
+				increment *= -1f;
+			}
+			if(delta0 > pulseMax){
+				delta0 = pulseMax;
+				increment *= -1f;
+			}
+
+			percent = delta0 / pulseMax;
+		}
+
+		if(dynamic) {
+
+			if(!hue.shared) hue.update(delta);
+
+			float[] rgb = Utils.getFromHSV((hue.hue + hueShift) / 360f, 1f, 1f);
+
+			if(dynamicDarknes || main) {
+				gr = rgb[0] / darkness;
+				gg = rgb[1] / darkness;
+				gb = rgb[2] / darkness;
+			} else {
+				gr += rgb[0] / offset;
+				gg += rgb[1] / offset;
+				gb += rgb[2] / offset;
+			}
+		}
+
+		r = clamp(gr + percent * pr, 0f, 1f);
+		g = clamp(gg + percent * pg, 0f, 1f);
+		b = clamp(gb + percent * pb, 0f, 1f);
+		a = clamp(fa + percent * pa, 0, 1f);
+
+		return increment;
 	}
 
 	static float clamp(float value, float min, float max){

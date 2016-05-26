@@ -1,3 +1,4 @@
+/*
 package xyz.hexagons.client.engine.menu.options;
 
 import com.badlogic.gdx.Input.Keys;
@@ -9,9 +10,11 @@ import xyz.hexagons.client.engine.menu.buttons.Element;
 
 import java.util.ArrayList;
 
+*/
 /**
  * @author Sebastian Krajewski on 08.04.15.
- */
+ *//*
+
 public class Section extends Table {
 
 	ArrayList<Element> elements = new ArrayList<>();
@@ -66,3 +69,4 @@ public class Section extends Table {
 	}
 
 }
+*/

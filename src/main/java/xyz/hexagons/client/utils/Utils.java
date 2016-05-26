@@ -138,6 +138,12 @@ public class Utils {
 		}
 	}
 
+	static public void shortToFloat (short[] src, int offsetSrc, float[] dst, int offsetDst, int numBytes) {
+		float scale = 1.0f / Short.MAX_VALUE;
+		for (int i = offsetSrc, ii = offsetDst; i < numBytes; i++, ii++)
+			dst[ii] = src[i] * scale;
+	}
+
 	public static float[] getFromHSV(float hue, float saturation, float brightness) {
 		int r = 0, g = 0, b = 0;
 		if (saturation == 0) {

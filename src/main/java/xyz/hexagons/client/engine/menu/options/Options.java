@@ -1,3 +1,4 @@
+/*
 package xyz.hexagons.client.engine.menu.options;
 
 import com.badlogic.gdx.Gdx;
@@ -20,9 +21,11 @@ import xyz.hexagons.client.engine.menu.MainMenu;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.utils.GUIHelper;
 
+*/
 /**
  * @author Sebastian Krajewski on 07.04.15.
- */
+ *//*
+
 public class Options implements Screen {
 
 	Stage stage;
@@ -76,9 +79,9 @@ public class Options implements Screen {
 		Gdx.input.setInputProcessor(stage);
 		//name.setBounds((Gdx.graphics.getWidth()-name.getWidth())/2, (float) Gdx.graphics.getHeight() * 2.25f / 3, Gdx.graphics.getWidth() - 5, (float) Gdx.graphics.getHeight() * 0.75f / 3);
 		name.setHeight((float) Gdx.graphics.getHeight() * 0.75f / 3);
-		name.setPosition((Gdx.graphics.getWidth() - name.getWidth()) / 2, (float) Gdx.graphics.getHeight() * 2.25f / 3);
+		name.setPosition((Math.min(Gdx.graphics.getWidth(), 512) - name.getWidth()) / 2, (float) Gdx.graphics.getHeight() * 2.25f / 3);
 
-		image.setBounds(0, ((float) Gdx.graphics.getHeight() * 2.25f / 3) - image.getHeight(), Gdx.graphics.getWidth(), 2);
+		image.setBounds(0, ((float) Gdx.graphics.getHeight() * 2.25f / 3) - image.getHeight(), Math.min(Gdx.graphics.getWidth(), 512), 2);
 	}
 
 	float delta1;
@@ -100,9 +103,6 @@ public class Options implements Screen {
 			}
 		}
 
-		//Gdx.gl20.glClearColor(0, 0, 0, 0.5f);
-		//Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-
 		currentSection.setBounds(5, 0, Math.min(Gdx.graphics.getWidth(), 512), (float) Gdx.graphics.getHeight() * 2.25f / 3 - 5);
 		currentSection.layout();
 
@@ -110,7 +110,7 @@ public class Options implements Screen {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		rend.begin(ShapeType.Filled);
 		rend.setColor(0, 0, 0, 0.7f);
-		rend.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		rend.rect(0, 0, Math.min(Gdx.graphics.getWidth(), 512), Gdx.graphics.getHeight());
 		rend.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 		stage.act(delta);
@@ -152,3 +152,4 @@ public class Options implements Screen {
 	@Override
 	public void dispose() {}
 }
+*/

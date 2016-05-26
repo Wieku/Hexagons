@@ -14,40 +14,24 @@ import xyz.hexagons.client.utils.GUIHelper;
 /**
  * @author Sebastian Krajewski on 07.04.15.
  */
-public abstract class State extends Table implements Element<Boolean> {
+public class State extends Element<Boolean> {
 
-	Label nameLabel;
 	Label valueLabel;
 	String name;
 	boolean value;
 	String select = "";
 
-	public State(String name, boolean def){
-		super();
+	public State(String section, String sectionI18n, String name, String nameI18n, boolean def){
+		super(section, sectionI18n, name, nameI18n);
 
-		nameLabel = new Label(name, GUIHelper.getLabelStyle(Color.WHITE, 12));
-
-		this.name = name;
 		value = loadValue();
-		//if(value < min || value > max) value = def;
 
-		valueLabel = new Label((value?"ON":"OFF"), GUIHelper.getLabelStyle(Color.WHITE, 12));
+		valueLabel = new Label((value?"ON":"OFF"), GUIHelper.getLabelStyle(Color.WHITE, 10));
 
-		add(nameLabel).left().padLeft(2).expandX();
 		add(valueLabel).right().padRight(2);
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		setWidth(Math.min(Gdx.graphics.getWidth(), 512));
-		layout();
-		super.draw(batch, parentAlpha);
-	}
-
 	public void action(){}
-
-	public abstract void writeValue(Boolean value);
-	public abstract Boolean loadValue();
 
 	public void onEvent(InputEvent e){
 		if(e.getType() == Type.keyDown){

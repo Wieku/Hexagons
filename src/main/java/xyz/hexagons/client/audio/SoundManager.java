@@ -21,7 +21,7 @@ public class SoundManager {
 
 	public static long playSound(String name){
 		Sound sound = sounds.get(name);
-		long id = sound.play((float) Settings.instance.masterVolume * (float) Settings.instance.effectVolume / 10000f);
+		long id = sound.play((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.effectVolume / 10000f);
 		return id;
 	}
 

@@ -18,16 +18,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import xyz.hexagons.client.Main;
-import xyz.hexagons.client.animation.timeline.Timeline;
+import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.ActorAccessor;
 import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.engine.menu.buttons.MenuButton;
-import xyz.hexagons.client.engine.menu.options.Options;
-import xyz.hexagons.client.engine.render.Background;
+//import xyz.hexagons.client.engine.menu.options.Options;
+import xyz.hexagons.client.engine.menu.options.ConfigEngine;
+import xyz.hexagons.client.engine.menu.options.SettingsTab;
 import xyz.hexagons.client.engine.render.BlurEffect;
+import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -48,16 +50,18 @@ public class MainMenu implements Screen {
 	BlurEffect blurEffect;
 	SkewCamera camera = new SkewCamera();
 	ShapeRenderer shapeRenderer;
-	Background background = new Background();
-
-
+	MapRenderer mapRenderer = new MapRenderer();
 	Table music;
 	Label title;
 	ProgressBar bar;
 	boolean escclick = false;
 
 	public boolean optionsShowed;
-	Options options;
+	//Options options;
+
+	SettingsTab sTab;
+
+	public MapSelect sl;
 
 	public MainMenu(){
 		stage = new Stage(new ScreenViewport());
@@ -69,7 +73,9 @@ public class MainMenu implements Screen {
 
 		shapeRenderer = new ShapeRenderer();
 
-		options = new Options();
+		//options = new Options();
+		ConfigEngine.register();
+		sTab = SettingsTab.getInstance();
 
 		stage.addListener(new InputListener() {
 			@Override
@@ -96,12 +102,16 @@ public class MainMenu implements Screen {
 
 				if(keycode == Keys.ENTER){
 					if(currentIndex == 0){
-						Main.getInstance().setScreen(new MapSelect(Main.getInstance().maps));
+						Main.getInstance().setScreen((sl!=null ? sl : (sl=new MapSelect(Main.getInstance().maps))));
 					}
 
 					if(currentIndex == 1) {
 						optionsShowed = true;
-						options.show();
+
+						if(sTab.isShowed())
+							sTab.hide();
+						else
+							sTab.show();
 						/*Main.getInstance().setScreen(options);*/
 					}
 
@@ -126,12 +136,12 @@ public class MainMenu implements Screen {
 			}
 		});
 
-		version = new Label("Version: "+Main.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
+		version = new Label("Version: " + Main.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
 		version.pack();
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
 		stage.addActor(version);
 
-		copyright = new Label("Hexagons! 2015 Created by: Magik6k and Wieku",GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
+		copyright = new Label("Hexagons! 2016 Created by: Magik6k and Wieku", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
 		copyright.pack();
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		stage.addActor(copyright);
@@ -162,13 +172,13 @@ public class MainMenu implements Screen {
 		list.add(button2 = new MenuButton("Options"));
 		list.add(button3 = new MenuButton("Exit"));
 
-		button.setBounds(stage.getWidth() - 309, 252, 512, 100);
+		button.setBounds(stage.getWidth() - 313, 252, 512, 100);
 		button2.setBounds(stage.getWidth() - 379,142,512,100);
-		button3.setBounds(stage.getWidth() - 449, 32, 512, 100);
+		button3.setBounds(stage.getWidth() - 445, 32, 512, 100);
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
-
+		stage.addActor(sTab);
 		selectIndex(0);
 
 		CurrentMap.reset();
@@ -213,7 +223,6 @@ public class MainMenu implements Screen {
 		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
 		camera.update(delta);
 		if((delta0 += delta)>=1f/60) {
-			background.update(delta0);
 			CurrentMap.data.walls.update(delta0);
 			CurrentMap.data.skew = 1f;
 			CurrentMap.setMinSkew(0.9999f);
@@ -261,7 +270,7 @@ public class MainMenu implements Screen {
 		shapeRenderer.rotate(1, 0, 0, 90);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-		background.render(shapeRenderer, delta, true, 0);
+		mapRenderer.renderBackground(shapeRenderer, delta, true, 0);
 		shapeRenderer.end();
 
 		blurEffect.unbind();
@@ -271,10 +280,10 @@ public class MainMenu implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		if(optionsShowed)
-			options.render(delta);
-		else
-			if(!Gdx.input.getInputProcessor().equals(stage)) Gdx.input.setInputProcessor(stage);
+		//if(optionsShowed)
+			//options.render(delta);
+		//else
+		//	if(!Gdx.input.getInputProcessor().equals(stage)) Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -286,50 +295,45 @@ public class MainMenu implements Screen {
 		beatIHigh.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
 		beatIHigh.setPosition((401f / 1024) * stage.getWidth() - beatIHigh.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - beatIHigh.getHeight() / 2);
 
-
 		beatILow.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
 		beatILow.setPosition((401f / 1024) * stage.getWidth() - beatIHigh.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - beatIHigh.getHeight() / 2);
 
-		//beatIHigh.setOrigin((401f / 1024) * stage.getWidth(), ((768f - 301f) / 768) * stage.getHeight());
-		button.setBounds(stage.getWidth() - 309 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
+
+		button.setBounds(stage.getWidth() - 313 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
 		button2.setBounds(stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
-		button3.setBounds(stage.getWidth() - 449 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
+		button3.setBounds(stage.getWidth() - 445 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
+
 		blurEffect.resize(width, height);
 		music.setPosition(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
 
-		if(optionsShowed)
-			options.resize(width, height);
+		//if(optionsShowed)
+			//options.resize(width, height);
 
 	}
 
 	private void selectIndex(int index){
 		if(currentIndex != -1){
 			list.get(currentIndex).select(false);
-			ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX()+20 , 0f));
+			float x=(currentIndex==0?stage.getWidth() - 313:currentIndex==1?stage.getWidth() - 379:stage.getWidth() - 445);
+
+			ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x , 0f));
 		}
 		currentIndex = index;
 		SoundManager.playSound("click");
 		list.get(currentIndex).select(true);
-		ActorAccessor.startTween(ActorAccessor.createSineTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.05f, list.get(currentIndex).getX() - 20, 0f));
+		float x=(currentIndex==0?stage.getWidth() - 313:currentIndex==1?stage.getWidth() - 379:stage.getWidth() - 445);
+		ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x - 20, 0f));
 	}
 
 	@Override
-	public void pause() {
-
-	}
+	public void pause() {}
 
 	@Override
-	public void resume() {
-
-	}
+	public void resume() {}
 
 	@Override
-	public void hide() {
-
-	}
+	public void hide() {}
 
 	@Override
-	public void dispose() {
-
-	}
+	public void dispose() {}
 }

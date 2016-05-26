@@ -15,12 +15,7 @@ public class SpeedData {
 	}
 
 	public SpeedData(float speed, float acceleration, float speedMin, float speedMax) {
-		this.speed = speed;
-		this.acceleration = acceleration;
-		this.speedMin = speedMin;
-		this.speedMax = speedMax;
-		this.pingPong = false;
-		this.accel = true;
+		this(speed, acceleration, speedMin, speedMax, false);
 	}
 
 	public SpeedData(float speed, float acceleration, float speedMin, float speedMax, boolean pingPong) {

@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import xyz.hexagons.client.Main;
-import xyz.hexagons.client.animation.AnimationEquations;
-import xyz.hexagons.client.animation.animations.Animation;
-import xyz.hexagons.client.animation.api.AnimationAccessor;
-import xyz.hexagons.client.animation.api.AnimationEquation;
+import me.wieku.animation.AnimationEquations;
+import me.wieku.animation.animations.Animation;
+import me.wieku.animation.api.AnimationAccessor;
+import me.wieku.animation.api.AnimationEquation;
 
 public class ActorAccessor implements AnimationAccessor<Actor> {
 
@@ -140,6 +140,10 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 
 	public static Animation createSineTween(Actor ac, int type, float duration, float target, float delay) {
 		return createTween(ac, type, duration, target, delay, AnimationEquations.easeInOutSine);
+	}
+
+	public static Animation createCircleOutTween(Actor ac, int type, float duration, float target, float delay) {
+		return createTween(ac, type, duration, target, delay, AnimationEquations.easeOutCirc);
 	}
 
 	public static Animation createQuadTween(Actor ac, int type, float duration, float target, float delay) {

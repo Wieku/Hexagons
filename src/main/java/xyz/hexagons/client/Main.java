@@ -12,8 +12,8 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import xyz.hexagons.client.animation.AnimationManager;
-import xyz.hexagons.client.animation.animations.Animation;
+import me.wieku.animation.AnimationManager;
+import me.wieku.animation.animations.Animation;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.ActorAccessor;
@@ -69,7 +69,7 @@ public class Main extends Game{
 		SoundManager.registerSound("levelup", "assets/sound/levelUp.ogg", true);
 
 		setScreen(Updater.instance);
-		if(Settings.instance.fullscreen){
+		if(Settings.instance.graphics.fullscreen){
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 		} else {
 			Gdx.graphics.setDisplayMode(1024, 768, false);
@@ -146,8 +146,8 @@ public class Main extends Game{
 		config.title = "Hexagons! " + Main.version;
 		config.foregroundFPS = 120;
 		config.addIcon("assets/hexlogo.png", FileType.Internal);
-		config.samples = Settings.instance.msaa;
-		config.vSyncEnabled = Settings.instance.vSync;
+		config.samples = Settings.instance.graphics.msaa;
+		config.vSyncEnabled = Settings.instance.graphics.vSync;
 		app = new LwjglApplication(instance, config);
 
 	}

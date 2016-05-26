@@ -14,7 +14,7 @@ allprojects {
 }
 
 def runDir = new File('run')
-mainClassName = "me.wieku.hexagons.Main"
+mainClassName = "xyz.hexagons.client.Main"
 version = "0.1.0"
 
 task runClient(dependsOn: 'classes', type: JavaExec) {
@@ -33,7 +33,7 @@ buildscript {
     }
     dependencies {
         classpath 'de.undercouch:gradle-download-task:1.0'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 

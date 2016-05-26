@@ -18,10 +18,10 @@ import xyz.hexagons.client.engine.render.Renderer;
 public class Player implements Renderer {
 
 	float rot;
-	Vector2 tmp = new Vector2();
+	public Vector2 tmp = new Vector2();
 	Vector2 tmp1 = new Vector2();
-	Vector2 tmp2 = new Vector2();
-	Vector2 tmp3 = new Vector2();
+	public Vector2 tmp2 = new Vector2();
+	public Vector2 tmp3 = new Vector2();
 
 	Vector2 fCh = new Vector2();
 	Vector2 lCh = new Vector2();
@@ -72,11 +72,12 @@ public class Player implements Renderer {
 
 		for(Wall wall : CurrentMap.data.wallTimeline.getObjects()){
 
-			if((dir == -1 && Intersector.isPointInPolygon(wall.vecs, lCh)) || (dir == 1 && Intersector.isPointInPolygon(wall.vecs, rCh))){
+			if((dir == -1 && (Intersector.intersectSegmentPolygon(fCh, lCh, wall.getPolygon()) || Intersector.isPointInPolygon(wall.getPolygon().getVertices(), 0, 8, lCh.x, lCh.y)))
+					|| (dir == 1 && (Intersector.intersectSegmentPolygon(fCh, rCh, wall.getPolygon()) || Intersector.isPointInPolygon(wall.getPolygon().getVertices(), 0, 8, rCh.x, rCh.y)))) {
 				rot = oldRot;
 			}
 
-			if(Intersector.isPointInPolygon(wall.vecs, tmp)){
+			if(Intersector.isPointInPolygon(wall.getPolygon().getVertices(), 0, 8, tmp.x, tmp.y)){
 				dead = true;
 			}
 		}

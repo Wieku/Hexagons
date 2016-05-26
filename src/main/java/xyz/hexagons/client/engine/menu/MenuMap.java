@@ -1,14 +1,20 @@
 package xyz.hexagons.client.engine.menu;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import xyz.hexagons.client.Main;
-import xyz.hexagons.client.animation.timeline.Timeline;
+import me.wieku.animation.timeline.Timeline;
+import xyz.hexagons.client.api.CurrentMap;
+import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.engine.ActorAccessor;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.utils.GUIHelper;
@@ -28,22 +34,30 @@ public class MenuMap extends Button {
 
 	private boolean laststatus;
 	private float origHeight;
+
+	static ShapeRenderer renderer;
+
+	private int clrIncrement = -1;
+	private boolean fade = false;
+
+	HColor color = new HColor(0, 0, 0, 0.5f).addPulse(100f/255f, 100f/255f, 100f/255f, 0f);
+
 	public MenuMap(Map map){
-		super(GUIHelper.getTextButtonStyle(new Color(0, 0, 0, 0.5f),Color.BLACK, 1));
+		super(GUIHelper.getTextButtonStyle(new Color(0, 0, 0, 0.0f), Color.BLACK, 1));
 		this.map = map;
 
+		if(renderer == null) renderer = new ShapeRenderer();
 
 
+		borderTop = new Image(GUIHelper.getTxHRegion(Color.WHITE, 1), Scaling.stretchX);
+		borderBottom = new Image(GUIHelper.getTxHRegion(Color.WHITE, 1), Scaling.stretchX);
+		borderLeft = new Image(GUIHelper.getTxWRegion(Color.WHITE, 1), Scaling.stretchY);
+		borderRight = new Image(GUIHelper.getTxWRegion(Color.WHITE, 1), Scaling.stretchY);
 
-		borderTop = new Image(GUIHelper.getTxHRegion(Color.WHITE, 2), Scaling.stretchX);
-		borderBottom = new Image(GUIHelper.getTxHRegion(Color.WHITE, 2), Scaling.stretchX);
-		borderLeft = new Image(GUIHelper.getTxWRegion(Color.WHITE, 2), Scaling.stretchY);
-		borderRight = new Image(GUIHelper.getTxWRegion(Color.WHITE, 2), Scaling.stretchY);
-
-		borderTop.setVisible(false);
+		/*borderTop.setVisible(false);
 		borderBottom.setVisible(false);
 		borderLeft.setVisible(false);
-		borderRight.setVisible(false);
+		borderRight.setVisible(false);*/
 
 		add(borderTop).fill().colspan(4).row();
 
@@ -67,18 +81,31 @@ public class MenuMap extends Button {
 
 	Timeline animation;
 
+	boolean selected=false;
 	public void update(){
 
 		if(animation != null && !animation.isFinished()){
 			animation.kill();
 		}
 
-		float g = 30*Math.abs(MapSelect.mapIndex-MapSelect.instance.mapButtons.indexOf(this));
+		float g = 15+15*Math.abs(MapSelect.mapIndex-MapSelect.instance.mapButtons.indexOf(this));
 
-		animation = new Timeline().beginParallel().push(ActorAccessor.createQuadTween(this, ActorAccessor.SLIDEX, 0.5f, g, 0))
+		animation = new Timeline().beginParallel().push(ActorAccessor.createCircleOutTween(this, ActorAccessor.SLIDEX, 1f, g, 0))
 				.push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEY, 0.2f, origHeight, 0)).end();
 
 		animation.start(Main.getInstance().getAnimationManager());
+
+		if(Math.abs(MapSelect.mapIndex-MapSelect.instance.mapButtons.indexOf(this))==0d) {
+			clrIncrement = 1;
+			fade = true;
+			selected = true;
+		} else if(selected) {
+			clrIncrement = -1;
+			fade = true;
+			selected=false;
+		}
+
+
 
 	}
 
@@ -98,30 +125,56 @@ public class MenuMap extends Button {
 				animation.kill();
 			}
 
-			float g = 30*Math.abs(MapSelect.mapIndex-MapSelect.instance.mapButtons.indexOf(this));
+			float g = 15+15*Math.abs(MapSelect.mapIndex-MapSelect.instance.mapButtons.indexOf(this));
 
-			animation = new Timeline().beginParallel().push(ActorAccessor.createElasticEndTween(this, ActorAccessor.SLIDEX, 0.5f, Math.max(0, g+(laststatus?10:-10)), 0))
-			.push(ActorAccessor.createElasticEndTween(this, ActorAccessor.SIZEY, 0.5f, (laststatus?origHeight:origHeight+20), 0)).end();
+			/*animation = new Timeline().beginParallel().push(ActorAccessor.createElasticEndTween(this, ActorAccessor.SLIDEX, 0.5f, Math.max(0, g+(laststatus?5:-5)), 0))
+			.push(ActorAccessor.createElasticEndTween(this, ActorAccessor.SIZEY, 0.5f, (laststatus?origHeight:origHeight+20), 0)).end();*/
+
+			animation = new Timeline().beginParallel().push(ActorAccessor.createCircleOutTween(this, ActorAccessor.SLIDEX, 0.5f, Math.max(0, g+(laststatus?0:-10)), 0))
+					.end();
 
 			animation.start(Main.getInstance().getAnimationManager());
 
 			laststatus = isOver();
 		}
 
+		if(fade)
+			if(color.update(delta, clrIncrement, 0.5f)!=clrIncrement) fade = false;
+
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		setWidth(MapSelect.instance.scrollPane.getWidth());
+		setWidth(MapSelect.instance.scrollPane.getWidth()+30);
 		layout();
+
+		batch.end();
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+		renderer.setProjectionMatrix(batch.getProjectionMatrix());
+		renderer.setTransformMatrix(batch.getTransformMatrix());
+		renderer.begin(ShapeType.Filled);
+		renderer.setColor(color.r, color.g, color.b, color.a);
+		renderer.rect(getX(), getY(), getWidth(),getHeight());
+		renderer.end();
+	/*	renderer.begin(ShapeType.Line);
+		renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+		renderer.rect(getX(), getY(), getWidth(),getHeight());
+		renderer.end();
+*/
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+		batch.begin();
 		super.draw(batch, parentAlpha);
 	}
 
 	public void check(boolean visible) {
-		borderTop.setVisible(visible);
-		borderBottom.setVisible(visible);
-		borderLeft.setVisible(visible);
-		borderRight.setVisible(visible);
+		//borderTop.setVisible(visible);
+		//borderBottom.setVisible(visible);
+		//borderLeft.setVisible(visible);
+		//borderRight.setVisible(visible);
 	}
 
 }

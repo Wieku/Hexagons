@@ -17,10 +17,11 @@ import xyz.hexagons.client.Main;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
-import xyz.hexagons.client.engine.render.Background;
 import xyz.hexagons.client.engine.Game;
 import xyz.hexagons.client.engine.Settings;
 import xyz.hexagons.client.engine.camera.SkewCamera;
+import xyz.hexagons.client.engine.render.MapRenderer;
+import xyz.hexagons.client.engine.render.ObjRender;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -46,11 +47,13 @@ public class MapSelect implements Screen {
 
 	Color color = new Color(0x02EAFAFF);
 	SkewCamera camera = new SkewCamera();
-	ShapeRenderer shapeRenderer;
-	Background background = new Background();
+	ObjRender shapeRenderer;
+	MapRenderer mapRenderer = new MapRenderer();
 
 	ArrayList<MenuMap> mapButtons = new ArrayList<>();
 	ScrollPane scrollPane;
+
+
 
 	public static int mapIndex = 0;
 
@@ -60,9 +63,10 @@ public class MapSelect implements Screen {
 		this.maps = maps;
 
 		instance = this;
-		shapeRenderer = new ShapeRenderer();
+		shapeRenderer = new ObjRender();
 
 		stage = new Stage(new ScreenViewport());
+		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		stage.addListener(new InputListener(){
 
 			@Override
@@ -97,6 +101,8 @@ public class MapSelect implements Screen {
 						mapButtons.forEach(MenuMap::update);
 					}
 
+					System.out.println(mapButtons.get(mapIndex).getY());
+
 					if(keycode == Keys.DOWN || keycode == Keys.UP) {
 						try {
 							Method method = scrollPane.getClass().getDeclaredMethod("resetFade");
@@ -128,14 +134,18 @@ public class MapSelect implements Screen {
 
 
 		info = new Table();
-		info.add(number = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 12))).left().row();
-		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 18))).left().row();
-		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 16))).left().row();
-		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
-		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 14))).left().row();
+		info.add(number = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
+		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
+		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
+		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
+		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
 
-		info.setPosition(5, 5);
-		//stage.addActor(info);
+		info.pack();
+
+		info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
+		info.setWidth(Gdx.graphics.getWidth()/3);
+
+		stage.addActor(info);
 
 		logo = GUIHelper.getTable(new Color(0, 0, 0, 0.6f));
 		logo.add(new Label("[#A0A0A0]He[#02EAFA]x[]agons![]", GUIHelper.getLabelStyle(Color.WHITE, 40))).pad(5).padBottom(0).row();
@@ -154,19 +164,24 @@ public class MapSelect implements Screen {
 		for(Map map : maps){
 			MenuMap mp = new MenuMap(map);
 			mapButtons.add(mp);
-			table.add(mp).left().top().fillX().pad(1).row();
+			table.add(mp).left().center().fillX().pad(1).row();
 		}
+
+		table.pack();
+		table.setHeight(Gdx.graphics.getHeight()-200);
 
 		scrollPane = new ScrollPane(table, GUIHelper.getScrollPaneStyle(Color.WHITE));
 		scrollPane.setupFadeScrollBars(1f, 1f);
 		scrollPane.setSmoothScrolling(true);
 		scrollPane.setVelocityY(0.1f);
 		scrollPane.setScrollingDisabled(true, false);
+
 		((Table) scrollPane.getChildren().get(0)).center().left();
 		scrollPane.setCancelTouchFocus(true);
+
 		stage.addActor(scrollPane);
 		
-		if(Settings.instance.fullscreen == true)
+		if(Settings.instance.graphics.fullscreen == true)
 			Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
 
@@ -174,6 +189,8 @@ public class MapSelect implements Screen {
 
 	Color tmpC = new Color();
 	float[] tbuf = new float[60];
+	float[] varbuff = new float[60];
+	boolean showed = false;
 	@Override
 	public void render(float delta) {
 
@@ -185,10 +202,20 @@ public class MapSelect implements Screen {
 		camera.update(delta);
 
 		if((delta0 += delta)>=1f/60){
-			background.update(delta0);
 			CurrentMap.data.walls.update(delta0);
 
 			MenuPlaylist.update(delta0);
+
+			if(MenuPlaylist.getCurrentPlayer() != null){
+				tbuf = MenuPlaylist.getCurrentPlayer().analyze();
+				for(int i=0; i< tbuf.length; i++){
+					varbuff[i] = Math.max(varbuff[i], tbuf[i]);
+				}
+			}
+
+			for(int i=0; i < varbuff.length; i++){
+				varbuff[i] = Math.max(0, varbuff[i]-10*delta0);
+			}
 
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
@@ -205,31 +232,46 @@ public class MapSelect implements Screen {
 		}
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		shapeRenderer.identity();
-		shapeRenderer.rotate(1, 0, 0, 90);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-		background.render(shapeRenderer, delta, true, 0);
+		mapRenderer.renderBackground(shapeRenderer, delta, true, 0);
 		shapeRenderer.end();
-		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-		shapeRenderer.identity();
 
-		/*if((toChange -= delta) <= 0){
 
-			++index;
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(color);
+		for(int i=0; i < varbuff.length; i++){
+			float var = varbuff[i];
+			shapeRenderer.rect(0, (i/60f)*stage.getHeight(), Math.min(var*30*((i+5)/3f), (stage.getWidth()*3f)/4), (1/60f)*stage.getHeight()-2);
+		}
+		shapeRenderer.end();
 
-			if(index == creditArray.length) index = 0;
 
-			creditLabel.setText(creditArray[index]);
-			credits.pack();
-
-			credits.setWidth(Math.max(credits.getWidth(), logo.getWidth()));
-
-			credits.setPosition(Gdx.graphics.getWidth() - 5 - credits.getWidth(), Gdx.graphics.getHeight() - 10 - logo.getHeight() - credits.getHeight());
-			toChange = time;
-		}*/
 		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
 		scrollPane.layout();
+
+		if(!showed) {
+			MenuMap ms = mapButtons.get(mapIndex);
+			System.out.println("\n"+scrollPane.getVisualScrollY());
+			System.out.println((scrollPane.getMaxY()-ms.getY()-ms.getHeight()/2));
+
+
+
+			if(ms.getY()+ms.getHeight()/2<scrollPane.getHeight()/2) {
+				System.out.println("efesefregr "+table.getHeight()+" "+ms.getY());
+
+				//scrollPane.setScrollPercentY(1f);
+				System.out.println(scrollPane.getScrollPercentY());
+				scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+				scrollPane.updateVisualScroll();
+				scrollPane.layout();
+				System.out.println(scrollPane.getScrollPercentY());
+				//scrollPane.scrollTo(0, 0/*100*//*table.getHeight()*//**//*-ms.getY()*//**//**//*+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1)*/, ms.getWidth(), ms.getHeight());
+			} else if((table.getHeight()-ms.getY()-ms.getHeight()/2) < scrollPane.getHeight()/2) {
+				scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+			}
+			showed = true;
+		}
+
 		stage.act(delta);
 		stage.draw();
 	}
@@ -248,10 +290,12 @@ public class MapSelect implements Screen {
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		logo.setPosition(width - 5 - logo.getWidth(), height - 5 - logo.getHeight());
-		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 0, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight());
+		info.setWidth(Gdx.graphics.getWidth()/3);
+		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3)-15, 0, Math.max(468, Gdx.graphics.getWidth()/3)+15, Gdx.graphics.getHeight());
 		scrollPane.layout();
 		mapButtons.forEach(e->{e.setX(0);e.update();});
 		credits.setPosition(width - 5 - credits.getWidth(), height - 10 - logo.getHeight() - credits.getHeight());
+		info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
 	}
 
 	@Override
@@ -274,8 +318,10 @@ public class MapSelect implements Screen {
 
 		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
 		scrollPane.layout();
-		MenuMap ms = mapButtons.get(mapIndex);
-		scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2+ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+
+		table.setHeight(Gdx.graphics.getHeight()-200);
+		table.layout();
+		showed = false;
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -288,8 +334,9 @@ public class MapSelect implements Screen {
 			author.setText("");
 			music.setText("No maps available!");
 			info.pack();
-			info.setPosition(5, 5);
+			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
 		} else {
+			SoundManager.playSound("click");
 			Map map = maps.get(index);
 			CurrentMap.reset();
 			maps.get(mapIndex).script.initColors();
@@ -298,7 +345,7 @@ public class MapSelect implements Screen {
 			if(MenuPlaylist.getCurrent() == null || !MenuPlaylist.getCurrent().equals(map)){
 				MenuPlaylist.replaceCurrent(map);
 				MenuPlaylist.skipToPreview();
-				MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume) / 10000f);
+				MenuPlaylist.setVolume(((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.menuMusicVolume) / 10000f);
 			}
 
 			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
@@ -307,7 +354,7 @@ public class MapSelect implements Screen {
 			author.setText("Author: " + map.info.author);
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
-			info.setPosition(5, 5);
+			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
 		}
 
 	}

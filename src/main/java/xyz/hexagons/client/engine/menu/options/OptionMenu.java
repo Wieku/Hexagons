@@ -1,3 +1,4 @@
+/*
 package xyz.hexagons.client.engine.menu.options;
 
 import com.badlogic.gdx.graphics.Color;
@@ -6,9 +7,11 @@ import xyz.hexagons.client.engine.menu.MainMenu;
 import xyz.hexagons.client.engine.menu.buttons.Action;
 import xyz.hexagons.client.utils.GUIHelper;
 
+*/
 /**
  * @author Sebastian Krajewski on 08.04.15.
- */
+ *//*
+
 public class OptionMenu extends Section{
 
 	public static OptionMenu instance = new OptionMenu();
@@ -61,3 +64,4 @@ public class OptionMenu extends Section{
 	}
 
 }
+*/

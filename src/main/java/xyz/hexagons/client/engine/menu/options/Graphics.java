@@ -1,3 +1,4 @@
+/*
 package xyz.hexagons.client.engine.menu.options;
 
 import com.badlogic.gdx.Gdx;
@@ -12,9 +13,11 @@ import xyz.hexagons.client.engine.menu.buttons.Slider;
 import xyz.hexagons.client.engine.menu.buttons.State;
 import xyz.hexagons.client.utils.GUIHelper;
 
+*/
 /**
  * @author Sebastian Krajewski on 07.04.15.
- */
+ *//*
+
 public class Graphics extends Section{
 
 	public static Graphics instance = new Graphics();
@@ -26,14 +29,14 @@ public class Graphics extends Section{
 		State vsync = new State("VSync", false) {
 			@Override
 			public void writeValue(Boolean value) {
-				Settings.instance.vSync = value;
+				Settings.instance.graphics.vSync = value;
 				Main.config.vSyncEnabled = value;
 				Gdx.graphics.setVSync(value);
 			}
 
 			@Override
 			public Boolean loadValue() {
-				return Settings.instance.vSync;
+				return Settings.instance.graphics.vSync;
 			}
 		};
 
@@ -42,7 +45,7 @@ public class Graphics extends Section{
 		State fullScreen = new State("Full Screen", false) {
 			@Override
 			public void writeValue(Boolean value) {
-				Settings.instance.fullscreen = value;
+				Settings.instance.graphics.fullscreen = value;
 				Main.config.fullscreen = value;
 				if(value){
 					Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
@@ -53,21 +56,21 @@ public class Graphics extends Section{
 
 			@Override
 			public Boolean loadValue() {
-				return Settings.instance.fullscreen;
+				return Settings.instance.graphics.fullscreen;
 			}
 		};
 
 		Slider msaa = new Slider("MSAA", 0, 4, 1, 4) {
 			@Override
 			public void writeValue(Integer value) {
-				Settings.instance.msaa = (value == 0 ? 0 : (int) Math.pow(2, value));
+				Settings.instance.graphics.msaa = (value == 0 ? 0 : (int) Math.pow(2, value));
 				Main.config.samples = (value == 0 ? 0 : (int) Math.pow(2, value));
 				CurrentMap.pushText("Restart game to MSAA changes take effect!", 6f);
 			}
 
 			@Override
 			public Integer loadValue() {
-				return (Settings.instance.msaa==0 ? 0 : (int) MathUtils.log2(Settings.instance.msaa));
+				return (Settings.instance.graphics.msaa==0 ? 0 : (int) MathUtils.log2(Settings.instance.graphics.msaa));
 			}
 		};
 
@@ -92,3 +95,4 @@ public class Graphics extends Section{
 
 }
 
+*/

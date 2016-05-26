@@ -1,3 +1,4 @@
+/*
 package xyz.hexagons.client.engine.menu.buttons;
 
 import com.badlogic.gdx.Gdx;
@@ -11,9 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.utils.GUIHelper;
 
+*/
 /**
  * @author Sebastian Krajewski on 07.04.15.
- */
+ *//*
+
 public abstract class Action extends Table implements Element<Boolean> {
 
 	Label nameLabel;
@@ -49,3 +52,4 @@ public abstract class Action extends Table implements Element<Boolean> {
 		nameLabel.setText(select+name);
 	}
 }
+*/

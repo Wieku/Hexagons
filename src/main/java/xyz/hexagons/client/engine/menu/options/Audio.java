@@ -1,3 +1,4 @@
+/*
 package xyz.hexagons.client.engine.menu.options;
 
 import com.badlogic.gdx.graphics.Color;
@@ -8,9 +9,11 @@ import xyz.hexagons.client.engine.menu.buttons.Action;
 import xyz.hexagons.client.engine.menu.buttons.Slider;
 import xyz.hexagons.client.utils.GUIHelper;
 
+*/
 /**
  * @author Sebastian Krajewski on 07.04.15.
- */
+ *//*
+
 public class Audio extends Section{
 
 	public static Audio instance = new Audio();
@@ -22,15 +25,17 @@ public class Audio extends Section{
 		Slider main = new Slider("Master", 0, 100, 5, 100) {
 			@Override
 			public void writeValue(Integer value) {
-				Settings.instance.masterVolume = value;
+				Settings.instance.audio.masterVolume = value;
 				//if(Menu.getInstance().audioPlayer != null)
-					/*Menu.getInstance().audioPlayer*/
-					MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f));
+					*/
+/*Menu.getInstance().audioPlayer*//*
+
+					MenuPlaylist.setVolume(((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.menuMusicVolume / 10000f));
 			}
 
 			@Override
 			public Integer loadValue() {
-				return Settings.instance.masterVolume;
+				return Settings.instance.audio.masterVolume;
 			}
 		};
 
@@ -39,38 +44,40 @@ public class Audio extends Section{
 		Slider effect = new Slider("Effect", 0, 100, 5, 100) {
 			@Override
 			public void writeValue(Integer value) {
-				Settings.instance.effectVolume = value;
+				Settings.instance.audio.effectVolume = value;
 			}
 
 			@Override
 			public Integer loadValue() {
-				return Settings.instance.effectVolume;
+				return Settings.instance.audio.effectVolume;
 			}
 		};
 
 		Slider music = new Slider("Music", 0, 100, 5, 100) {
 			@Override
 			public void writeValue(Integer value) {
-				Settings.instance.musicVolume = value;
+				Settings.instance.audio.musicVolume = value;
 			}
 
 			@Override
 			public Integer loadValue() {
-				return Settings.instance.musicVolume;
+				return Settings.instance.audio.musicVolume;
 			}
 		};
 
 		Slider menuMusic = new Slider("Menu Music", 0, 100, 5, 100) {
 			@Override
 			public void writeValue(Integer value) {
-				Settings.instance.menuMusicVolume = value;
+				Settings.instance.audio.menuMusicVolume = value;
 				//if(Menu.getInstance().audioPlayer != null)
-					/*Menu.getInstance().audioPlayer*/MenuPlaylist.setVolume(((float) Settings.instance.masterVolume * (float) Settings.instance.menuMusicVolume / 10000f));
+					*/
+/*Menu.getInstance().audioPlayer*//*
+MenuPlaylist.setVolume(((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.menuMusicVolume / 10000f));
 			}
 
 			@Override
 			public Integer loadValue() {
-				return Settings.instance.menuMusicVolume;
+				return Settings.instance.audio.menuMusicVolume;
 			}
 		};
 
@@ -97,3 +104,4 @@ public class Audio extends Section{
 	}
 
 }
+*/

@@ -1,13 +1,20 @@
 package xyz.hexagons.client.audio;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.backends.lwjgl.audio.Ogg;
+import com.badlogic.gdx.backends.lwjgl.audio.OggInputStream;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALMusic;
 import com.badlogic.gdx.files.FileHandle;
-import xyz.hexagons.client.audio.analysis.BeatDetect;
-import xyz.hexagons.client.audio.analysis.FFT;
+import me.wieku.audio.analysis.BeatDetect;
+import me.wieku.audio.analysis.FFT;
+import org.lwjgl.BufferUtils;
+import xyz.hexagons.client.utils.Utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.nio.ByteBuffer;
 
 public class AudioPlayer {
 
@@ -19,10 +26,33 @@ public class AudioPlayer {
 	float[] outBuf = new float[60];
 	Music musicPlayer;
 	static Field buffr;
-	float secPB = 0;
+	static final int SIZE = 4096;
+
+	static int BUFFER_SIZE;
+	float secPerBuffer;
+	float audioLength;
+
+	static void setFinalStatic(Field field, Object newValue) throws Exception {
+		field.setAccessible(true);
+
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+		field.set(null, newValue);
+	}
 
 	static {
 		try {
+
+			//setFinalStatic(OpenALMusic.class.getDeclaredField("bufferSize"), SIZE*2);
+			//setFinalStatic(OpenALMusic.class.getDeclaredField("tempBytes"), new byte[SIZE*2]);
+			//setFinalStatic(OpenALMusic.class.getDeclaredField("tempBuffer"), BufferUtils.createByteBuffer(SIZE*2));
+			Field field = OpenALMusic.class.getDeclaredField("bufferSize");
+			field.setAccessible(true);
+			BUFFER_SIZE = (int) field.get(null);
+
+
 			buffr = OpenALMusic.class.getDeclaredField("tempBytes");
 			buffr.setAccessible(true);
 		} catch (Exception e) {
@@ -35,21 +65,31 @@ public class AudioPlayer {
 		handle = file;
 
 		musicPlayer = Gdx.audio.newMusic(handle);
+
+		try {
+			Field sPB = OpenALMusic.class.getDeclaredField("secondsPerBuffer");
+			sPB.setAccessible(true);
+			secPerBuffer = (float) sPB.get(musicPlayer);
+
+			Field inp = Ogg.Music.class.getDeclaredField("input");
+			inp.setAccessible(true);
+
+			OggInputStream str = (OggInputStream) inp.get(musicPlayer);
+
+			System.out.println(((str.getLength()*1f)/BUFFER_SIZE));
+			audioLength = ((str.getLength()*1f)/BUFFER_SIZE)/secPerBuffer;
+			System.out.println(audioLength);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
 		//musicPlayer.setLooping(true);
 		musicPlayer.setOnCompletionListener(m -> ended = true);
 
-		/*fft = new FFT(1024, ((OpenALMusic)musicPlayer).getRate());
+		fft = new FFT(SIZE, ((OpenALMusic)musicPlayer).getRate());
 		fft.linAverages(60);
 
-		detect = new BeatDetect(1024, ((OpenALMusic)musicPlayer).getRate());*/
-
-		try {
-			Field bsize = OpenALMusic.class.getDeclaredField("secondsPerBuffer");
-			bsize.setAccessible(true);
-			secPB = bsize.getFloat((OpenALMusic)musicPlayer);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		detect = new BeatDetect(2048, ((OpenALMusic)musicPlayer).getRate());
 
 	}
 
@@ -95,12 +135,10 @@ public class AudioPlayer {
 		ended = false;
 	}
 
-	/*byte[] bufferByte = new byte[4096*10];
-	float[] bufferFloat = new float[2048];
-	float[] bufferFloat2 = new float[1024];
+	byte[] bufferByte = new byte[SIZE*2];
+	float[] bufferFloat = new float[SIZE*2];
+	float[] bufferFloat2 = new float[SIZE];
 
-	float delta0=0;
-	int byteIndex = 0;*/
 	public void update(float delta){
 
 
@@ -114,6 +152,13 @@ public class AudioPlayer {
 			timedelta = -1;
 		}
 
+
+		/*try {
+			bufferByte = (byte[]) buffr.get(null);
+
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}*/
 		/*delta0+=delta;
 		System.out.println(byteIndex);
 		//byteIndex = Math.max(0, Math.min(9, (int) (secPB/delta0)));
@@ -142,11 +187,7 @@ public class AudioPlayer {
 	}
 
 	public float[] analyze(){
-		/*try {
-			Utils.byteToFloat(bufferByte, byteIndex * 2048, bufferFloat, 0, bufferFloat.length);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Utils.byteToFloat(bufferByte, 0, bufferFloat, 0, bufferFloat.length);
 
 		for(int i = 0, j = 0; i < bufferFloat2.length; i++, j+=2)
 			bufferFloat2[i] = (bufferFloat[j] + bufferFloat[j+1]) / 2;
@@ -155,7 +196,7 @@ public class AudioPlayer {
 
 		for(int i = 0; i < fft.avgSize(); i++)
 			outBuf[i] = fft.getAvg(i);
-*/
+
 		return outBuf;
 	}
 

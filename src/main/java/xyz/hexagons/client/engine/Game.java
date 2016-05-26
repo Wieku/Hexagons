@@ -12,15 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import xyz.hexagons.client.Main;
 import xyz.hexagons.client.api.CurrentMap;
+import xyz.hexagons.client.api.Patterns;
 import xyz.hexagons.client.audio.AudioPlayer;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.engine.menu.MapSelect;
-import xyz.hexagons.client.engine.render.Background;
-import xyz.hexagons.client.engine.render.Center;
+import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
 import xyz.hexagons.client.engine.render.Renderer;
-import xyz.hexagons.client.engine.render.WallRenderer;
 import xyz.hexagons.client.engine.ui.HProgressBar;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.resources.ArchiveFileHandle;
@@ -40,13 +39,11 @@ public class Game implements Screen {
 	public float exitPosition;
 
 	ObjRender renderer;
+	MapRenderer mapRenderer = new MapRenderer();
 	SkewCamera camera = new SkewCamera();
 	Stage stage;
 
-	Background background = new Background();
-	Center center = new Center();
 	Player player = new Player();
-	WallRenderer wallRenderer = new WallRenderer();
 
 	Label fps;
 	Label points;
@@ -102,8 +99,7 @@ public class Game implements Screen {
 		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
 		audioPlayer.setLooping(true);
 
-		addRenderer(center);
-		addRenderer(wallRenderer);
+
 		addRenderer(player);
 
 		start(map.info.startTimes[0]);
@@ -131,26 +127,7 @@ public class Game implements Screen {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		renderer.setProjectionMatrix(camera.combined);
-		renderer.identity();
-		renderer.setHeight(0);
-		renderer.begin(ObjRender.ShapeType.Filled);
-		background.render(renderer, delta, true, 0);
-
-
-		for(int j = 1; j <= CurrentMap.data.layers; ++j){
-			renderer.setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew));
-			for(Renderer render : renderers){
-				render.render(renderer, delta, true, j-1);
-			}
-		}
-
-		renderer.setHeight(0);
-
-		for(Renderer render : renderers){
-			render.render(renderer, delta, false, 0);
-		}
-		renderer.end();
+		mapRenderer.renderObjects(renderer, delta, camera, player, CurrentMap.data.wallTimeline.getObjects());
 
 		message.setPosition((stage.getWidth() - message.getWidth()) / 2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
 		stage.getCamera().position.set(camera.rumbleX + stage.getWidth() / 2, camera.rumbleZ + stage.getHeight() / 2, 0);
@@ -187,12 +164,13 @@ public class Game implements Screen {
 		score = 0;
 		player.reset();
 		camera.reset();
-		audioPlayer.setVolume((float) Settings.instance.masterVolume * (float) Settings.instance.musicVolume / 10000f);
+		audioPlayer.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
 		audioPlayer.play(startTime);
 
 		map.script.onInit();
 		map.script.initColors();
 		map.script.initEvents();
+
 		SoundManager.playSound("start");
 	}
 
@@ -268,7 +246,6 @@ public class Game implements Screen {
 
 			if (!player.dead) {
 				CurrentMap.data.walls.update(1f/60);
-				background.update(1f / 60);
 				tmpColor.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 				fps.getStyle().fontColor = tmpColor;
 				time.getStyle().fontColor = tmpColor;

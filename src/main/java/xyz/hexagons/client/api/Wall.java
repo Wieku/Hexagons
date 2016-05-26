@@ -1,5 +1,6 @@
 package xyz.hexagons.client.api;
 
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import xyz.hexagons.client.Main;
@@ -23,8 +24,12 @@ public class Wall extends TimelineObject {
 	SpeedData speed;
 	SpeedData curve;
 
-	public Vector2 tmp = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2(), tmp4 = new Vector2();
-	public Array<Vector2> vecs = new Array<>();
+	public Vector2 tmp = new Vector2();
+	//public Array<Vector2> vecs = new Array<>();
+
+	float[] temp = new float[8];
+
+	Polygon polygon = new Polygon();
 
 	public Wall(int side, float thickness, SpeedData speedData, SpeedData curveData) {
 		angle1 = side / (float) CurrentMap.data.sides * 360f;
@@ -34,10 +39,6 @@ public class Wall extends TimelineObject {
 		this.speed = speedData;
 		this.curve = curveData;
 
-		vecs.add(tmp);
-		vecs.add(tmp2);
-		vecs.add(tmp4);
-		vecs.add(tmp3);
 	}
 
 	public Wall(int side, float thickness, SpeedData speedData) {
@@ -57,7 +58,7 @@ public class Wall extends TimelineObject {
 		speed.update(delta);
 		curve.update(delta);
 
-		position -= speed.getSpeed() * 5 * 60f * delta;
+		position -= speed.getSpeed() * 300f * delta;
 
 		if (position + thickness <= 0){
 			setToRemove(true);
@@ -69,9 +70,19 @@ public class Wall extends TimelineObject {
 		float gsc = Main.diagonal * 0.048f * Game.scale;
 
 		tmp.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle1);
-		tmp2.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewLeft) * pulseSpeed)).rotate(-angle1);
-		tmp3.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle2);
-		tmp4.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewRight) * pulseSpeed)).rotate(-angle2);
+		temp[0] = tmp.x; temp[1] = tmp.y;
+		tmp.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewLeft) * pulseSpeed)).rotate(-angle1);
+		temp[2] = tmp.x; temp[3] = tmp.y;
+		tmp.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewRight) * pulseSpeed)).rotate(-angle2);
+		temp[4] = tmp.x; temp[5] = tmp.y;
+		tmp.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle2);
+		temp[6] = tmp.x; temp[7] = tmp.y;
+
+		polygon.setVertices(temp);
+	}
+
+	public Polygon getPolygon() {
+		return polygon;
 	}
 
 }
