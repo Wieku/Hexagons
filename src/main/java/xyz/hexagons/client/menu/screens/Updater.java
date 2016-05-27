@@ -37,11 +37,12 @@ public class Updater implements Screen {
 
 		stage = new Stage(new ScreenViewport());
 
-		loadTable = new Table();
-		loadTable.setBackground(GUIHelper.getTxRegion(new Color(0x0f0f0fff)));
+		loadTable = GUIHelper.getTable(new Color(0x0f0f0fff));
 		loadTable.top();
+
 		Texture texture = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true);
 		texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
+
 		Image image = new Image(texture);
 		image.setScaling(Scaling.fit);
 		loadTable.add(image).top().size(512).padTop(64).center().row();
@@ -80,19 +81,6 @@ public class Updater implements Screen {
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		loadTable.setBounds(0, 0, width, height);
 	}
-
-	@Override
-	public void pause() {}
-
-	@Override
-	public void resume() {}
-
-	@Override
-	public void hide() {}
-
-	@Override
-	public void dispose() {}
-
 
 	@Override
 	public void show() {
@@ -163,19 +151,30 @@ public class Updater implements Screen {
 		if(!sha1.equals(json.getString(version + ".sha1"))){
 			setStatus("Downloaded file is corrupted, downloading again...");
 			downloadUpdate(json, version);
+		} else {
+			setStatus("Update finished! Moving file!");
+
+			Utils.sleep(500);
+
+			Files.move(new File(newPath), new File(Utils.getGameFile()));
+			setStatus("File moved! Restarting game!");
+			Utils.restartGame();
 		}
-
-		setStatus("Update finished! Moving file!");
-
-		Utils.sleep(500);
-
-		Files.move(new File(newPath), new File(Utils.getGameFile()));
-		setStatus("File moved! Restarting game!");
-		Utils.restartGame();
 	}
 
 	public void setStatus(String text){
 		this.text = text.replaceAll("\\[", "\\[\\[").replaceAll("\\]", "\\]\\]");
 	}
 
+	@Override
+	public void pause() {}
+
+	@Override
+	public void resume() {}
+
+	@Override
+	public void hide() {}
+
+	@Override
+	public void dispose() {}
 }

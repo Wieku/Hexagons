@@ -48,9 +48,6 @@ public class Main extends Game{
 	public static final String version = "0.1.3";
 	private AnimationManager animationManager = new AnimationManager();
 
-	private Main(){
-	}
-
 	public static Main getInstance(){
 		return instance;
 	}

@@ -25,7 +25,6 @@ import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.menu.widgets.MenuButton;
-//import xyz.hexagons.client.menu.options.Options;
 import xyz.hexagons.client.menu.settings.ConfigEngine;
 import xyz.hexagons.client.menu.settings.SettingsTab;
 import xyz.hexagons.client.engine.render.BlurEffect;
@@ -39,25 +38,23 @@ public class MainMenu implements Screen {
 
 	public static MainMenu instance = new MainMenu();
 
-	Stage stage;
-	MenuButton button, button2, button3;
-	ArrayList<MenuButton> list = new ArrayList<>();
-	Label version, copyright;
-	int currentIndex = -1;
-	Image beatIHigh;
-	Image beatILow;
+	private Stage stage;
+	private MenuButton button, button2, button3;
+	private ArrayList<MenuButton> list = new ArrayList<>();
+	private Label version, copyright;
+	private int currentIndex = -1;
+	private Image beatIHigh;
+	private Image beatILow;
 
-	BlurEffect blurEffect;
-	SkewCamera camera = new SkewCamera();
-	ShapeRenderer shapeRenderer;
-	MapRenderer mapRenderer = new MapRenderer();
-	Table music;
-	Label title;
-	ProgressBar bar;
-	boolean escclick = false;
+	private BlurEffect blurEffect;
+	private SkewCamera camera = new SkewCamera();
+	private ShapeRenderer shapeRenderer;
+	private MapRenderer mapRenderer = new MapRenderer();
+	private Table music;
+	private Label title;
+	private boolean escclick = false;
 
 	public boolean optionsShowed;
-	//Options options;
 
 	SettingsTab sTab;
 
@@ -73,8 +70,8 @@ public class MainMenu implements Screen {
 
 		shapeRenderer = new ShapeRenderer();
 
-		//options = new Options();
 		ConfigEngine.register();
+
 		sTab = SettingsTab.getInstance();
 
 		stage.addListener(new InputListener() {
@@ -173,7 +170,7 @@ public class MainMenu implements Screen {
 		list.add(button3 = new MenuButton("Exit"));
 
 		button.setBounds(stage.getWidth() - 313, 252, 512, 100);
-		button2.setBounds(stage.getWidth() - 379,142,512,100);
+		button2.setBounds(stage.getWidth() - 379, 142, 512, 100);
 		button3.setBounds(stage.getWidth() - 445, 32, 512, 100);
 		stage.addActor(button);
 		stage.addActor(button2);
@@ -185,10 +182,10 @@ public class MainMenu implements Screen {
 
 	}
 
-	boolean first = false;
+	private boolean first = false;
 
 
-	Map currentPlaying;
+	private Map currentPlaying;
 	@Override
 	public void show() {
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -211,9 +208,9 @@ public class MainMenu implements Screen {
 
 	}
 
-	Timeline beatHigh;
-	Timeline beatLow;
-	float delta0 = 0;
+	private Timeline beatHigh;
+	private Timeline beatLow;
+	private float delta0 = 0;
 	@Override
 	public void render(float delta) {
 
@@ -280,10 +277,6 @@ public class MainMenu implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		//if(optionsShowed)
-			//options.render(delta);
-		//else
-		//	if(!Gdx.input.getInputProcessor().equals(stage)) Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -305,9 +298,6 @@ public class MainMenu implements Screen {
 
 		blurEffect.resize(width, height);
 		music.setPosition(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
-
-		//if(optionsShowed)
-			//options.resize(width, height);
 
 	}
 

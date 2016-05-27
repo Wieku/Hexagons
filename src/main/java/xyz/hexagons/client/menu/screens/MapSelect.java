@@ -38,7 +38,7 @@ public class MapSelect implements Screen {
 	Stage stage;
 
 	Table info;
-	Label number, name, description, author, music, creditLabel;
+	Label number, name, description, author, music;
 	Game game;
 
 	Table table;
