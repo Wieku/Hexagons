@@ -2,10 +2,9 @@ package xyz.hexagons.client.api;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import xyz.hexagons.client.Main;
 import xyz.hexagons.client.engine.Game;
-import xyz.hexagons.client.engine.timeline.TimelineObject;
+import xyz.hexagons.client.map.timeline.TimelineObject;
 
 /**
  * @author Sebastian Krajewski on 21.03.15.

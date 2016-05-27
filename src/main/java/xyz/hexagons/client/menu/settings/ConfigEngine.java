@@ -1,10 +1,4 @@
-package xyz.hexagons.client.engine.menu.options;
-
-import xyz.hexagons.client.engine.Section;
-import xyz.hexagons.client.engine.Settings;
-import xyz.hexagons.client.engine.menu.buttons.Element;
-import xyz.hexagons.client.engine.menu.buttons.Slider;
-import xyz.hexagons.client.engine.menu.buttons.State;
+package xyz.hexagons.client.menu.settings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

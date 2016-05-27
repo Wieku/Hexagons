@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine.timeline;
+package xyz.hexagons.client.map.timeline;
 
 /**
  * @author Sebastian Krajewski on 03.04.15.

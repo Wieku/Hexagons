@@ -1,4 +1,4 @@
-package xyz.hexagons.client.utils;
+package xyz.hexagons.client.resources;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,7 +1,7 @@
 package xyz.hexagons.client.map;
 
 import xyz.hexagons.client.api.HColor;
-import xyz.hexagons.client.utils.Hocon;
+import xyz.hexagons.client.resources.Hocon;
 
 import java.util.ArrayList;
 import java.util.List;

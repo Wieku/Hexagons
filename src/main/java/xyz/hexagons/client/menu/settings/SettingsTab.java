@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine.menu.options;
+package xyz.hexagons.client.menu.settings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -13,16 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import me.wieku.animation.animations.Animation;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Main;
-import xyz.hexagons.client.engine.ActorAccessor;
-import xyz.hexagons.client.engine.menu.buttons.Element;
+import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.util.ArrayList;

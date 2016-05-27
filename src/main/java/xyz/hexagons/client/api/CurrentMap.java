@@ -1,7 +1,7 @@
 package xyz.hexagons.client.api;
 
-import xyz.hexagons.client.engine.timeline.Timeline;
-import xyz.hexagons.client.engine.timeline.TimelineRunnable;
+import xyz.hexagons.client.map.timeline.Timeline;
+import xyz.hexagons.client.map.timeline.TimelineRunnable;
 
 import java.util.ArrayList;
 

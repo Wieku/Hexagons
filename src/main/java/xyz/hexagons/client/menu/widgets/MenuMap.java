@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine.menu;
+package xyz.hexagons.client.menu.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import xyz.hexagons.client.Main;
 import me.wieku.animation.timeline.Timeline;
-import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.HColor;
-import xyz.hexagons.client.engine.ActorAccessor;
+import xyz.hexagons.client.menu.ActorAccessor;
+import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.utils.GUIHelper;
 

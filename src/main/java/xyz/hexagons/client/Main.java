@@ -16,11 +16,11 @@ import me.wieku.animation.AnimationManager;
 import me.wieku.animation.animations.Animation;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
-import xyz.hexagons.client.engine.ActorAccessor;
-import xyz.hexagons.client.engine.menu.Updater;
+import xyz.hexagons.client.menu.ActorAccessor;
+import xyz.hexagons.client.menu.screens.Updater;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.resources.FontManager;
-import xyz.hexagons.client.engine.Settings;
+import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.map.Map;
 
 import org.luaj.vm2.Globals;

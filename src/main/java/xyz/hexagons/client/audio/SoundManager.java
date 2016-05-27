@@ -3,7 +3,7 @@ package xyz.hexagons.client.audio;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import xyz.hexagons.client.engine.Settings;
+import xyz.hexagons.client.menu.settings.Settings;
 
 import java.util.HashMap;
 

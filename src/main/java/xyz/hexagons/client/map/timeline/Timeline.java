@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine.timeline;
+package xyz.hexagons.client.map.timeline;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;

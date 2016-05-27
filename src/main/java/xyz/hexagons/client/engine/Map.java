@@ -2,8 +2,8 @@ package xyz.hexagons.client.engine;
 
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.Wall;
-import xyz.hexagons.client.engine.timeline.Timeline;
-import xyz.hexagons.client.engine.timeline.TimelineRunnable;
+import xyz.hexagons.client.map.timeline.Timeline;
+import xyz.hexagons.client.map.timeline.TimelineRunnable;
 
 import java.util.ArrayList;
 

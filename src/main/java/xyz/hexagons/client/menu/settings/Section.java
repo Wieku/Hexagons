@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine;
+package xyz.hexagons.client.menu.settings;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

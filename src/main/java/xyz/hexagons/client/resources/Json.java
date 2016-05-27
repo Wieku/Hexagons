@@ -1,4 +1,4 @@
-package xyz.hexagons.client.utils;
+package xyz.hexagons.client.resources;
 
 import java.io.BufferedReader;
 import java.io.File;

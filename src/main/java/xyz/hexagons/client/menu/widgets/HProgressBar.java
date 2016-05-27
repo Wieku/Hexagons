@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine.ui;
+package xyz.hexagons.client.menu.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;

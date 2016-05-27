@@ -1,4 +1,4 @@
-package xyz.hexagons.client.engine.menu;
+package xyz.hexagons.client.menu.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,7 +18,7 @@ import com.google.common.io.Files;
 import xyz.hexagons.client.Main;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.utils.GUIHelper;
-import xyz.hexagons.client.utils.Json;
+import xyz.hexagons.client.resources.Json;
 import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;

@@ -1,13 +1,10 @@
-package xyz.hexagons.client.engine.menu.buttons;
+package xyz.hexagons.client.menu.settings;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.utils.GUIHelper;
 

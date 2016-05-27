@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
 import xyz.hexagons.client.Main;
-import xyz.hexagons.client.engine.Settings;
+import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapJson;
 import xyz.hexagons.client.resources.ArchiveFileHandle;
