@@ -4,6 +4,7 @@ import xyz.hexagons.client.engine.Section;
 import xyz.hexagons.client.engine.Settings;
 import xyz.hexagons.client.engine.menu.buttons.Element;
 import xyz.hexagons.client.engine.menu.buttons.Slider;
+import xyz.hexagons.client.engine.menu.buttons.State;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -40,6 +41,7 @@ public class ConfigEngine {
 				}
 
 				sub.add(el);
+				sub.sort((e1,e2)->e1.getOrder().compareTo(e2.getOrder()));
 			}
 		}
 
@@ -95,9 +97,10 @@ public class ConfigEngine {
 						Annotation an = f1.getAnnotations()[0];
 						if(an instanceof Section.Slider) {
 							Section.Slider sl = (Section.Slider) an;
-							elements.add(new Slider(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model()[0], sl.model()[1], sl.model()[2], sl.model()[3]));
+							elements.add(new Slider(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model()[0], sl.model()[1], sl.model()[2], sl.model()[3], sl.order()));
 						} else if (an instanceof Section.Switch) {
-
+							Section.Switch sl = (Section.Switch) an;
+							elements.add(new State(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.def(), sl.order()));
 						}
 					}
 				} catch (IllegalAccessException e) {

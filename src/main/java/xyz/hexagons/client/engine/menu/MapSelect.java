@@ -61,7 +61,7 @@ public class MapSelect implements Screen {
 
 	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
-
+		maps.sort((e1, e2)->e1.info.name.compareTo(e2.info.name));
 		instance = this;
 		shapeRenderer = new ObjRender();
 

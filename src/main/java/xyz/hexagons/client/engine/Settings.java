@@ -15,10 +15,10 @@ public class Settings implements Serializable{
 
 	@Section(name="graphics", enName="Graphics", order=0)
 	public class Graphics {
-		@Section.Switch(name="vSync", enName="VSync", order=0)
+		@Section.Switch(name="vSync", enName="VSync", def = false, order=0)
 		public boolean vSync = false;
 
-		@Section.Switch(name="fullscreen", enName="Full Screen", order=1)
+		@Section.Switch(name="fullscreen", enName="Full Screen", def = false, order=1)
 		public boolean fullscreen = false;
 
 		@Section.Slider(name="msaa", enName="MSAA", model={0, 4, 1, 4}, order=2)

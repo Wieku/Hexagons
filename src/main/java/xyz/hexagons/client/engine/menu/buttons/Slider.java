@@ -21,8 +21,8 @@ public class Slider extends Element<Integer> {
 	String select = "";
 	int value, min, max, jump;
 
-	public Slider(String section, String sectionI18n, String name, String nameI18n, int min, int max, int jump, int def){
-		super(section, sectionI18n, name, nameI18n);
+	public Slider(String section, String sectionI18n, String name, String nameI18n, int min, int max, int jump, int def, int order){
+		super(section, sectionI18n, name, nameI18n, order);
 
 		this.jump = jump;
 		this.min = min;

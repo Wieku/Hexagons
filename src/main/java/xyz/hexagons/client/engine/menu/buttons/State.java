@@ -21,8 +21,8 @@ public class State extends Element<Boolean> {
 	boolean value;
 	String select = "";
 
-	public State(String section, String sectionI18n, String name, String nameI18n, boolean def){
-		super(section, sectionI18n, name, nameI18n);
+	public State(String section, String sectionI18n, String name, String nameI18n, boolean def, int order){
+		super(section, sectionI18n, name, nameI18n, order);
 
 		value = loadValue();
 

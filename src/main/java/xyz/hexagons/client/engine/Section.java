@@ -18,6 +18,7 @@ public @interface Section {
 	@interface Switch {
 		String name();
 		String enName();
+		boolean def();
 		int order();
 	}
 

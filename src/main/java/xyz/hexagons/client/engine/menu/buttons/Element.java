@@ -1,6 +1,7 @@
 package xyz.hexagons.client.engine.menu.buttons;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -24,6 +25,8 @@ public abstract class Element<T> extends Table {
 	String name;
 	String nameI18n;
 
+	int order;
+
 	Label nameLabel;
 
 	public T value;
@@ -31,12 +34,13 @@ public abstract class Element<T> extends Table {
 	Object fieldParent;
 	Field valReflection;
 
-	public Element(String section, String sectionI18n, String name, String nameI18n) {
+	public Element(String section, String sectionI18n, String name, String nameI18n, int order) {
 
 		this.section = section;
 		this.sectionI18n = sectionI18n;
 		this.name = name;
 		this.nameI18n = nameI18n;
+		this.order = order;
 
 		for(Field f : Settings.instance.getClass().getFields()) {
 			if((f.getModifiers() & Modifier.STATIC)==0) {
@@ -91,6 +95,10 @@ public abstract class Element<T> extends Table {
 
 	public String getName() {
 		return nameI18n;
+	}
+
+	public Integer getOrder() {
+		return order;
 	}
 
 	public boolean match(String phrase){

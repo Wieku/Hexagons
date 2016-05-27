@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import xyz.hexagons.client.Main;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.api.CurrentMap;

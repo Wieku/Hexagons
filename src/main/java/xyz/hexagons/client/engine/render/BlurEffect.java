@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -57,22 +59,26 @@ public class BlurEffect {
 		program.end();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(width, height);
-		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width), (this.height = height), this.depth = depth);
+		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width)/4, (this.height = height)/4, this.depth = depth);
 	}
 
 	public void bind(){
 		buffer.bind();
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glViewport(0, 0, width/4, height/4);
 	}
 
 	public void unbind(){
+		Gdx.gl.glViewport(0, 0, width, height);
 		buffer.unbind();
 	}
 
 	public void render(Batch baatch){
+
 		batch.begin();
 		batch.setProjectionMatrix(camera.combined);
+
 		batch.setShader(program);
 		program.setUniformf("resolution", width, height);
 		program.setUniformf("darkness", darkness);
@@ -94,7 +100,7 @@ public class BlurEffect {
 
 	public void resize(int width, int height){
 		buffer.dispose();
-		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width), (this.height = height), depth);
+		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width)/4, (this.height = height)/4, depth);
 		camera.setToOrtho(true, width, height);
 	}
 
