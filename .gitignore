@@ -2,6 +2,10 @@ JHexagon.idea
 JHexagon.iml
 JHexagon.ipr
 JHexagon.iws
+Hexagons.idea
+Hexagons.iml
+Hexagons.ipr
+Hexagons.iws
 out/
 .gradle/
 build/
