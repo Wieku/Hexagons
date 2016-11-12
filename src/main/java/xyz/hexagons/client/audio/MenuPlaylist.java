@@ -13,13 +13,13 @@ import xyz.hexagons.client.resources.ArchiveFileHandle;
 
 public class MenuPlaylist {
 
-	static ArrayList<Map> playlist = new ArrayList<>();
+	private static ArrayList<Map> playlist = new ArrayList<>();
 
-	static int currentId = -1;
-	static Map current;
-	static float volume = 0f;
-	static AudioPlayer player;
-	static boolean looping = false;
+	private static int currentId = -1;
+	private static Map current;
+	private static float volume = 0f;
+	private static AudioPlayer player;
+	private static boolean looping = false;
 	private static float speed = 1f;
 
 	public static void previousSong(){

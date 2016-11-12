@@ -18,19 +18,19 @@ import java.nio.ByteBuffer;
 
 public class AudioPlayer {
 
-	boolean ended;
-	FileHandle handle;
-	boolean firstStart = false;
-	FFT fft;
-	BeatDetect detect;
-	float[] outBuf = new float[60];
-	Music musicPlayer;
-	static Field buffr;
-	static final int SIZE = 4096;
+	private boolean ended;
+	private FileHandle handle;
+	private boolean firstStart = false;
+	private FFT fft;
+	private BeatDetect detect;
+	private float[] outBuf = new float[60];
+	private Music musicPlayer;
+	private static Field buffr;
+	private static final int SIZE = 4096;
 
-	static int BUFFER_SIZE;
-	float secPerBuffer;
-	float audioLength;
+	private static int BUFFER_SIZE;
+	private float secPerBuffer;
+	private float audioLength;
 
 	static void setFinalStatic(Field field, Object newValue) throws Exception {
 		field.setAccessible(true);
@@ -135,9 +135,9 @@ public class AudioPlayer {
 		ended = false;
 	}
 
-	byte[] bufferByte = new byte[SIZE*2];
-	float[] bufferFloat = new float[SIZE*2];
-	float[] bufferFloat2 = new float[SIZE];
+	private byte[] bufferByte = new byte[SIZE*2];
+	private float[] bufferFloat = new float[SIZE*2];
+	private float[] bufferFloat2 = new float[SIZE];
 
 	public void update(float delta){
 
@@ -177,7 +177,7 @@ public class AudioPlayer {
 		}*/
 	}
 
-	float bgvol, dstvol, timedelta = -1, time = -2;
+	private float bgvol, dstvol, timedelta = -1, time = -2;
 
 	public void glideVolume(float volume, float time){
 		bgvol = getVolume();
