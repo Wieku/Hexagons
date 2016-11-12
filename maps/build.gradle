@@ -1,0 +1,53 @@
+task removeMaps(type: Delete) {
+    FileTree mapsDir = fileTree (dir: "../android/assets/Maps");
+    mapsDir.each { File file ->
+        delete(file)
+    }
+}
+
+task bundle << {
+    println "Bundle maps"
+    copy {
+        from "Acceleradiant/build/libs/Acceleradiant-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "Apeirogon/build/libs/Apeirogon-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "Dodecahedron/build/libs/Dodecahedron-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "DragonMayhem/build/libs/DragonMayhem-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "FlatteringShape/build/libs/FlatteringShape-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "Pi/build/libs/Pi-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "Pointless/build/libs/Pointless-${version}.jar"
+        into "../android/assets/Maps"
+    }
+    copy {
+        from "SecondDimension/build/libs/SecondDimension-${version}.jar"
+        into "../android/assets/Maps"
+    }
+}
+
+bundle.dependsOn removeMaps
+bundle.dependsOn 'Acceleradiant:jar'
+bundle.dependsOn 'Apeirogon:jar'
+bundle.dependsOn 'Dodecahedron:jar'
+bundle.dependsOn 'DragonMayhem:jar'
+bundle.dependsOn 'FlatteringShape:jar'
+bundle.dependsOn 'Hexagonest:jar'
+bundle.dependsOn 'Pi:jar'
+bundle.dependsOn 'Pointless:jar'
+bundle.dependsOn 'SecondDimension:jar'

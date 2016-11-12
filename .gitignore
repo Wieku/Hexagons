@@ -9,7 +9,6 @@ Hexagons.iws
 out/
 .gradle/
 build/
-run/*
-!run/Maps/
-run/Maps/.temp/
+android/assets/
+android/libs/
 .idea/

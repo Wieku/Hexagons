@@ -1,0 +1,13 @@
+{
+"className":"FlatteringShape",
+"audioFileName":"starshipShowdown.ogg",
+"name":"Flattering Shape",
+"author":"Vittorio Romeo",
+"description":"'Normal' level",
+"songName":"Starship Showdown",
+"songAuthor":"BOSSFIGHT",
+"tags":"awesome",
+"pack":"Cube",
+"startTimes":[26, 66],
+"previewTime": 26
+}

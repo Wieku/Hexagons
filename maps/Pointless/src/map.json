@@ -1,0 +1,13 @@
+{
+"className":"Pointless",
+"audioFileName":"jackRussel.ogg",
+"name":"Pointless",
+"author":"Vittorio Romeo",
+"description":"'Easy' level",
+"songName":"Jack Russel",
+"songAuthor":"BOSSFIGHT",
+"tags":"awesome",
+"pack":"Cube",
+"startTimes":[32, 47, 98, 125],
+"previewTime": 98
+}

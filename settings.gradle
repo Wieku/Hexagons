@@ -1,1 +1,15 @@
-include 'desktop', 'android', 'ios', 'html', 'core'
+include 'desktop',
+        'android',
+        'ios',
+        'html',
+        'core',
+        'maps',
+        'maps:Acceleradiant',
+        'maps:Apeirogon',
+        'maps:Dodecahedron',
+        'maps:DragonMayhem',
+        'maps:FlatteringShape',
+        'maps:Hexagonest',
+        'maps:Pi',
+        'maps:Pointless',
+        'maps:SecondDimension'
