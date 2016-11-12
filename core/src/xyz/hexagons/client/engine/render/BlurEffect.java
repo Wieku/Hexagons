@@ -3,16 +3,21 @@ package xyz.hexagons.client.engine.render;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class BlurEffect {
-
+	
+	static final int SCALE = 2;
+	
 	final String VERT =
 			"attribute vec4 "+ ShaderProgram.POSITION_ATTRIBUTE+";\n" +
 			"attribute vec4 "+ShaderProgram.COLOR_ATTRIBUTE+";\n" +
@@ -39,7 +44,9 @@ public class BlurEffect {
 
 	SpriteBatch batch;
 	OrthographicCamera camera;
+	OrthographicCamera camera2;
 	FrameBuffer buffer;
+	FrameBuffer buffer2;
 	ShaderProgram program;
 
 	public BlurEffect(int width, int height, boolean depth) {
@@ -58,15 +65,24 @@ public class BlurEffect {
 		program.setUniformf("power", power);
 		program.end();
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(width, height);
-		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width)/4, (this.height = height)/4, this.depth = depth);
+		camera = new OrthographicCamera(width/SCALE, height/SCALE);
+		camera2 = new OrthographicCamera(width, height);
+		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width)/SCALE, (this.height = height)/SCALE, this.depth = depth);
+		buffer2 = new FrameBuffer(Format.RGBA8888, (this.width = width)/SCALE, (this.height = height)/SCALE, this.depth = depth);
 	}
 
 	public void bind(){
 		buffer.bind();
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glViewport(0, 0, width/4, height/4);
+		Gdx.gl.glViewport(0, 0, width/SCALE, height/SCALE);
+	}
+
+	public void bind2(){
+		buffer2.bind();
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glViewport(0, 0, width/SCALE, height/SCALE);
 	}
 
 	public void unbind(){
@@ -74,20 +90,33 @@ public class BlurEffect {
 		buffer.unbind();
 	}
 
+	public void unbind2(){
+		Gdx.gl.glViewport(0, 0, width, height);
+		buffer2.unbind();
+	}
+
 	public void render(Batch baatch){
 
+		bind2();
 		batch.begin();
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.setShader(program);
-		program.setUniformf("resolution", width, height);
+		program.setUniformf("resolution", buffer.getWidth(), buffer.getHeight());
 		program.setUniformf("darkness", darkness);
 		program.setUniformf("power", power);
 
-		batch.draw(buffer.getColorBufferTexture(), 0, 0, width, height);
+		batch.draw(buffer.getColorBufferTexture(), 0, 0, width/SCALE, height/SCALE);
 
 		batch.setShader(null);
 		batch.end();
+		unbind2();
+
+		batch.begin();
+		batch.setProjectionMatrix(camera2.combined);
+		batch.draw(buffer2.getColorBufferTexture(), 0, 0, width, height);
+		batch.end();
+
 	}
 
 	public void setPower(float power){
@@ -100,8 +129,10 @@ public class BlurEffect {
 
 	public void resize(int width, int height){
 		buffer.dispose();
-		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width)/4, (this.height = height)/4, depth);
-		camera.setToOrtho(true, width, height);
+		buffer = new FrameBuffer(Format.RGBA8888, (this.width = width)/SCALE, (this.height = height)/SCALE, depth);
+		buffer2 = new FrameBuffer(Format.RGBA8888, (this.width = width)/SCALE, (this.height = height)/SCALE, depth);
+		camera.setToOrtho(true, width/SCALE, height/SCALE);
+		camera2.setToOrtho(true, width, height);
 	}
 
 

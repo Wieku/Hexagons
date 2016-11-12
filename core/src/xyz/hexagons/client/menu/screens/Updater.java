@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.resources.Json;
@@ -88,7 +87,7 @@ public class Updater implements Screen {
 
 		new Thread(()-> {
 
-			if(!Instance.noupdate){
+			if(false/*!App.noupdate*/){
 
 				try {
 

@@ -87,7 +87,7 @@ public class ConfigEngine {
 					Object fieldParent = f.get(Settings.instance);
 					Section sec = fieldParent.getClass().getAnnotation(Section.class);
 					for(Field f1 : fieldParent.getClass().getFields()) {
-						System.out.println(f1.getName());
+						//System.out.println(f1.getName());
 						Annotation an = f1.getAnnotations()[0];
 						if(an instanceof Section.Slider) {
 							Section.Slider sl = (Section.Slider) an;

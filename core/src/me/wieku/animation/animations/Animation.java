@@ -145,7 +145,7 @@ public class Animation implements AnimationBase<Animation> {
 	}
 
 	/**
-	 * Kills animation but Callback (if it's set) won't called
+	 * Kills animation but Callback (if it's set) won't be called
 	 */
 	@Override
 	public void kill() {
@@ -241,14 +241,11 @@ public class Animation implements AnimationBase<Animation> {
 		if (elapsed > duration)
 			elapsed = duration;
 
-		//System.out.println(elapsed+":"+duration);
 		float percent = elapsed / duration;
 
 		float percentStep = getEquation().compute(percent);
 
 		for (int j = 0; j < values.length; j++) {
-			//System.out.println((lengths[j] * percentStep )+ " " + ( starts[j] + lengths[j] * percentStep));
-
 			values[j] = starts[j] + lengths[j] * percentStep;
 		}
 

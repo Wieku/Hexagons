@@ -1,9 +1,11 @@
 package xyz.hexagons.client.engine.camera;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import xyz.hexagons.client.api.CurrentMap;
+import xyz.hexagons.client.menu.settings.Settings;
 
 /**
  * @author Sebastian Krajewski on 21.03.15.
@@ -20,8 +22,6 @@ public class SkewCamera extends PerspectiveCamera {
 
 
 	public SkewCamera(){
-		viewportWidth = 4;
-		viewportHeight = 3;
 		far = 1000000f;
 		near = 0.00001f;
 		fieldOfView = 45f;
@@ -35,6 +35,13 @@ public class SkewCamera extends PerspectiveCamera {
 
 		pulseInc = (pulseInc<0?-1:1) * Math.abs(CurrentMap.data.colorPulseInc);
 
+		if(Settings.instance.graphics.fixedratio) {
+			viewportWidth = 4;
+			viewportHeight = 3;
+		} else {
+			viewportWidth = Gdx.graphics.getWidth();
+			viewportHeight = Gdx.graphics.getHeight();
+		}
 		delta0+=delta * 60 * 2.5f * pulseInc;
 		if(delta0 < -CurrentMap.data.colorPulse/2){
 			delta0 = -CurrentMap.data.colorPulse/2;

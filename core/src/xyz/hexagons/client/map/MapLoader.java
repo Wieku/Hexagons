@@ -84,7 +84,7 @@ public class MapLoader {
 				}
 
 				List<Class<?>> interfaces = Arrays.asList(toLoad.getInterfaces());
-				System.err.println("fghjty " + interfaces);
+				//System.err.println("fghjty " + interfaces);
 				if (!interfaces.contains(MapScript.class)) {
 					System.err.println("Script of " + m.name + "(" + file.getName() + ") Doesn't implement 'MapScript' interface!");
 					closeJar(jar);

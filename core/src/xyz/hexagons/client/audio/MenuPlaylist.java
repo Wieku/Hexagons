@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapJson;
@@ -14,13 +13,13 @@ import xyz.hexagons.client.resources.ArchiveFileHandle;
 
 public class MenuPlaylist {
 
-	private static ArrayList<Map> playlist = new ArrayList<>();
+	static ArrayList<Map> playlist = new ArrayList<>();
 
-	private static int currentId = -1;
-	private static Map current;
-	private static float volume = 0f;
-	private static AudioPlayer player;
-	private static boolean looping = false;
+	static int currentId = -1;
+	static Map current;
+	static float volume = 0f;
+	static AudioPlayer player;
+	static boolean looping = false;
 	private static float speed = 1f;
 
 	public static void previousSong(){

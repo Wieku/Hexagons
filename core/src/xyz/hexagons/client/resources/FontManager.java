@@ -17,7 +17,6 @@ import java.awt.Font;
 import java.io.BufferedInputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-
 public enum FontManager{
 	MAIN("Orbitron-Medium"/*"Pixel-UniCode"*/, 128, 70, 78);
 	//FF("ffforward"/*"Pixel-UniCode"*/, 16, 11, 12);
@@ -73,20 +72,20 @@ public enum FontManager{
 						chars += (char) c;
 					}
 				}
-
+				System.out.println(chars);
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
 				FreeTypeFontParameter pam = new FreeTypeFontParameter();
 				pam.size = val.genSize;
 				pam.genMipMaps = true;
 				//pam.borderColor = Color.BLACK;//new Color(0.5f, 0.5f, 0.5f, 1f);
-				pam.shadowColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-				//pam.borderWidth = 1f;
-				//pam.borderColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-				pam.shadowOffsetX = 3;
-				pam.shadowOffsetY = 3;
+				//pam.shadowColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+				pam.borderWidth = 2f;
+				pam.borderColor = new Color(/*0.5f, 0.5f, 0.5f*/0,0,0, 1f);
+				//pam.shadowOffsetX = 3;
+				//pam.shadowOffsetY = 3;
 				pam.magFilter = TextureFilter.Linear;
 				pam.minFilter = TextureFilter.MipMapLinearLinear;
-				pam.characters = chars;
+				pam.characters = "ABCDEFGHIJKLMNOQPRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789èéêëìí,<.>/?;:'\"[{]}]|\\=+-_`~!@#$%^&*()";
 
 				FreeTypeBitmapFontData d = generator.generateData(pam);
 

@@ -4,7 +4,11 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -17,6 +21,8 @@ public class State extends Element<Boolean> {
 	String name;
 	boolean value;
 	String select = "";
+	CheckBox box;
+
 
 	public State(String section, String sectionI18n, String name, String nameI18n, boolean def, int order){
 		super(section, sectionI18n, name, nameI18n, order);
@@ -24,11 +30,27 @@ public class State extends Element<Boolean> {
 		value = loadValue();
 
 		valueLabel = new Label((value?"ON":"OFF"), GUIHelper.getLabelStyle(Color.WHITE, 10));
+		valueLabel.setAlignment(Align.center);
 
-		add(valueLabel).right().padRight(2);
+		clear();
+		//TextButton new TextButton()
+		box = new CheckBox("", GUIHelper.getCheckBoxStyle(Color.WHITE, Color.WHITE, 10));
+
+		//add()
+		box.setChecked(value);
+		add(box).left().padRight(5);
+		add(nameLabel).left();
+		nameLabel.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				System.out.println("lelelel");
+			}
+		});
 	}
 
-	public void action(){}
+	public void action(){
+		//System.out.println(lele);
+	}
 
 	public void onEvent(InputEvent e){
 		if(e.getType() == Type.keyDown){

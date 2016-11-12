@@ -3,7 +3,6 @@ package xyz.hexagons.client.api;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import xyz.hexagons.client.engine.Game;
 import xyz.hexagons.client.map.timeline.TimelineObject;
 

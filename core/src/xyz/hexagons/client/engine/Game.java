@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
+import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.AudioPlayer;
 import xyz.hexagons.client.audio.SoundManager;
@@ -20,14 +20,14 @@ import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
-import xyz.hexagons.client.engine.render.Renderer;
+//import xyz.hexagons.client.engine.render.Renderer;
 import xyz.hexagons.client.menu.widgets.HProgressBar;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.resources.ArchiveFileHandle;
+import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.text.DecimalFormat;
-import java.util.LinkedList;
 
 /**
  * @author Sebastian Krajewski on 28.03.15.
@@ -52,7 +52,7 @@ public class Game implements Screen {
 	Label message;
 	ProgressBar next;
 
-	LinkedList<Renderer> renderers = new LinkedList<>();
+	//LinkedList<Renderer> renderers = new LinkedList<>();
 
 	int width, height;
 
@@ -64,6 +64,8 @@ public class Game implements Screen {
 
 	DecimalFormat timeFormat = new DecimalFormat("0.000");
 	DecimalFormat delayFormat = new DecimalFormat("0.00");
+
+	FpsCounter fpsCounter = new FpsCounter(60);
 
 	public Game (Map map){
 		this.map = map;
@@ -89,6 +91,7 @@ public class Game implements Screen {
 
 		points = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 30));
 		points.layout();
+		points.getStyle().font.setFixedWidthGlyphs("01234567890");
 		stage.addActor(points);
 		
 		next = new HProgressBar(0f, 1f, 0.0001f, false);
@@ -101,20 +104,22 @@ public class Game implements Screen {
 		audioPlayer.setLooping(true);
 
 
-		addRenderer(player);
+		//addRenderer(player);
 
 		start(map.info.startTimes[0]);
 	}
 
-	public void addRenderer(Renderer renderer){
-		renderers.add(renderer);
-		renderers.sort((o1, o2) -> Integer.compare(o1.getIndex(), o2.getIndex()));
-	}
+	//public void addRenderer(Renderer renderer){
+		//renderers.add(renderer);
+		//renderers.sort((o1, o2) -> Integer.compare(o1.getIndex(), o2.getIndex()));
+	//}
 
 
 	@Override
 	public void show() {
+
 		Instance.setForegroundFps.accept(0);
+		Gdx.graphics.setTitle("Hexagons! " + Version.version + " — " + map.info.songAuthor + " - " + map.info.songName);
 	}
 
 	@Override
@@ -171,6 +176,7 @@ public class Game implements Screen {
 		map.script.initColors();
 		map.script.initEvents();
 
+		//CurrentMap.data.eventTimeline.update(startTime);
 		SoundManager.playSound("start");
 	}
 
@@ -182,13 +188,12 @@ public class Game implements Screen {
 	float delta0;
 	boolean escClick = false;
 	Color tmpColor = new Color();
-	int framesps = 0;
-	int[] fpsBuffer = new int[64];
-	int fpsIndex = 0;
+
 	public void updateGame(float delta){
 
 		if(!player.dead && CurrentMap.data.wallTimeline.isFirstRemoved())
 			score += delta * (CurrentMap.data.difficulty * CurrentMap.data.speed * (((int)CurrentMap.data.currentTime) * 5 + 300));
+
 
 		updateTimeline(delta);
 
@@ -221,32 +226,22 @@ public class Game implements Screen {
 		if (!Gdx.input.isKeyPressed(Keys.ESCAPE)){
 			escClick = false;
 		}
-
 		updateRotation(delta);
 		updatePulse(delta);
 		camera.update(delta);
-		this.delta0 += delta;
-		renderers.forEach(o -> o.update(delta));
+		//renderers.forEach(o -> o.update(delta));
+		player.update(delta);
+		this.delta0+=delta;
 		while (this.delta0 >= (1f / 60)) {
 
-			fpsBuffer[fpsIndex++] = (int)(1f / delta);
-
-			if(fpsIndex >=fpsBuffer.length)
-				fpsIndex = 0;
-
-			framesps = 0;
-			for(int i : fpsBuffer){
-				framesps += i;
-			}
-			framesps /= fpsBuffer.length;
-
+			fpsCounter.update(delta);
 			updateText(1f / 60);
 			updateSkew(1f / 60);
-			//updatePulse(1f/60);
 
 			if (!player.dead) {
 				CurrentMap.data.walls.update(1f/60);
 				tmpColor.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+
 				fps.getStyle().fontColor = tmpColor;
 				time.getStyle().fontColor = tmpColor;
 				message.getStyle().fontColor = tmpColor;
@@ -255,6 +250,7 @@ public class Game implements Screen {
 
 			delta0 -= 0.016666668f;
 		}
+
 		if(!player.dead)
 			map.script.update(delta);
 	}
@@ -275,8 +271,8 @@ public class Game implements Screen {
 			}
 		}
 
-		fps.setText(framesps + "FPS\n" + delayFormat.format(1000f/framesps)+"ms");
-		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		fps.setText((int)(fpsCounter.getFPS()) + "FPS\n" + delayFormat.format(1000f/fpsCounter.getFPS())+"ms");
+		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
@@ -357,7 +353,6 @@ public class Game implements Screen {
 	float delta5;
 	float delta6;
 	public void updatePulse(float delta){
-
 		if(player.dead) return;
 
 		if(delta4 <= 0){

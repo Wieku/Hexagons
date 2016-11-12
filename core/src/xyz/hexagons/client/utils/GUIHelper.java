@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -154,7 +155,30 @@ public class GUIHelper{
 	public static SelectBoxStyle getSelectBoxStyle(Color bg, Color scrollBg, Color listBg, int size){
 		return new SelectBoxStyle(FontManager.getFont(FontManager.MAIN, size), Color.WHITE, getTxRegion(bg), getScrollPaneStyle(scrollBg, Color.WHITE), getListStyle(size, Color.WHITE, Color.WHITE, Color.LIGHT_GRAY, listBg));
 	}
-	
+
+	public static CheckBoxStyle getCheckBoxStyle(Color box, Color color, int size){
+		CheckBoxStyle stl = new CheckBoxStyle();
+
+		Pixmap pixMap = new Pixmap(12, 12, Format.RGBA8888);
+		pixMap.setColor(box);
+		//pixMap.drawRectangle(0, 0, 12, 12);
+		pixMap.drawCircle(6, 6, 5);
+		//pixMap.fillRectangle(2, 2, 8, 8);
+		pixMap.fillCircle(6, 6, 3);
+
+		stl.checkboxOn = getTxRegion(pixMap);
+		stl.checkboxOn.setRightWidth(5);
+		Pixmap pixMap2 = new Pixmap(12, 12, Format.RGBA8888);
+		pixMap2.setColor(box);
+		pixMap2.drawCircle(6, 6, 5);
+
+		stl.checkboxOff = getTxRegion(pixMap2);
+		stl.checkboxOff.setRightWidth(5);
+		stl.font =  FontManager.getFont(FontManager.MAIN, size);
+		stl.fontColor = color;
+		return stl;
+	}
+
 	public static TextureRegionDrawable getTxRegion(Color color){
 		return getTxRegion(color,1,1);
 	}

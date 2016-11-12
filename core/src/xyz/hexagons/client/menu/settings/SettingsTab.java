@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.Scaling;
 import me.wieku.animation.animations.Animation;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -94,12 +93,12 @@ public class SettingsTab extends Table{
 		add(field).center().fillX().padTop(30).padBottom(5).expandX().row();
 
 		chld = new Table();
-		chld.top().left();
+		chld.top().left().setFillParent(true);
 		//Conf.init();
 
 		scr = new ScrollPane(chld, GUIHelper.getScrollPaneStyle(Color.BLACK, Color.WHITE));
 
-		add(scr).top().expandY().fillX().uniform().row();
+		add(scr).top().fillY().fillX().uniform().row();
 
 		add(button = new TextButton("Back", GUIHelper.getTextButtonStyle(Color.WHITE, 20))).left().bottom().height(40).uniform().padTop(10).expandX();
 		button.addListener(new ClickListener(Buttons.LEFT){@Override
@@ -119,9 +118,9 @@ public class SettingsTab extends Table{
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		setHeight(Gdx.graphics.getHeight());
+		setHeight(getStage().getHeight());
 		setPosition(0, 0);
-
+		layout();
 		if(showd){
 			setWidth(Gdx.graphics.getWidth()*0.45f);
 		}

@@ -12,6 +12,7 @@ public class Settings implements Serializable{
 
 	public Graphics graphics = new Graphics();
 	public Audio audio = new Audio();
+	public GamePlay gameplay = new GamePlay();
 
 	@Section(name="graphics", enName="Graphics", order=0)
 	public class Graphics {
@@ -21,7 +22,10 @@ public class Settings implements Serializable{
 		@Section.Switch(name="fullscreen", enName="Full Screen", def = false, order=1)
 		public boolean fullscreen = false;
 
-		@Section.Slider(name="msaa", enName="MSAA", model={0, 4, 1, 4}, order=2)
+		@Section.Switch(name="fixedratio", enName="Fixed aspect ratio (4:3)", def = false, order=2)
+		public boolean fixedratio = false;
+
+		@Section.Slider(name="msaa", enName="MSAA", model={0, 4, 1, 4}, order=3)
 		public int msaa = 4;
 	}
 
@@ -40,6 +44,12 @@ public class Settings implements Serializable{
 
 		@Section.Slider(name="menuMusicVolume", enName="Menu Music Volume", model={0, 100, 5, 100}, order=3)
 		public int menuMusicVolume = 100;
+	}
+
+	@Section(name="gameplay", enName="Gameplay", order=3)
+	public class GamePlay {
+		@Section.Switch(name="invincibility", enName="Invincibility", def = false, order=0)
+		public boolean invincibility = false;
 	}
 
 }

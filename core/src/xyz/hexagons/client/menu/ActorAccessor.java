@@ -5,12 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
-import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import me.wieku.animation.AnimationEquations;
 import me.wieku.animation.animations.Animation;
 import me.wieku.animation.api.AnimationAccessor;
 import me.wieku.animation.api.AnimationEquation;
+import xyz.hexagons.client.Instance;
 
 public class ActorAccessor implements AnimationAccessor<Actor> {
 

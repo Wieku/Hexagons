@@ -1,19 +1,13 @@
 package xyz.hexagons.client;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.wieku.animation.AnimationManager;
 import me.wieku.animation.animations.Animation;
-import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
@@ -52,7 +46,6 @@ public class Hexagons extends Game {
 			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		} else {
 			Gdx.graphics.setWindowedMode(1024, 768);
-			Gdx.graphics.setResizable(false);
 		}
 	}
 
@@ -66,7 +59,7 @@ public class Hexagons extends Game {
 	float delta0;
 	@Override
 	public void render () {
-		if((delta0+=Gdx.graphics.getDeltaTime()) >=1f/60){
+		if((delta0 += Gdx.graphics.getDeltaTime()) >=1f/60){
 			update(delta0);
 			delta0 = 0;
 		}

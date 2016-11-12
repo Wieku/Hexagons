@@ -13,13 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import me.wieku.animation.timeline.Timeline;
+import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.MenuPlaylist;
@@ -32,6 +30,7 @@ import xyz.hexagons.client.menu.settings.SettingsTab;
 import xyz.hexagons.client.engine.render.BlurEffect;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.util.ArrayList;
@@ -61,9 +60,9 @@ public class MainMenu implements Screen {
 	SettingsTab sTab;
 
 	public MapSelect sl;
-
+	FpsCounter cd = new FpsCounter(60);
 	public MainMenu(){
-		stage = new Stage(new ScreenViewport());
+		stage = new Stage(new ExtendViewport(1024, 768));
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
 		blurEffect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
@@ -135,12 +134,12 @@ public class MainMenu implements Screen {
 			}
 		});
 
-		version = new Label("Version: " + Version.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
+		version = new Label("Build: " + Version.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 8));
 		version.pack();
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
 		stage.addActor(version);
 
-		copyright = new Label("Hexagons! 2016 Created by: Magik6k and Wieku", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
+		copyright = new Label("Hexagons! 2016 Written by Wieku (wieku.me)", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
 		copyright.pack();
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		stage.addActor(copyright);
@@ -193,7 +192,7 @@ public class MainMenu implements Screen {
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
 		Gdx.input.setInputProcessor(stage);
-
+		Instance.setForegroundFps.accept(0);
 		if(!first){
 			MenuPlaylist.start();
 			first = true;
@@ -213,6 +212,7 @@ public class MainMenu implements Screen {
 	private Timeline beatHigh;
 	private Timeline beatLow;
 	private float delta0 = 0;
+	private float delta1 = 0;
 	@Override
 	public void render(float delta) {
 
@@ -222,6 +222,7 @@ public class MainMenu implements Screen {
 		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
 		camera.update(delta);
 		if((delta0 += delta)>=1f/60) {
+			cd.update(delta);
 			CurrentMap.data.walls.update(delta0);
 			CurrentMap.data.skew = 1f;
 			CurrentMap.setMinSkew(0.9999f);
@@ -243,7 +244,10 @@ public class MainMenu implements Screen {
 			title.setText(MenuPlaylist.getCurrent().info.songAuthor + " - " + MenuPlaylist.getCurrent().info.songName);
 			music.pack();
 
-			music.setPosition(Gdx.graphics.getWidth()-music.getWidth(), Gdx.graphics.getHeight()-music.getHeight());
+			//lel.set(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
+			//float gx = (stage.getWidth()/1024f) * music.getWidth();
+			//float gy = (stage.getHeight()/1024f) * music.getHeight();
+			music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
 
 			if(beatHigh == null || beatHigh.isFinished()){
 				
@@ -260,6 +264,11 @@ public class MainMenu implements Screen {
 			}
 
 			delta0 = 0;
+		}
+
+		if((delta1 += delta)>=1f) {
+			//System.out.println((int)cd.getFPS());
+			delta1=0;
 		}
 
 		blurEffect.bind();
@@ -299,8 +308,8 @@ public class MainMenu implements Screen {
 		button3.setBounds(stage.getWidth() - 445 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
 
 		blurEffect.resize(width, height);
-		music.setPosition(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
-
+		music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
+		music.layout();
 	}
 
 	private void selectIndex(int index){

@@ -11,9 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
-import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import me.wieku.animation.timeline.Timeline;
+import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.menu.screens.MapSelect;
@@ -66,7 +65,7 @@ public class MenuMap extends Button {
 		Table info = new Table();
 		info.add(name = new Label(map.info.name.substring(0, Math.min(24, map.info.name.length())), GUIHelper.getLabelStyle(Color.WHITE, 12))).top().left().expandX().fillX().row();
 		info.add(author = new Label("Author: "+map.info.author, GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
-		info.add(description = new Label(map.info.description, GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
+		info.add(description = new Label(map.info.description.substring(0, Math.min(40, map.info.description.length())), GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
 		//info.add(song = new Label(map.info.songName + " by " + map.info.songAuthor, GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
 
 
@@ -105,6 +104,9 @@ public class MenuMap extends Button {
 			fade = true;
 			selected=false;
 		}
+
+
+
 	}
 
 	@Override
@@ -173,6 +175,11 @@ public class MenuMap extends Button {
 		//borderBottom.setVisible(visible);
 		//borderLeft.setVisible(visible);
 		//borderRight.setVisible(visible);
+	}
+
+	public boolean isIn(int x, int y) {
+		if(x >= getX() && x <= getX()+getWidth() && y >= getY() && y <= getY()+getHeight()) return true;
+		return false;
 	}
 
 }

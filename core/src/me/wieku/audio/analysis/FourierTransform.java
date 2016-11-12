@@ -410,7 +410,7 @@ public abstract class FourierTransform
     {
       octaves++;
     }
-    System.out.println("Number of octaves = " + octaves);
+    //System.out.println("Number of octaves = " + octaves);
     avgPerOctave = bandsPerOctave;
     averages = new float[octaves * bandsPerOctave];
     whichAverage = LOGAVG;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.Wall;
@@ -16,40 +15,39 @@ import java.util.List;
 
 public class MapRenderer {
 
-	Color shadow = new Color();
+	private Color shadow = new Color();
 
-	Vector2 tmp = new Vector2();
-	Vector2 tmp2 = new Vector2();
+	private Vector2 tmp = new Vector2();
+	private Vector2 tmp2 = new Vector2();
 
 
 	public void renderObjects(ShapeRenderer renderer, float delta, Camera camera, /*Style style,*/ Player player, List<Wall> walls) {
 
 		renderer.setProjectionMatrix(camera.combined);
 		renderer.identity();
-		((ObjRender)renderer).setHeight(0);
+		((ObjRender) renderer).setHeight(0);
 		renderer.begin(ObjRender.ShapeType.Filled);
 		renderBackground(renderer, delta, true, 0);
 
 
-		for(int j = 1; j <= CurrentMap.data.layers; ++j){
-			((ObjRender)renderer).setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew));
-			renderPlayer(renderer, delta, true, j-1, player);
-			renderWalls(renderer, delta, true, j-1, walls);
-			renderCenter(renderer, delta, true, j-1);
+		for (int j = 1; j <= CurrentMap.data.layers; ++j) {
+			((ObjRender) renderer).setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew));
+			renderPlayer(renderer, delta, true, j - 1, player);
+			renderWalls(renderer, delta, true, j - 1, walls);
+			renderCenter(renderer, delta, true, j - 1);
 		}
 
-		((ObjRender)renderer).setHeight(0);
+		((ObjRender) renderer).setHeight(0);
 
 		renderPlayer(renderer, delta, false, 0, player);
 		renderWalls(renderer, delta, false, 0, walls);
 		renderCenter(renderer, delta, false, 0);
 		renderer.end();
 
-
 	}
 
 
-	float delta1;
+	private float delta1;
 	public void renderBackground(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
 		CurrentMap.data.colors.forEach(o -> o.update(delta));
@@ -132,7 +130,6 @@ public class MapRenderer {
 
 		walls.forEach(wall->{
 			if(wall.visible) {
-				//renderer.polygon();polygon(wall.getPolygon().getVertices());
 				float[] vert = wall.getPolygon().getVertices();
 				renderer.triangle(vert[0], vert[1], vert[2], vert[3], vert[4], vert[5]);
 				renderer.triangle(vert[4], vert[5], vert[6], vert[7], vert[0], vert[1]);
@@ -141,6 +138,9 @@ public class MapRenderer {
 
 	}
 
+	public Vector2 tmp11 = new Vector2();
+	public Vector2 tmp22 = new Vector2();
+	public Vector2 tmp33 = new Vector2();
 
 	public void renderPlayer(ShapeRenderer renderer, float delta, boolean shadows, int shadLev, Player player) {
 		if(!shadows)
@@ -150,8 +150,7 @@ public class MapRenderer {
 			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 		}
 
-		renderer.triangle(player.tmp3.x, player.tmp3.y, player.tmp.x, player.tmp.y, player.tmp2.x, player.tmp2.y);
-
+		renderer.triangle(player.tmp.x, player.tmp.y, player.tmp2.x, player.tmp2.y, player.tmp3.x, player.tmp3.y);
 	}
 
 }

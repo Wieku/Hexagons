@@ -6,15 +6,17 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.Main;
+import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
@@ -62,7 +64,8 @@ public class MapSelect implements Screen {
 		instance = this;
 		shapeRenderer = new ObjRender();
 
-		stage = new Stage(new ScreenViewport());
+		stage = new Stage(new ExtendViewport(1024, 768));
+
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		stage.addListener(new InputListener(){
 
@@ -98,7 +101,7 @@ public class MapSelect implements Screen {
 						mapButtons.forEach(MenuMap::update);
 					}
 
-					System.out.println(mapButtons.get(mapIndex).getY());
+					//System.out.println(mapButtons.get(mapIndex).getY());
 
 					if(keycode == Keys.DOWN || keycode == Keys.UP) {
 						try {
@@ -129,7 +132,63 @@ public class MapSelect implements Screen {
 			}
 		});
 
+		stage.addListener(new ActorGestureListener(){
+			@Override
+			public void tap(InputEvent event, float x, float y, int count, int button) {
+				Vector2 r = scrollPane.screenToLocalCoordinates(new Vector2(x, Gdx.graphics.getHeight()-y));
+				for(MenuMap m : mapButtons) {
+					if(m.isIn((int)r.x, (int)r.y)) {
 
+						System.out.println(m.map.info.name);
+						if(mapButtons.indexOf(m) != mapIndex) {
+							if(mapButtons.indexOf(m) > mapIndex){
+
+								mapButtons.get(mapIndex).check(false);
+
+								mapIndex = mapButtons.indexOf(m);
+								selectIndex(mapIndex);
+								mapButtons.get(mapIndex).check(true);
+
+								MenuMap ms = mapButtons.get(mapIndex);
+								scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+
+								mapButtons.forEach(MenuMap::update);
+							}
+
+							if(mapButtons.indexOf(m) < mapIndex){
+
+								mapButtons.get(mapIndex).check(false);
+								mapIndex = mapButtons.indexOf(m);
+								selectIndex(mapIndex);
+								mapButtons.get(mapIndex).check(true);
+
+								MenuMap ms = mapButtons.get(mapIndex);
+								scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+
+								mapButtons.forEach(MenuMap::update);
+							}
+						} else {
+							SoundManager.playSound("beep");
+							Gdx.input.setInputProcessor(null);
+							//audioPlayer.pause();
+							MenuPlaylist.pause();
+							Instance.game.setScreen(game = new Game(maps.get(mapIndex)));
+						}
+
+						if(count == 2) {
+							SoundManager.playSound("beep");
+							Gdx.input.setInputProcessor(null);
+							//audioPlayer.pause();
+							MenuPlaylist.pause();
+							Instance.game.setScreen(game = new Game(maps.get(mapIndex)));
+						}
+
+						return;
+					}
+
+				}
+			}
+		});
 		info = new Table();
 		info.add(number = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
 		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
@@ -140,7 +199,7 @@ public class MapSelect implements Screen {
 		info.pack();
 
 		info.setWidth(Gdx.graphics.getWidth()/3);
-		info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
+		info.setPosition(5, stage.getHeight()-5-info.getHeight());
 
 		stage.addActor(info);
 		
@@ -166,8 +225,8 @@ public class MapSelect implements Screen {
 
 		stage.addActor(scrollPane);
 		
-		if(Settings.instance.graphics.fullscreen)
-			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		//if(Settings.instance.graphics.fullscreen)
+		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
 
 	float delta0 = 0;
@@ -210,7 +269,7 @@ public class MapSelect implements Screen {
 		mapRenderer.renderBackground(shapeRenderer, delta, true, 0);
 		shapeRenderer.end();
 
-		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
+		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
 		scrollPane.layout();
 
 		if(!showed) {
@@ -242,20 +301,20 @@ public class MapSelect implements Screen {
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		info.setWidth(Gdx.graphics.getWidth()/3);
-		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3)-15, 0, Math.max(468, Gdx.graphics.getWidth()/3)+15, Gdx.graphics.getHeight());
+		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3)-15, 0, Math.max(468, stage.getWidth()/3)+15, stage.getHeight());
 		scrollPane.layout();
 		mapButtons.forEach(e->{e.setX(0);e.update();});
 
 		info.pack();
-		info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
+		info.setPosition(5, stage.getHeight()-5-info.getHeight());
 	}
 
 	@Override
 	public void show() {
 
 		Instance.setForegroundFps.accept(120);
-
-		selectIndex(mapIndex = Instance.maps.indexOf(MenuPlaylist.getCurrent()));
+		Gdx.graphics.setTitle("Hexagons! " + Version.version);
+		selectIndex(mapIndex= Instance.maps.indexOf(MenuPlaylist.getCurrent()));
 
 		if(game != null){
 			MenuPlaylist.play();
@@ -275,6 +334,8 @@ public class MapSelect implements Screen {
 		table.layout();
 		showed = false;
 		Gdx.input.setInputProcessor(stage);
+
+		//System.out.println("Map selection screen showed up");
 	}
 
 
