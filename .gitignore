@@ -12,3 +12,4 @@ build/
 run/*
 !run/Maps/
 run/Maps/.temp/
+.idea/
