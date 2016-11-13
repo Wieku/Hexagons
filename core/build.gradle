@@ -1,7 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+    }
+}
+
 apply plugin: "java"
+apply plugin: 'me.tatarka.retrolambda'
 
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
+}
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 

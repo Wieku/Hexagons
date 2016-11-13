@@ -4,6 +4,8 @@ import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.api.Patterns;
 import xyz.hexagons.client.map.Hue;
 
+import static xyz.hexagons.client.api.MapUtils.shuffle;
+
 public class Acceleradiant implements MapScript {
 
 	public void wallSAcc(int mSide, float mAdj, float mAcc, float mMinSpd, float mMaxSpd){

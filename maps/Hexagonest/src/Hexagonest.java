@@ -6,6 +6,8 @@ import xyz.hexagons.client.api.SpeedData;
 import xyz.hexagons.client.api.Wall;
 import xyz.hexagons.client.map.timeline.TimelineRunnable;
 
+import static xyz.hexagons.client.api.MapUtils.shuffle;
+
 /**
  * @author Sebastian Krajewski on 29.03.15.
  */

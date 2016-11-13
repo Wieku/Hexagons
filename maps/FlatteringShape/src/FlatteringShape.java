@@ -4,6 +4,8 @@ import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.api.Patterns;
 import xyz.hexagons.client.map.Hue;
 
+import static xyz.hexagons.client.api.MapUtils.shuffle;
+
 /**
  * @author Sebastian Krajewski on 29.03.15.
  */
