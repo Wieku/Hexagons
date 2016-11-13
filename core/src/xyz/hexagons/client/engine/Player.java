@@ -17,51 +17,87 @@ import xyz.hexagons.client.menu.settings.Settings;
  */
 public class Player {
 
-	float rot;
+	private float rot;
 	public Vector2 tmp = new Vector2();
 	public Vector2 tmp2 = new Vector2();
 	public Vector2 tmp3 = new Vector2();
 
-	Vector2 fCh = new Vector2();
-	Vector2 lCh = new Vector2();
-	Vector2 rCh = new Vector2();
+	private Vector2 fCh = new Vector2();
+	private Vector2 lCh = new Vector2();
+	private Vector2 rCh = new Vector2();
 	public boolean dead = false;
 	int dir = 0;
-	Color shadow = new Color();
-
-	/*@Override
-	public void render(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
-		if(!shadows)
-			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
-		else {
-			shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
-			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
-		}
-
-		renderer.triangle(tmp.x, tmp.y, tmp2.x, tmp2.y, tmp3.x, tmp3.y);
-		*//*renderer.setColor(Color.CYAN);
-		renderer.circle(lCh.x, lCh.y, 1);
-		renderer.setColor(Color.RED);
-		renderer.circle(rCh.x, rCh.y, 1);*//*
-	}*/
+	private Color shadow = new Color();
+	private RotatationState rotatationState = RotatationState.STILL;
 
 	float delta;
-	//@Override
 	public void update(float delta){
 		this.delta += delta;
 
 		float oldRot = rot;
 
-		if(!dead)
-			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT) || (Gdx.app.getType() == ApplicationType.Desktop && Gdx.input.isButtonPressed(Buttons.LEFT))
-					|| (Gdx.app.getType() == ApplicationType.Android && Gdx.input.getX() <= Gdx.graphics.getWidth()/2 && Gdx.input.isTouched())){
-				rot -= (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
+		if(!dead) {
+			if (isLeftPressed()) {
+				switch(rotatationState) {
+					case RIGHT:
+						rotatationState = RotatationState.LEFT_ON_RIGHT;
+						break;
+					case RIGHT_ON_LEFT:
+					case LEFT_ON_RIGHT:
+						break;
+					default:
+						rotatationState = RotatationState.LEFT;
+						break;
+				}
+			} else {
+				switch(rotatationState) {
+					case LEFT:
+						rotatationState = RotatationState.STILL;
+						break;
+					case RIGHT_ON_LEFT:
+					case LEFT_ON_RIGHT:
+						rotatationState = RotatationState.RIGHT;
+						break;
+					default:
+						break;
+				}
+			}
+
+			if (isRightPressed()) {
+				switch(rotatationState) {
+					case LEFT:
+						rotatationState = RotatationState.RIGHT_ON_LEFT;
+						break;
+					case LEFT_ON_RIGHT:
+					case RIGHT_ON_LEFT:
+						break;
+					default:
+						rotatationState = RotatationState.RIGHT;
+						break;
+				}
+			} else {
+				switch(rotatationState) {
+					case RIGHT:
+						rotatationState = RotatationState.STILL;
+						break;
+					case RIGHT_ON_LEFT:
+					case LEFT_ON_RIGHT:
+						rotatationState = RotatationState.LEFT;
+						break;
+					default:
+						break;
+				}
+			}
+
+			if(rotatationState == RotatationState.LEFT || rotatationState == RotatationState.LEFT_ON_RIGHT) {
+				rot -= (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ? 4.725f : 9.45f) * 60f * delta;
 				dir = -1;
-			} else if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT) || (Gdx.app.getType() == ApplicationType.Desktop && Gdx.input.isButtonPressed(Buttons.RIGHT))
-					|| (Gdx.app.getType() == ApplicationType.Android && Gdx.input.getX() >= Gdx.graphics.getWidth()/2 && Gdx.input.isTouched())){
-				rot += (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)? 4.725f : 9.45f) * 60f * delta;
+			} else if(rotatationState == RotatationState.RIGHT || rotatationState == RotatationState.RIGHT_ON_LEFT) {
+				rot += (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ? 4.725f : 9.45f) * 60f * delta;
 				dir = 1;
 			}
+
+		}
 
 		rot = (rot < 0 ? rot + 360f : (rot > 360f ? rot - 360f : rot));
 
@@ -89,7 +125,16 @@ public class Player {
 
 	}
 
-	//@Override
+	private boolean isLeftPressed() {
+		return Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT) || (Gdx.app.getType() == ApplicationType.Desktop && Gdx.input.isButtonPressed(Buttons.LEFT))
+				|| (Gdx.app.getType() == ApplicationType.Android && Gdx.input.getX() <= Gdx.graphics.getWidth()/2 && Gdx.input.isTouched());
+	}
+
+	private boolean isRightPressed() {
+		return Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT) || (Gdx.app.getType() == ApplicationType.Desktop && Gdx.input.isButtonPressed(Buttons.RIGHT))
+				|| (Gdx.app.getType() == ApplicationType.Android && Gdx.input.getX() >= Gdx.graphics.getWidth()/2 && Gdx.input.isTouched());
+	}
+
 	public int getIndex(){
 		return 3;
 	}
@@ -98,4 +143,12 @@ public class Player {
 		dead = false;
 	}
 
+
+	private enum RotatationState {
+		STILL,
+		LEFT,
+		RIGHT,
+		LEFT_ON_RIGHT,
+		RIGHT_ON_LEFT
+	}
 }
