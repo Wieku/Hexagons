@@ -26,6 +26,7 @@ public class Player {
 	private Vector2 lCh = new Vector2();
 	private Vector2 rCh = new Vector2();
 	public boolean dead = false;
+	private boolean captureMouse = false;
 	int dir = 0;
 	private Color shadow = new Color();
 	private RotatationState rotatationState = RotatationState.STILL;
@@ -97,6 +98,26 @@ public class Player {
 				dir = 1;
 			}
 
+			if(captureMouse) {
+				int deltaX = Gdx.input.getDeltaX();
+				if (deltaX != 0) {
+					rot += /*(deltaX > 0 ? 1 : -1) * (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ? 4.725f : 9.45f) * 60f * delta;*/ deltaX;
+					dir = deltaX > 0 ? 1 : -1;
+					Gdx.input.setCursorPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+				}
+
+			}
+			if (Gdx.input.isKeyJustPressed(Keys.CONTROL_LEFT)) {
+				captureMouse = !captureMouse;
+				if(captureMouse){
+					Gdx.input.setCursorCatched(true);
+				} else {
+					Gdx.input.setCursorCatched(false);
+				}
+			}
+		} else {
+			Gdx.input.setCursorCatched(false);
+			captureMouse = false;
 		}
 
 		rot = (rot < 0 ? rot + 360f : (rot > 360f ? rot - 360f : rot));
