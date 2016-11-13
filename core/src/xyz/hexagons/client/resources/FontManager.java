@@ -1,5 +1,6 @@
 package xyz.hexagons.client.resources;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -13,8 +14,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.slf4j.LoggerFactory;
-import java.awt.Font;
-import java.io.BufferedInputStream;
+//import java.awt.Font;
+//import java.io.BufferedInputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 public enum FontManager{
@@ -60,18 +61,20 @@ public enum FontManager{
 
 		LoggerFactory.getLogger(FontManager.class).info("Initializing FontManager...");
 
+		String asset = (Gdx.app.getType()== ApplicationType.Android?"":"assets/");
+
 		for (FontManager val : values()) {
-			FileHandle file = Gdx.files.internal("assets/fonts/" + val.name + ".ttf");
+			FileHandle file = Gdx.files.internal(asset+"fonts/" + val.name + ".ttf");
 			String chars = "";
 			try {
-				Font font = Font.createFont(Font.TRUETYPE_FONT, new BufferedInputStream(file.read()));
+				/*Font font = Font.createFont(Font.TRUETYPE_FONT, new BufferedInputStream(file.read()));
 
 				for (int c = 0; c <= Character.MAX_CODE_POINT; c++) {
 					if (font.canDisplay(c)) {
 						chars += (char) c;
 					}
 				}
-				System.out.println(chars);
+				System.out.println(chars);*/
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
 				FreeTypeFontParameter pam = new FreeTypeFontParameter();
 				pam.size = val.genSize;

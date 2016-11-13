@@ -12,7 +12,7 @@ public class SoundManager {
 	static HashMap<String, Sound> sounds = new HashMap<>();
 
 	public static void registerSound(String name, String path, boolean isInternal){
-		sounds.put(name, Gdx.audio.newSound(Gdx.files.getFileHandle(path, isInternal ? FileType.Internal : FileType.Absolute)));
+		sounds.put(name, Gdx.audio.newSound(Gdx.files.internal(path)));//, isInternal ? FileType.Internal : FileType.Absolute)));
 	}
 
 	public static void removeSound(String name){

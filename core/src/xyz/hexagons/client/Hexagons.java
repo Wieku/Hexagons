@@ -1,5 +1,6 @@
 package xyz.hexagons.client;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -33,13 +34,15 @@ public class Hexagons extends Game {
 		FontManager.init();
 		Animation.addAccessor(Actor.class, new ActorAccessor());
 
-		SoundManager.registerSound("death", "assets/sound/death.ogg", true);
-		SoundManager.registerSound("start", "assets/sound/go.ogg", true);
-		SoundManager.registerSound("gameover", "assets/sound/gameOver.ogg", true);
-		SoundManager.registerSound("swap", "assets/sound/swap.ogg", true);
-		SoundManager.registerSound("beep", "assets/sound/beep.ogg", true);
-		SoundManager.registerSound("click", "assets/sound/menuclick.ogg", true);
-		SoundManager.registerSound("levelup", "assets/sound/levelUp.ogg", true);
+		String asset = (Gdx.app.getType()== ApplicationType.Android?"":"assets/");
+
+		SoundManager.registerSound("death", asset + "sound/death.ogg", true);
+		SoundManager.registerSound("start", asset + "sound/go.ogg", true);
+		SoundManager.registerSound("gameover", asset + "sound/gameOver.ogg", true);
+		SoundManager.registerSound("swap", asset + "sound/swap.ogg", true);
+		SoundManager.registerSound("beep", asset + "sound/beep.ogg", true);
+		SoundManager.registerSound("click", asset + "sound/menuclick.ogg", true);
+		SoundManager.registerSound("levelup", asset + "sound/levelUp.ogg", true);
 
 		setScreen(Updater.instance);
 		if(Settings.instance.graphics.fullscreen){
