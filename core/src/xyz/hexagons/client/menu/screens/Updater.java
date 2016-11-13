@@ -19,6 +19,7 @@ import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.resources.Json;
+import xyz.hexagons.client.utils.PathUtil;
 import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class Updater implements Screen {
 		loadTable = GUIHelper.getTable(new Color(0x0f0f0fff));
 		loadTable.top();
 
-		Texture texture = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true);
+		Texture texture = new Texture(Gdx.files.internal(PathUtil.getPathForFile("hexlogobig.png")), true);
 		texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 
 		Image image = new Image(texture);

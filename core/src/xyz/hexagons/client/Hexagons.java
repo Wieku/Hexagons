@@ -15,6 +15,7 @@ import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.menu.screens.Updater;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.resources.FontManager;
+import xyz.hexagons.client.utils.PathUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,15 +35,13 @@ public class Hexagons extends Game {
 		FontManager.init();
 		Animation.addAccessor(Actor.class, new ActorAccessor());
 
-		String asset = (Gdx.app.getType()== ApplicationType.Android?"":"assets/");
-
-		SoundManager.registerSound("death", asset + "sound/death.ogg", true);
-		SoundManager.registerSound("start", asset + "sound/go.ogg", true);
-		SoundManager.registerSound("gameover", asset + "sound/gameOver.ogg", true);
-		SoundManager.registerSound("swap", asset + "sound/swap.ogg", true);
-		SoundManager.registerSound("beep", asset + "sound/beep.ogg", true);
-		SoundManager.registerSound("click", asset + "sound/menuclick.ogg", true);
-		SoundManager.registerSound("levelup", asset + "sound/levelUp.ogg", true);
+		SoundManager.registerSound("death", PathUtil.getPathForFile("sound/death.ogg"), true);
+		SoundManager.registerSound("start", PathUtil.getPathForFile("sound/go.ogg"), true);
+		SoundManager.registerSound("gameover", PathUtil.getPathForFile("sound/gameOver.ogg"), true);
+		SoundManager.registerSound("swap", PathUtil.getPathForFile("sound/swap.ogg"), true);
+		SoundManager.registerSound("beep", PathUtil.getPathForFile("sound/beep.ogg"), true);
+		SoundManager.registerSound("click", PathUtil.getPathForFile("sound/menuclick.ogg"), true);
+		SoundManager.registerSound("levelup", PathUtil.getPathForFile("sound/levelUp.ogg"), true);
 
 		setScreen(Updater.instance);
 		if(Settings.instance.graphics.fullscreen){
@@ -80,7 +79,7 @@ public class Hexagons extends Game {
 		if(Settings.instance != null){
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			try {
-				Files.write(gson.toJson(Settings.instance), new File("settings.json"), Charsets.UTF_8);
+				Files.write(gson.toJson(Settings.instance), new File(Instance.storageRoot, "settings.json"), Charsets.UTF_8);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

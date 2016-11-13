@@ -3,6 +3,7 @@ package xyz.hexagons.client.map;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.utils.Utils;
 
@@ -27,13 +28,13 @@ public class MapLoader {
 	//private static Logger log = LoggerFactory.getLogger(MapLoader.class);
 
 	public static ArrayList<Map> load() {
-		new File(MAPS_PATH).mkdirs();
-		new File(DATA_PATH).mkdirs();
+		new File(Instance.storageRoot, MAPS_PATH).mkdirs();
+		new File(Instance.storageRoot, DATA_PATH).mkdirs();
 
 		System.out.println("Loading maps");
 		ArrayList<Map> maps = new ArrayList<>();
 
-		File dir = new File(MAPS_PATH);
+		File dir = new File(Instance.storageRoot, MAPS_PATH);
 
 		File files[] = dir.listFiles();
 

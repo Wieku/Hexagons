@@ -44,6 +44,8 @@ public class DesktopLauncher {
 		LuaValue chunk = globals.load("print 'Lua works'");
 		chunk.call();
 
+		Instance.storageRoot = new File(".");
+
 		config = new LwjglApplicationConfiguration();
 
 		Instance.setForegroundFps = fps -> config.foregroundFPS = fps;
