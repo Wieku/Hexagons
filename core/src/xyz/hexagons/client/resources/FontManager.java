@@ -35,7 +35,6 @@ public enum FontManager{
 
 	public static BitmapFont getFont(FontManager val, int size) {
 		BitmapFontData data = fonts.get(val).data, dataCopy = new BitmapFontData();
-
 		try {
 			for (Field field : dataCopy.getClass().getFields()) {
 				field.setAccessible(true);
@@ -46,7 +45,7 @@ public enum FontManager{
 		}
 
 		BitmapFont font = new BitmapFont(dataCopy, fonts.get(val).regions, false);
-		font.getData().setScale((float) size / /*7*/val.widthScale, (float) size / /*8*/val.heightScale);
+		font.getData().setScale((float) size / val.widthScale, (float) size / val.heightScale);
 		return font;
 	}
 

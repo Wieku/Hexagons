@@ -19,7 +19,7 @@ allprojects {
     version = '0.2.0'
     ext {
         appName = "hexagons"
-        gdxVersion = '1.9.4'
+        gdxVersion = '1.9.3'
         roboVMVersion = '2.2.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
