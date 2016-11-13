@@ -12,11 +12,30 @@ buildscript {
     }
 }
 
+def getGitRef() {
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    } catch (Throwable e) {
+        return "unknown"
+    }
+}
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '0.2.0'
+    version = '0.2'
+
+    if (System.getenv("BUILD_NUMBER") != null)
+        version += ".${System.getenv("BUILD_NUMBER")}"
+    else
+        version += "-" + getGitRef()
+
     ext {
         appName = "hexagons"
         gdxVersion = '1.9.3'
