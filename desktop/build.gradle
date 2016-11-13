@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
+    }
+}
+
 apply plugin: "java"
+apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -12,6 +22,12 @@ task run(dependsOn: classes, type: JavaExec) {
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'xyz.hexagons.client.desktop.DesktopLauncher'
+    }
 }
 
 build.dependsOn ':maps:bundle'
@@ -45,4 +61,8 @@ task afterEclipseImport(description: "Post processing after project generation",
     printer.setPreserveWhitespace(true)
     printer.print(classpath)
   }
+}
+
+shadowJar {
+    baseName = 'Hexagons'
 }
