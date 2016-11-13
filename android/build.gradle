@@ -14,6 +14,10 @@ android {
 
         instrumentTest.setRoot('tests')
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
@@ -22,6 +26,16 @@ android {
         minSdkVersion 8
         targetSdkVersion 23
     }
+
+    //https://github.com/evant/android-retrolambda-lombok
+    lintOptions {
+        abortOnError false
+    }
+}
+
+retrolambda {
+    incremental false
+    javaVersion JavaVersion.VERSION_1_7
 }
 
 
@@ -85,8 +99,8 @@ eclipse {
     }
 
     jdt {
-        sourceCompatibility = 1.6
-        targetCompatibility = 1.6
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
     }
 
     classpath {
