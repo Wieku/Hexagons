@@ -137,6 +137,17 @@ project(":core") {
     }
 }
 
+project(":rankserv") {
+    apply plugin: "java"
+
+    dependencies {
+        compile 'org.eclipse.jetty:jetty-server:9.4.0.M1'
+        compile 'org.eclipse.jetty:jetty-servlet:9.4.0.M1'
+        compile 'com.google.code.gson:gson:2.7'
+        compile 'org.xerial:sqlite-jdbc:3.8.10.1'
+    }
+}
+
 tasks.eclipse.doLast {
     delete ".project"
 }

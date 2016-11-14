@@ -6,13 +6,14 @@ import java.io.Serializable;
  * @author Sebastian Krajewski on 07.04.15.
  */
 
-public class Settings implements Serializable{
+public class Settings implements Serializable {
 
 	public static transient Settings instance;
 
 	public Graphics graphics = new Graphics();
 	public Audio audio = new Audio();
 	public GamePlay gameplay = new GamePlay();
+	public Ranking ranking = new Ranking();
 
 	@Section(name="graphics", enName="Graphics", order=0)
 	public class Graphics {
@@ -52,4 +53,12 @@ public class Settings implements Serializable{
 		public boolean invincibility = false;
 	}
 
+	@Section(name="ranking", enName="Ranking", order=4)
+	public class Ranking {
+		//@Section.Switch(name="server", enName="Server", def = "10.1.3.1:9999", order=0)
+		public String server = "10.1.0.1:9999";
+
+		//@Section.Switch(name="nickname", enName="Nickname", def = "10.1.3.1:9999", order=0)
+		public String nickname = "Anonymous";
+	}
 }

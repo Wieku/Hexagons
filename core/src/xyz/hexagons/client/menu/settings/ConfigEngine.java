@@ -88,13 +88,15 @@ public class ConfigEngine {
 					Section sec = fieldParent.getClass().getAnnotation(Section.class);
 					for(Field f1 : fieldParent.getClass().getFields()) {
 						//System.out.println(f1.getName());
-						Annotation an = f1.getAnnotations()[0];
-						if(an instanceof Section.Slider) {
-							Section.Slider sl = (Section.Slider) an;
-							elements.add(new Slider(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model()[0], sl.model()[1], sl.model()[2], sl.model()[3], sl.order()));
-						} else if (an instanceof Section.Switch) {
-							Section.Switch sl = (Section.Switch) an;
-							elements.add(new State(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.def(), sl.order()));
+						if(f1.getAnnotations().length > 0) {
+							Annotation an = f1.getAnnotations()[0];
+							if (an instanceof Section.Slider) {
+								Section.Slider sl = (Section.Slider) an;
+								elements.add(new Slider(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model()[0], sl.model()[1], sl.model()[2], sl.model()[3], sl.order()));
+							} else if (an instanceof Section.Switch) {
+								Section.Switch sl = (Section.Switch) an;
+								elements.add(new State(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.def(), sl.order()));
+							}
 						}
 					}
 				} catch (IllegalAccessException e) {
