@@ -1,13 +1,14 @@
 {
-"className":"Hexagonest",
-"audioFileName":"focus.ogg",
-"name": "Hyper Hexagonest",
-"author":"Terry Cavanagh",
-"description":"Hexagonestestest",
-"songName":"Focus",
-"songAuthor":"Chipzel",
-"tags":"awesome",
-"pack":"Super Hexagon",
-"startTimes":[0,22,44.4,54.3,66],
-"previewTime": 0
+  "className":"Hexagonest",
+  "audioFileName":"focus.ogg",
+  "name": "Hyper Hexagonest",
+  "author":"Terry Cavanagh",
+  "description":"Hexagonestestest",
+  "songName":"Focus",
+  "songAuthor":"Chipzel",
+  "tags":"awesome",
+  "pack":"Super Hexagon",
+  "startTimes":[0,22,44.4,54.3,66],
+  "previewTime": 0,
+  "uuid": "35adb4e0-a2a0-4f60-a454-1aa28367b853"
 }

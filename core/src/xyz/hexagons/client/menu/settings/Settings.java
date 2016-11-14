@@ -56,7 +56,7 @@ public class Settings implements Serializable {
 	@Section(name="ranking", enName="Ranking", order=4)
 	public class Ranking {
 		//@Section.Switch(name="server", enName="Server", def = "10.1.3.1:9999", order=0)
-		public String server = "10.1.0.1:9999";
+		public String server = "http://10.1.0.1:9999";
 
 		//@Section.Switch(name="nickname", enName="Nickname", def = "10.1.3.1:9999", order=0)
 		public String nickname = "Anonymous";

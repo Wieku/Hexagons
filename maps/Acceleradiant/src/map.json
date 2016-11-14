@@ -1,13 +1,14 @@
 {
-"className":"Acceleradiant",
-"audioFileName":"mrGawne.ogg",
-"name":"Acceleradiant",
-"author":"Vittorio Romeo",
-"description":"Dunno lol",
-"songName":"Be Gone Mr. Gawne",
-"songAuthor":"BOSSFIGHT",
-"tags":"awesome",
-"pack":"HyperCube",
-"startTimes":[18, 42, 90],
-"previewTime": 18
+  "className":"Acceleradiant",
+  "audioFileName":"mrGawne.ogg",
+  "name":"Acceleradiant",
+  "author":"Vittorio Romeo",
+  "description":"Dunno lol",
+  "songName":"Be Gone Mr. Gawne",
+  "songAuthor":"BOSSFIGHT",
+  "tags":"awesome",
+  "pack":"HyperCube",
+  "startTimes":[18, 42, 90],
+  "previewTime": 18,
+  "uuid": "0335bd64-19ce-4e32-a625-92dd4a1f87ae"
 }

@@ -1,13 +1,14 @@
 {
-"className":"Dimension",
-"audioFileName":"maze.ogg",
-"name":"Second Dimension",
-"author":"Vittorio Romeo",
-"description":"Hard Level",
-"songName":"The Maze Of Mayonnaise",
-"songAuthor":"BOSSFIGHT",
-"tags":"awesome",
-"pack":"Cube",
-"startTimes":[0, 35, 52, 93],
-"previewTime": 35
+  "className":"Dimension",
+  "audioFileName":"maze.ogg",
+  "name":"Second Dimension",
+  "author":"Vittorio Romeo",
+  "description":"Hard Level",
+  "songName":"The Maze Of Mayonnaise",
+  "songAuthor":"BOSSFIGHT",
+  "tags":"awesome",
+  "pack":"Cube",
+  "startTimes":[0, 35, 52, 93],
+  "previewTime": 35,
+  "uuid": "92d7bf6c-eba5-4c3a-b0aa-a76ecb62e928"
 }

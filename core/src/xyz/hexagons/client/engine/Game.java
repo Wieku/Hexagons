@@ -10,6 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.google.common.io.CharStreams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
@@ -27,12 +36,23 @@ import xyz.hexagons.client.resources.ArchiveFileHandle;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author Sebastian Krajewski on 28.03.15.
  */
 public class Game implements Screen {
+	private Executor executor = Executors.newSingleThreadExecutor();
 
 	Map map;
 	AudioPlayer audioPlayer;
@@ -57,6 +77,7 @@ public class Game implements Screen {
 	int width, height;
 
 	float score = 0;
+	boolean scoreSent = false;
 
 	public static float scale = 1f;
 
@@ -163,6 +184,7 @@ public class Game implements Screen {
 	public void start(float startTime){
 
 		delta0 = delta1 = delta5 = delta4 = delta3 = 0;
+		scoreSent = false;
 
 		CurrentMap.data.currentTime = 0f;
 		CurrentMap.reset();
@@ -214,6 +236,38 @@ public class Game implements Screen {
 			if(Gdx.input.isKeyPressed(Keys.ESCAPE) && !escClick){
 				audioPlayer.dispose();
 				Instance.game.setScreen(MapSelect.getInstance());
+			}
+
+			if(!scoreSent && score > 0) {
+				scoreSent = true;
+				executor.execute(() -> {
+					try {
+						System.out.println("Sending score");
+						URL url = new URL(Settings.instance.ranking.server);
+
+						HttpClient httpclient = HttpClients.createDefault();
+						HttpPost httppost = new HttpPost(Settings.instance.ranking.server + "/game");
+
+						List<NameValuePair> params = new ArrayList<>(3);
+						params.add(new BasicNameValuePair("nick", Settings.instance.ranking.nickname));
+						params.add(new BasicNameValuePair("score", String.valueOf((long) score)));
+						params.add(new BasicNameValuePair("mapid", map.info.uuid));
+						httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+						HttpResponse response = httpclient.execute(httppost);
+						HttpEntity entity = response.getEntity();
+
+						if (entity != null) {
+							InputStream in = entity.getContent();
+							System.out.println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8)));
+							in.close();
+						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				});
 			}
 
 		} else {

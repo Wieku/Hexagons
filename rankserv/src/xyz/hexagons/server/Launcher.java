@@ -17,7 +17,7 @@ public class Launcher {
     private static void prepareDatabase(Connection connection) {
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS `games`(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `map_id` binary(16) NOT NULL, `score` bigint(20) NOT NULL,  `nick` varchar(24) NOT NULL);");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS `games`(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `map_id` varchar(36) NOT NULL, `score` bigint(20) NOT NULL,  `nick` varchar(24) NOT NULL);");
         } catch (SQLException e) {
             e.printStackTrace();
         }

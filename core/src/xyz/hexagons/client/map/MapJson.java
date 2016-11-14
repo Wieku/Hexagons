@@ -15,6 +15,7 @@ public class MapJson {
 	public String songAuthor = "";
 	public String pack = "default";
 	public String tags = "";
+	public String uuid = "";
 	public float[] startTimes = {0};
 	public float previewTime = 0;
 }
