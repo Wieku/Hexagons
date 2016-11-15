@@ -18,12 +18,12 @@ public class MapLeaders extends HttpServlet {
         resp.setContentType("application/json");
 
         try {
-            System.out.println("New score report!");
+            System.out.println("Get score report");
 
             String mapId = req.getParameter("uuid");
             long count = Long.valueOf(req.getParameter("count"));
 
-            PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, `score` FROM `games` WHERE `map_id`=? ORDER BY `score` DESC LIMIT ?");
+            PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, `score` FROM `games` WHERE `map_id`=? GROUP BY `nick` ORDER BY `score` DESC LIMIT ?");
             statement.setString(1, mapId);
             statement.setLong(2, count);
             ResultSet rs = statement.executeQuery();
