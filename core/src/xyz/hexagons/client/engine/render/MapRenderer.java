@@ -13,6 +13,8 @@ import xyz.hexagons.client.engine.Player;
 
 import java.util.List;
 
+import static jdk.nashorn.internal.objects.NativeArray.forEach;
+
 public class MapRenderer {
 
 	private Color shadow = new Color();
@@ -50,7 +52,7 @@ public class MapRenderer {
 	private float delta1;
 	public void renderBackground(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
-		CurrentMap.data.colors.forEach(o -> o.update(delta));
+		for(HColor o: CurrentMap.data.colors) o.update(delta);
 
 		if((delta1 += delta) >= CurrentMap.data.colorSwitch){
 
@@ -128,14 +130,13 @@ public class MapRenderer {
 			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 		}
 
-		walls.forEach(wall->{
+		for(Wall wall : walls) {
 			if(wall.visible) {
 				float[] vert = wall.getPolygon().getVertices();
 				renderer.triangle(vert[0], vert[1], vert[2], vert[3], vert[4], vert[5]);
 				renderer.triangle(vert[4], vert[5], vert[6], vert[7], vert[0], vert[1]);
 			}
-		});
-
+		}
 	}
 
 	public Vector2 tmp11 = new Vector2();
