@@ -2,7 +2,7 @@ package xyz.hexagons.server;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import xyz.hexagons.server.servlets.MapDone;
+import xyz.hexagons.server.servlets.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,6 +38,7 @@ public class Launcher {
             server.setHandler(ctx);
 
             ctx.addServlet(MapDone.class, "/game");
+            ctx.addServlet(MapLeaders.class, "/leaders");
 
             server.start();
             server.join();

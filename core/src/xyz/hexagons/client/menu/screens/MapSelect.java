@@ -27,6 +27,7 @@ import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.rank.RankApi;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.lang.reflect.Method;
@@ -369,6 +370,9 @@ public class MapSelect implements Screen {
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
 			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
+
+			RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 10);
+			lb.list.forEach(e -> System.out.println(e.nick));
 		}
 
 	}

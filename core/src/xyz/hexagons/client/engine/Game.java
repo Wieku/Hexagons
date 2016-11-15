@@ -283,7 +283,6 @@ public class Game implements Screen {
 		updateRotation(delta);
 		updatePulse(delta);
 		camera.update(delta);
-		//renderers.forEach(o -> o.update(delta));
 		player.update(delta);
 		this.delta0+=delta;
 		while (this.delta0 >= (1f / 60)) {
