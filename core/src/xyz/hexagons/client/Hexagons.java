@@ -19,12 +19,16 @@ import xyz.hexagons.client.utils.PathUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import static xyz.hexagons.client.audio.MenuPlaylist.update;
 
 public class Hexagons extends Game {
 
 	int width, height;
+	private List<Runnable> taskList = new LinkedList<>();
 
 	public Hexagons() {
 		Instance.game = this;
@@ -49,6 +53,8 @@ public class Hexagons extends Game {
 		} else {
 			Gdx.graphics.setWindowedMode(1024, 768);
 		}
+
+		Instance.scheduleOnMain = (task) -> taskList.add(task);
 	}
 
 	@Override
@@ -61,6 +67,19 @@ public class Hexagons extends Game {
 	float delta0;
 	@Override
 	public void render () {
+		if(!taskList.isEmpty()) {
+			Iterator<Runnable> it = taskList.iterator();
+			while (it.hasNext()) {
+				Runnable r = it.next();
+				try {
+					r.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				it.remove();
+			}
+		}
+
 		if((delta0 += Gdx.graphics.getDeltaTime()) >=1f/60){
 			update(delta0);
 			delta0 = 0;

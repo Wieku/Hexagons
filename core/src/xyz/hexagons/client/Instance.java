@@ -5,6 +5,8 @@ import xyz.hexagons.client.map.Map;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class Instance {
@@ -14,7 +16,9 @@ public class Instance {
     public static Hexagons game = null;
     public static boolean noupdate = false;
     public static Consumer<Integer> setForegroundFps = null;
+    public static Consumer<Runnable> scheduleOnMain = null;
     public static File storageRoot = null;
+    public static Executor executor = Executors.newSingleThreadExecutor();
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

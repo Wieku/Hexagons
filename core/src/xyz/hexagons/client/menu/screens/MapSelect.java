@@ -413,12 +413,20 @@ public class MapSelect implements Screen {
 			info.pack();
 			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
 
-			RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 50);
-			int size = lb.list.size();
-			BitmapFont font = description.getStyle().font;
 			scoreTable.clear();
-			tnumber=1;
-			lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
+			addScore(1, "Getting scores", "");
+
+			Instance.executor.execute(() -> {
+				RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 50);
+				Instance.scheduleOnMain.accept(() -> {
+					scoreTable.clear();
+					int size = lb.list.size();
+					BitmapFont font = description.getStyle().font;
+					tnumber=1;
+					lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
+				});
+
+			});
 		}
 	}
 

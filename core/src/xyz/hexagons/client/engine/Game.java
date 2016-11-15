@@ -52,7 +52,7 @@ import java.util.concurrent.Executors;
  * @author Sebastian Krajewski on 28.03.15.
  */
 public class Game implements Screen {
-	private Executor executor = Executors.newSingleThreadExecutor();
+
 
 	Map map;
 	AudioPlayer audioPlayer;
@@ -240,7 +240,7 @@ public class Game implements Screen {
 
 			if(!scoreSent && score > 0 && !Settings.instance.gameplay.invincibility) {
 				scoreSent = true;
-				executor.execute(() -> {
+				Instance.executor.execute(() -> {
 					try {
 						System.out.println("Sending score");
 						URL url = new URL(Settings.instance.ranking.server);
