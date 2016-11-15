@@ -5,15 +5,19 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
@@ -21,6 +25,7 @@ import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.Game;
+import xyz.hexagons.client.menu.settings.Element;
 import xyz.hexagons.client.menu.widgets.MenuMap;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.engine.camera.SkewCamera;
@@ -32,6 +37,7 @@ import xyz.hexagons.client.utils.GUIHelper;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 /**
  * @author Sebastian Krajewski on 04.04.15.
@@ -58,6 +64,10 @@ public class MapSelect implements Screen {
 	public static int mapIndex = 0;
 
 	public static MapSelect instance;
+
+	private Table scoreTable = new Table();
+	public ScrollPane leaderboard;
+	int tnumber=1;
 
 	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
@@ -196,7 +206,7 @@ public class MapSelect implements Screen {
 		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
 		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
 		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
-
+		number.getStyle().font.setFixedWidthGlyphs("01234567890");
 		info.pack();
 
 		info.setWidth(Gdx.graphics.getWidth()/3);
@@ -215,6 +225,9 @@ public class MapSelect implements Screen {
 		table.pack();
 		table.setHeight(Gdx.graphics.getHeight()-200);
 
+
+
+
 		scrollPane = new ScrollPane(table, GUIHelper.getScrollPaneStyle(Color.WHITE));
 		scrollPane.setupFadeScrollBars(1f, 1f);
 		scrollPane.setSmoothScrolling(true);
@@ -225,7 +238,19 @@ public class MapSelect implements Screen {
 		scrollPane.setCancelTouchFocus(true);
 
 		stage.addActor(scrollPane);
-		
+
+		leaderboard = new ScrollPane(scoreTable, GUIHelper.getScrollPaneStyle(Color.WHITE));
+		leaderboard.setupFadeScrollBars(1f, 1f);
+		leaderboard.setSmoothScrolling(true);
+		leaderboard.setVelocityY(0.1f);
+		leaderboard.setScrollingDisabled(true, false);
+
+		((Table) leaderboard.getChildren().get(0)).center().left().setFillParent(true);
+		leaderboard.setCancelTouchFocus(true);
+
+		stage.addActor(leaderboard);
+
+
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
@@ -273,6 +298,10 @@ public class MapSelect implements Screen {
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
 		scrollPane.layout();
 
+		leaderboard.setBounds(0, 100, 300, stage.getHeight()-info.getHeight()-100);
+		leaderboard.layout();
+
+
 		if(!showed) {
 			MenuMap ms = mapButtons.get(mapIndex);
 
@@ -304,6 +333,10 @@ public class MapSelect implements Screen {
 		info.setWidth(Gdx.graphics.getWidth()/3);
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3)-15, 0, Math.max(468, stage.getWidth()/3)+15, stage.getHeight());
 		scrollPane.layout();
+
+		leaderboard.setBounds(0, 100, 300, stage.getHeight()-info.getHeight()-100);
+		leaderboard.layout();
+
 		mapButtons.forEach(e->{e.setX(0);e.update();});
 
 		info.pack();
@@ -372,9 +405,43 @@ public class MapSelect implements Screen {
 			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
 
 			RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 10);
-			lb.list.forEach(e -> System.out.println(e.nick));
+			int size = lb.list.size();
+			BitmapFont font = description.getStyle().font;
+			scoreTable.clear();
+			tnumber=1;
+			lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
+
 		}
 
+	}
+
+
+	public void addScore(int position, String name, String score) {
+			Table table = GUIHelper.getTable(new Color(0,0,0,0.5f));
+			table.left();
+
+
+			Table subTable = new Table();
+
+			subTable.left();
+			subTable.add(new Label(name, GUIHelper.getLabelStyle(Color.WHITE, 12))).padBottom(2).padLeft(5).left().expandX().row();
+			subTable.add(new Label("Score: "+score, GUIHelper.getLabelStyle(Color.WHITE, 8))).padBottom(2).padLeft(5).left().expandX().row();
+
+			subTable.layout();
+			subTable.pack();
+
+			Table minTable = new Table();
+			minTable.center();
+			minTable.add(GUIHelper.text(Integer.toString(position), Color.WHITE, 11)).fillX();
+
+			table.add(minTable).width(subTable.getHeight()).fillY();
+			table.add(new Image(GUIHelper.getTxWRegion(Color.WHITE, 2), Scaling.stretchY)).padTop(1).padBottom(1).fillY();
+
+			table.add(subTable).width(298-subTable.getHeight()).row();
+
+			scoreTable.add(table).padBottom(2).padTop(2).width(300).row();
+			//subNode.expandAll();
+			//node.add(subNode);
 	}
 
 	public static MapSelect getInstance() {
