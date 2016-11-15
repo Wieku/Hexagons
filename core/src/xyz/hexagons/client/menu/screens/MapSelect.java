@@ -56,6 +56,7 @@ public class MapSelect implements Screen {
 	Game game;
 
 	Table table;
+	Label nickname;
 
 	SkewCamera camera = new SkewCamera();
 	ObjRender shapeRenderer;
@@ -254,7 +255,10 @@ public class MapSelect implements Screen {
 
 		stage.addActor(leaderboard);
 
-
+		nickname = GUIHelper.text("Your nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
+		nickname.pack();
+		nickname.setPosition(5, 5);
+		stage.addActor(nickname);
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
@@ -290,6 +294,7 @@ public class MapSelect implements Screen {
 			description.getStyle().fontColor = tmpC;
 			author.getStyle().fontColor = tmpC;
 			music.getStyle().fontColor = tmpC;
+			nickname.getStyle().fontColor = tmpC;
 
 			delta0 = 0;
 		}
