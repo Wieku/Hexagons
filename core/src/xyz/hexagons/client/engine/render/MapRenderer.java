@@ -13,8 +13,6 @@ import xyz.hexagons.client.engine.Player;
 
 import java.util.List;
 
-import static jdk.nashorn.internal.objects.NativeArray.forEach;
-
 public class MapRenderer {
 
 	private Color shadow = new Color();

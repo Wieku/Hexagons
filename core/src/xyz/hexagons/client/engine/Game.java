@@ -238,7 +238,7 @@ public class Game implements Screen {
 				Instance.game.setScreen(MapSelect.getInstance());
 			}
 
-			if(!scoreSent && score > 0) {
+			if(!scoreSent && score > 0 && !Settings.instance.gameplay.invincibility) {
 				scoreSent = true;
 				executor.execute(() -> {
 					try {
