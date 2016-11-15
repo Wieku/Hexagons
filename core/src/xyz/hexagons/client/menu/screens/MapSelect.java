@@ -419,9 +419,7 @@ public class MapSelect implements Screen {
 			scoreTable.clear();
 			tnumber=1;
 			lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
-
 		}
-
 	}
 
 

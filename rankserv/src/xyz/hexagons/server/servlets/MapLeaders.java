@@ -23,7 +23,7 @@ public class MapLeaders extends HttpServlet {
             String mapId = req.getParameter("uuid");
             long count = Long.valueOf(req.getParameter("count"));
 
-            PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, `score` FROM `games` WHERE `map_id`=? GROUP BY `nick` ORDER BY `score` DESC LIMIT ?");
+            PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, MAX(`score`) as `sc` FROM `games` WHERE `map_id`='c46bedd4-635a-4e5f-a29c-311b3add8530' GROUP BY `nick` ORDER BY `sc` DESC");
             statement.setString(1, mapId);
             statement.setLong(2, count);
             ResultSet rs = statement.executeQuery();
@@ -32,7 +32,7 @@ public class MapLeaders extends HttpServlet {
             while (rs.next()) {
                 JsonObject result = new JsonObject();
                 result.addProperty("nick", rs.getString("nick"));
-                result.addProperty("score", rs.getString("score"));
+                result.addProperty("score", rs.getString("sc"));
                 res.add(result);
             }
 
