@@ -17,11 +17,10 @@ public class MapDone extends HttpServlet {
         resp.setContentType("application/json");
 
         try {
-            System.out.println("New score report!");
-
             String nick = req.getParameter("nick");
             String mapid = req.getParameter("mapid");
             long score = Long.valueOf(req.getParameter("score"));
+            System.out.println("New score report "+mapid+"/"+nick+": "+score);
 
             PreparedStatement statement = Launcher.connection.prepareStatement("INSERT INTO `games` (`map_id`, `score`, `nick`) VALUES (?, ?, ?)");
             statement.setString(1, mapid);
