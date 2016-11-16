@@ -53,7 +53,7 @@ public class Dodecahedron implements MapScript {
 
 		//sides
 		CurrentMap.setSides(6);
-		CurrentMap.setMinSides(4);
+		CurrentMap.setMinSides(5);
 		CurrentMap.setMaxSides(6);
 
 		//3d settings
