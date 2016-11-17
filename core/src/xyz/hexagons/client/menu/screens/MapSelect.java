@@ -5,10 +5,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,8 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import xyz.hexagons.client.Instance;
@@ -28,7 +24,6 @@ import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.Game;
-import xyz.hexagons.client.menu.settings.Element;
 import xyz.hexagons.client.menu.widgets.CScrollPane;
 import xyz.hexagons.client.menu.widgets.MenuMap;
 import xyz.hexagons.client.menu.settings.Settings;
@@ -36,12 +31,11 @@ import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
 import xyz.hexagons.client.map.Map;
-import xyz.hexagons.client.rank.RankApi;
+import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Map.Entry;
 
 /**
  * @author Sebastian Krajewski on 04.04.15.

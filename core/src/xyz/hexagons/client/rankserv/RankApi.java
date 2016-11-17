@@ -1,12 +1,10 @@
-package xyz.hexagons.client.rank;
+package xyz.hexagons.client.rankserv;
 
-import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.menu.settings.Settings;
