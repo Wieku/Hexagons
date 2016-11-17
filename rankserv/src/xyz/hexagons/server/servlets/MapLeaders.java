@@ -70,6 +70,10 @@ public class MapLeaders extends HttpServlet {
                 }
             }
 
+            {
+                result.addProperty("position", 21234321);
+            }
+
             result.addProperty("state", "OK");
             resp.getWriter().print(result.toString());
         } catch (Exception e) {

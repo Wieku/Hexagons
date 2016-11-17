@@ -49,6 +49,7 @@ public class RankApi {
         public int ownBest = 0;
         public int mapPlayers = 0;
         public int ownPlayCount = 0;
+        public int position = 0;
     }
 
     public static class Leader implements Serializable {
