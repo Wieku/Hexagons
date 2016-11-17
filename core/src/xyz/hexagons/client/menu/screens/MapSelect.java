@@ -126,6 +126,7 @@ public class MapSelect implements Screen {
 						Gdx.input.setInputProcessor(null);
 						//audioPlayer.pause();
 						MenuPlaylist.pause();
+
 						Instance.game.setScreen(game = new Game(maps.get(mapIndex)));
 					}
 
@@ -242,6 +243,7 @@ public class MapSelect implements Screen {
 		leaderboard.setupFadeScrollBars(1f, 1f);
 		leaderboard.setSmoothScrolling(true);
 		leaderboard.setVelocityY(0.1f);
+		leaderboard.setScrollBarPositions(true, false);
 		leaderboard.setScrollingDisabled(true, false);
 
 		((Table) leaderboard.getChildren().get(0)).top().left();

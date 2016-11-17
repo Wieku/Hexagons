@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 public class AudioPlayer {
 
 	boolean ended;
+	boolean pause;
 	FileHandle handle;
 	boolean firstStart = false;
 	FFT fft;
@@ -116,7 +117,16 @@ public class AudioPlayer {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			float vol = musicPlayer.getVolume();
+			setVolume(0);
 			musicPlayer.setPosition(milis);
+			if(pause) musicPlayer.pause();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			setVolume(vol);
 		}).start();
 	}
 
@@ -124,15 +134,17 @@ public class AudioPlayer {
 		musicPlayer.play();
 		firstStart = true;
 		ended = false;
+		pause = false;
 	}
 
 	public void play(float time){
 		musicPlayer.play();
 		if(firstStart || time > 0){
-			new Thread(() -> setPosition(time)).start();
+			setPosition(time);
 		}
 		firstStart = true;
 		ended = false;
+
 	}
 
 	byte[] bufferByte = new byte[SIZE*2];
@@ -201,6 +213,7 @@ public class AudioPlayer {
 	}
 
 	public void pause(){
+		pause = true;
 		musicPlayer.pause();
 	}
 	
