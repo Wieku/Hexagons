@@ -46,13 +46,13 @@ public class RankApi {
     public static class LeaderBoard implements Serializable {
         public String state = "";
         public List<Leader> list;
-        public String ownBest = "";
-        public String mapPlayers = "";
-        public String ownPlayCount = "";
+        public int ownBest = 0;
+        public int mapPlayers = 0;
+        public int ownPlayCount = 0;
     }
 
     public static class Leader implements Serializable {
         public String nick = "";
-        public String score = "";
+        public int score = 0;
     }
 }

@@ -36,7 +36,7 @@ public class MapLeaders extends HttpServlet {
                 while (rs.next()) {
                     JsonObject r = new JsonObject();
                     r.addProperty("nick", rs.getString("nick"));
-                    r.addProperty("score", rs.getString("sc"));
+                    r.addProperty("score", rs.getLong("sc"));
                     res.add(r);
                 }
                 result.add("list", res);
@@ -48,7 +48,7 @@ public class MapLeaders extends HttpServlet {
                 statement.setString(2, mapId);
                 ResultSet rs = statement.executeQuery();
                 if(rs.next()) {
-                    result.addProperty("ownBest", rs.getString("sc"));
+                    result.addProperty("ownBest", rs.getLong("sc"));
                 }
             }
 
@@ -57,7 +57,7 @@ public class MapLeaders extends HttpServlet {
                 statement.setString(1, mapId);
                 ResultSet rs = statement.executeQuery();
                 if(rs.next()) {
-                    result.addProperty("mapPlayers", rs.getString("players"));
+                    result.addProperty("mapPlayers", rs.getLong("players"));
                 }
             }
 
@@ -66,7 +66,7 @@ public class MapLeaders extends HttpServlet {
                 statement.setString(1, nick);
                 ResultSet rs = statement.executeQuery();
                 if(rs.next()) {
-                    result.addProperty("ownPlayCount", rs.getString("playCount"));
+                    result.addProperty("ownPlayCount", rs.getLong("playCount"));
                 }
             }
 

@@ -408,7 +408,7 @@ public class MapSelect implements Screen {
 			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
 
 			scoreTable.clear();
-			addScore(1, "Getting scores", "");
+			addScore(1, "Getting scores", 0);
 
 			Instance.executor.execute(() -> {
 				RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 50);
@@ -416,7 +416,7 @@ public class MapSelect implements Screen {
 					scoreTable.clear();
 					int size = lb.list.size();
 					BitmapFont font = description.getStyle().font;
-					tnumber=1;
+					tnumber = 1;
 					lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
 				});
 
@@ -425,16 +425,15 @@ public class MapSelect implements Screen {
 	}
 
 
-	public void addScore(int position, String name, String score) {
+	public void addScore(int position, String name, int score) {
 			Table table = GUIHelper.getTable(new Color(0,0,0,0.5f));
 			table.left();
-
 
 			Table subTable = new Table();
 
 			subTable.left();
 			subTable.add(new Label(name, GUIHelper.getLabelStyle(Color.WHITE, 13))).padBottom(2).padLeft(5).left().expandX().row();
-			subTable.add(new Label("Score: "+score, GUIHelper.getLabelStyle(Color.WHITE, 9))).padBottom(2).padLeft(5).left().expandX().row();
+			subTable.add(new Label("Score: " + score, GUIHelper.getLabelStyle(Color.WHITE, 9))).padBottom(2).padLeft(5).left().expandX().row();
 
 			subTable.layout();
 			subTable.pack();
