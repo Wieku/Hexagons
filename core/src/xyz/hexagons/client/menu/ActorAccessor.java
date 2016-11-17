@@ -150,6 +150,10 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 		return createTween(ac, type, duration, target, delay, AnimationEquations.easeInOutQuad);
 	}
 
+	public static Animation createInBackTween(Actor ac, int type, float duration, float target, float delay) {
+		return createTween(ac, type, duration, target, delay, AnimationEquations.easeInBack);
+	}
+
 	public static Animation createBackTween(Actor ac, int type, float duration, float target, float delay) {
 		return createTween(ac, type, duration, target, delay, AnimationEquations.easeOutBack);
 	}

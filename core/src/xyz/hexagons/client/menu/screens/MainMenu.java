@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import me.wieku.animation.animations.Animation;
+import me.wieku.animation.timeline.AnimationSequence;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
@@ -30,6 +32,7 @@ import xyz.hexagons.client.menu.settings.SettingsTab;
 import xyz.hexagons.client.engine.render.BlurEffect;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.rankserv.MotdApi;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -54,6 +57,11 @@ public class MainMenu implements Screen {
 	private Table music;
 	private Label title;
 	private boolean escclick = false;
+
+	private Table motdTable = GUIHelper.getTable(new Color(0,0,0,0.8f));
+	private Label motdLabel;
+	private Timeline motdAnimation;
+
 
 	public boolean optionsShowed;
 
@@ -181,6 +189,12 @@ public class MainMenu implements Screen {
 
 		CurrentMap.reset();
 
+		motdLabel = GUIHelper.text(MotdApi.instance.getMotd().text, Color.WHITE, 20);
+		motdTable.add(motdLabel).center();
+		motdTable.pack();
+		motdTable.setWidth(1024);
+		motdTable.setPosition(0, 1f/3 * 768);
+		stage.addActor(motdTable);
 	}
 
 	private boolean first = false;
@@ -195,6 +209,10 @@ public class MainMenu implements Screen {
 		Instance.setForegroundFps.accept(0);
 		if(!first){
 			MenuPlaylist.start();
+			motdTable.setColor(1, 1, 1, 0f);
+			motdAnimation = new Timeline().beginSequence().push(ActorAccessor.createFadeTableTween(motdTable, 2f, 0, 1f))
+					.pushPause(5).push(ActorAccessor.createFadeTableTween(motdTable, 2f, 0, 0f)).end();
+			motdAnimation.start(Instance.getAnimationManager());
 			first = true;
 		}
 

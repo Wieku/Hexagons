@@ -66,6 +66,11 @@ public class MapSelect implements Screen {
 
 	private Table scoreTable = new Table();
 	public ScrollPane leaderboard;
+
+	private Table myScoreTable = new Table();
+	private Label myScoreLabel;
+	private Table myScore;
+
 	int tnumber=1;
 
 	public MapSelect(ArrayList<Map> maps){
@@ -251,6 +256,13 @@ public class MapSelect implements Screen {
 
 		stage.addActor(leaderboard);
 
+		myScoreTable.add(myScoreLabel = GUIHelper.text("Personal score:", Color.WHITE, 12)).left().pad(5).width(300).row();
+		myScore = GUIHelper.getTable(new Color(0,0,0,0.5f));
+		myScoreTable.add(myScore).width(300).left();
+		addMyScore(0, 0, 0);
+		myScoreTable.pack();
+		stage.addActor(myScoreTable);
+
 		nickname = GUIHelper.text("Your nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
 		nickname.pack();
 		nickname.setPosition(5, 5);
@@ -291,6 +303,7 @@ public class MapSelect implements Screen {
 			author.getStyle().fontColor = tmpC;
 			music.getStyle().fontColor = tmpC;
 			nickname.getStyle().fontColor = tmpC;
+			myScoreLabel.getStyle().fontColor = tmpC;
 
 			delta0 = 0;
 		}
@@ -303,7 +316,8 @@ public class MapSelect implements Screen {
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
 		scrollPane.layout();
 
-		leaderboard.setBounds(0, 100, 300, stage.getHeight()-info.getHeight()-120);
+		myScoreTable.setBounds(0, 100, 300, myScoreTable.getHeight());
+		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 300, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
 
 
@@ -339,7 +353,8 @@ public class MapSelect implements Screen {
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3)-15, 0, Math.max(468, stage.getWidth()/3)+15, stage.getHeight());
 		scrollPane.layout();
 
-		leaderboard.setBounds(0, 100, 300, stage.getHeight()-info.getHeight()-120);
+		myScoreTable.setBounds(0, 100, 300, myScoreTable.getHeight());
+		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 300, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
 
 		mapButtons.forEach(e->{e.setX(0);e.update();});
@@ -386,7 +401,7 @@ public class MapSelect implements Screen {
 			author.setText("");
 			music.setText("No maps available!");
 			info.pack();
-			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
+			info.setPosition(5, stage.getHeight()-5-info.getHeight());
 		} else {
 			SoundManager.playSound("click");
 			Map map = maps.get(index);
@@ -407,19 +422,29 @@ public class MapSelect implements Screen {
 			author.setText("Author: " + map.info.author);
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
-			info.setPosition(5, Gdx.graphics.getHeight()-5-info.getHeight());
+			info.setPosition(5, stage.getHeight()-5-info.getHeight());
 
 			scoreTable.clear();
-			addScore(1, "Getting scores", 0);
+
+			Table tb = GUIHelper.getTable(new Color(0,0,0,0.5f));
+			tb.center().setFillParent(true);
+			tb.add(GUIHelper.text("Retrieving scores...", Color.WHITE, 14));
+			scoreTable.add(tb).height(leaderboard.getHeight());
 
 			Instance.executor.execute(() -> {
 				RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 50);
 				Instance.scheduleOnMain.accept(() -> {
 					scoreTable.clear();
-					int size = lb.list.size();
-					BitmapFont font = description.getStyle().font;
 					tnumber = 1;
-					lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
+					if(lb == null) {
+						Table tb1 = GUIHelper.getTable(new Color(0,0,0,0.5f));
+						tb1.center().setFillParent(true);
+						tb1.add(GUIHelper.text("No scores available", Color.WHITE, 14));
+						scoreTable.add(tb1).height(leaderboard.getHeight());
+					} else {
+						lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
+						addMyScore(lb.position, lb.ownBest, lb.mapPlayers);
+					}
 				});
 
 			});
@@ -454,6 +479,39 @@ public class MapSelect implements Screen {
 			//node.add(subNode);
 			leaderboard.setScrollPercentY(0);
 	}
+
+	public void addMyScore(int position, int score, int players) {
+		myScore.clear();
+		if(score > 0) {
+
+			Table table = new Table();
+			table.left();
+
+			Table subTable = new Table();
+
+			subTable.left();
+			subTable.add(new Label("#" + position + " of " + players, GUIHelper.getLabelStyle(Color.WHITE, 11))).padBottom(2).padLeft(5).left().expandX().row();
+			subTable.add(new Label("Score: " + score, GUIHelper.getLabelStyle(Color.WHITE, 10))).padBottom(2).padLeft(5).left().expandX().row();
+
+			subTable.layout();
+			subTable.pack();
+
+			Table minTable = new Table();
+			minTable.center();
+			minTable.add(GUIHelper.text(Integer.toString(position), Color.WHITE, 11)).fillX();
+
+			table.add(minTable).width(subTable.getHeight()).fillY();
+			table.add(new Image(GUIHelper.getTxWRegion(Color.WHITE, 2), Scaling.stretchY)).padTop(1).padBottom(1).fillY();
+
+			table.add(subTable).width(298-subTable.getHeight()).row();
+
+			myScore.add(table).width(300);
+		} else {
+			myScore.add(GUIHelper.text("Never played", Color.WHITE, 14)).center().pad(9);
+		}
+		myScoreTable.pack();
+	}
+
 
 	public static MapSelect getInstance() {
 		return instance;

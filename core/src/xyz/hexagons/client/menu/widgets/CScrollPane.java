@@ -601,7 +601,7 @@ public class CScrollPane extends WidgetGroup {
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
-		widgetAreaBounds.set(0, 0, getStage().getWidth(), getStage().getHeight());
+		widgetAreaBounds.set(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 
 		// Enable scissors for widget area and draw the widget.
