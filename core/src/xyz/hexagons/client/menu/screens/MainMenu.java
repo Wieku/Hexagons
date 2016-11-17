@@ -147,7 +147,13 @@ public class MainMenu implements Screen {
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
 		stage.addActor(version);
 
-		copyright = new Label("Hexagons! 2016 Written by Wieku (wieku.me)", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
+		copyright = new Label("Hexagons! 2016 Written by Wieku and Magik6k", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
+		copyright.addListener(new InputListener(){
+			public boolean touchDown(InputEvent event, float x, float y,int pointer, int button) {
+				Gdx.net.openURI("https://hexagons.xyz/");
+				return true;
+			}
+		});
 		copyright.pack();
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		stage.addActor(copyright);
