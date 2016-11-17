@@ -71,7 +71,7 @@ public class MapLeaders extends HttpServlet {
             }
 
             {
-                result.addProperty("position", 21234321);
+                result.addProperty("position", 212212);
             }
 
             result.addProperty("state", "OK");

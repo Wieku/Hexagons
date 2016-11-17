@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 
 public class MapDone extends HttpServlet {
     @Override
@@ -22,10 +23,11 @@ public class MapDone extends HttpServlet {
             long score = Long.valueOf(req.getParameter("score"));
             System.out.println("New score report "+mapid+"/"+nick+": "+score);
 
-            PreparedStatement statement = Launcher.connection.prepareStatement("INSERT INTO `games` (`map_id`, `score`, `nick`) VALUES (?, ?, ?)");
+            PreparedStatement statement = Launcher.connection.prepareStatement("INSERT INTO `games` (`map_id`, `score`, `nick`, `at`) VALUES (?, ?, ?, ?)");
             statement.setString(1, mapid);
             statement.setLong(2, score);
             statement.setString(3, nick);
+            statement.setLong(4, Instant.now().getEpochSecond());
             statement.executeUpdate();
 
             resp.getWriter().print("{\"state\": \"OK\"}");
