@@ -37,9 +37,9 @@ public class Launcher {
             ctx.setContextPath("/");
             server.setHandler(ctx);
 
-            ctx.addServlet(MapDone.class, "/v0/game");
-            ctx.addServlet(MapLeaders.class, "/v0/leaders");
-            ctx.addServlet(MapLeaders.class, "/motd");
+            ctx.addServlet(MapDone.class,       "/v0/game");
+            ctx.addServlet(MapLeaders.class,    "/v0/leaders");
+            ctx.addServlet(Motd.class,          "/motd");
 
             server.start();
             server.join();
