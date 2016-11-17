@@ -40,10 +40,6 @@ public class DesktopLauncher {
 			e.printStackTrace();
 		}
 
-		Globals globals = JsePlatform.standardGlobals();
-		LuaValue chunk = globals.load("print 'Lua works'");
-		chunk.call();
-
 		Instance.storageRoot = new File(".");
 
 		config = new LwjglApplicationConfiguration();

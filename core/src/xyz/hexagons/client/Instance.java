@@ -1,6 +1,8 @@
 package xyz.hexagons.client;
 
 import me.wieku.animation.AnimationManager;
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.lib.jse.JsePlatform;
 import xyz.hexagons.client.map.Map;
 
 import java.io.File;
@@ -19,6 +21,7 @@ public class Instance {
     public static Consumer<Runnable> scheduleOnMain = null;
     public static File storageRoot = null;
     public static Executor executor = Executors.newSingleThreadExecutor();
+    public static Globals luaGlobals = JsePlatform.standardGlobals();
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

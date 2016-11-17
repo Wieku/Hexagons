@@ -3,6 +3,8 @@ package xyz.hexagons.client.map;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.luaj.vm2.*;
+import org.luaj.vm2.lib.jse.JsePlatform;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.utils.Utils;
@@ -64,6 +66,24 @@ public class MapLoader {
 					e.printStackTrace();
 					closeJar(jar);
 					continue;
+				}
+
+				if (jar.getEntry("main.lua") != null) {
+					try {
+						InputStreamReader r = new InputStreamReader(jar.getInputStream(jar.getEntry("main.lua")));
+
+						Varargs pe = Instance.luaGlobals.get("prepareEnv").invoke(LuaString.valueOf(m.name));
+
+						LuaTable callbacks = pe.checktable(2);
+
+						LuaValue chunk = Instance.luaGlobals.load(r, "=Map/" + file.getName() + "/main.lua", pe.checktable(1));
+						chunk.call();
+
+						callbacks.get("init").call();
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 
 				ClassLoader loader;

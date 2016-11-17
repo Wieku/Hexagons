@@ -9,6 +9,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.wieku.animation.animations.Animation;
+import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
@@ -19,6 +20,7 @@ import xyz.hexagons.client.utils.PathUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,6 +57,9 @@ public class Hexagons extends Game {
 		}
 
 		Instance.scheduleOnMain = (task) -> taskList.add(task);
+
+		LuaValue chunk = Instance.luaGlobals.load(Gdx.files.internal(PathUtil.getPathForFile("lua/boot.lua")).readString("UTF-8"), "boot.lua");
+		chunk.call();
 	}
 
 	@Override

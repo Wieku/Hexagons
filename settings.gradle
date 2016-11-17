@@ -13,4 +13,5 @@ include 'desktop',
         'maps:Hexagonest',
         'maps:Pi',
         'maps:Pointless',
-        'maps:SecondDimension'
+        'maps:SecondDimension',
+        'maps:Moonless'
