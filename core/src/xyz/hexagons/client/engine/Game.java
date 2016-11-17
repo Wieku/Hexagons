@@ -246,7 +246,7 @@ public class Game implements Screen {
 						URL url = new URL(Settings.instance.ranking.server);
 
 						HttpClient httpclient = HttpClients.createDefault();
-						HttpPost httppost = new HttpPost(Settings.instance.ranking.server + "/game");
+						HttpPost httppost = new HttpPost(Settings.instance.ranking.server + "/v0/game");
 
 						List<NameValuePair> params = new ArrayList<>(3);
 						params.add(new BasicNameValuePair("nick", Settings.instance.ranking.nickname));

@@ -25,8 +25,8 @@ public class RankApi {
 
     public LeaderBoard getScoreForMap(Map map, int count) {
         HttpClient httpclient = HttpClients.createDefault();
-        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/leaders?uuid="
-                + map.info.uuid + "&count=" + String.valueOf(count));
+        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v0/leaders?uuid="
+                + map.info.uuid + "&count=" + String.valueOf(count) + "&nick=" + Settings.instance.ranking.nickname);
 
         try {
             HttpResponse response = httpclient.execute(req);
@@ -48,6 +48,9 @@ public class RankApi {
     public static class LeaderBoard implements Serializable {
         public String state = "";
         public List<Leader> list;
+        public String ownBest = "";
+        public String mapPlayers = "";
+        public String ownPlayCount = "";
     }
 
     public static class Leader implements Serializable {

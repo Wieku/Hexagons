@@ -21,24 +21,56 @@ public class MapLeaders extends HttpServlet {
             System.out.println("Get score report");
 
             String mapId = req.getParameter("uuid");
+            String nick = req.getParameter("nick");
             long count = Long.valueOf(req.getParameter("count"));
 
-            PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, MAX(`score`) as `sc` FROM `games` WHERE `map_id`=? GROUP BY `nick` ORDER BY `sc` DESC LIMIT ?");
-            statement.setString(1, mapId);
-            statement.setLong(2, count);
-            ResultSet rs = statement.executeQuery();
+            JsonObject result = new JsonObject();
 
-            JsonArray res = new JsonArray();
-            while (rs.next()) {
-                JsonObject result = new JsonObject();
-                result.addProperty("nick", rs.getString("nick"));
-                result.addProperty("score", rs.getString("sc"));
-                res.add(result);
+            {
+                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, MAX(`score`) as `sc` FROM `games` WHERE `map_id`=? GROUP BY `nick` ORDER BY `sc` DESC LIMIT ?");
+                statement.setString(1, mapId);
+                statement.setLong(2, count);
+                ResultSet rs = statement.executeQuery();
+
+                JsonArray res = new JsonArray();
+                while (rs.next()) {
+                    JsonObject r = new JsonObject();
+                    r.addProperty("nick", rs.getString("nick"));
+                    r.addProperty("score", rs.getString("sc"));
+                    res.add(r);
+                }
+                result.add("list", res);
             }
 
-            JsonObject result = new JsonObject();
+            {
+                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT MAX(`score`) AS `sc` FROM `games` WHERE `nick`=? AND `map_id`=?");
+                statement.setString(1, nick);
+                statement.setString(2, mapId);
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()) {
+                    result.addProperty("ownBest", rs.getString("sc"));
+                }
+            }
+
+            {
+                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT COUNT(DISTINCT `nick`) as `players` FROM `games` WHERE `map_id`=?");
+                statement.setString(1, mapId);
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()) {
+                    result.addProperty("mapPlayers", rs.getString("players"));
+                }
+            }
+
+            {
+                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT COUNT(`nick`) as `playCount` FROM `games` WHERE `nick`=?");
+                statement.setString(1, nick);
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()) {
+                    result.addProperty("ownPlayCount", rs.getString("playCount"));
+                }
+            }
+
             result.addProperty("state", "OK");
-            result.add("list", res);
             resp.getWriter().print(result.toString());
         } catch (Exception e) {
             e.printStackTrace();
