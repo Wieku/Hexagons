@@ -1,5 +1,6 @@
 package xyz.hexagons.server.servlets;
 
+import com.google.common.io.Resources;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import xyz.hexagons.server.Launcher;
@@ -9,10 +10,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class MapLeaders extends HttpServlet {
+    private static final String qLeaders = getQuery("leaders.sql");
+    private static final String qMapPlayerCount = getQuery("mapPlayerCount.sql");
+    private static final String qPlayerBest = getQuery("playerBest.sql");
+    private static final String qPlayerPlayCount = getQuery("playerPlayCount.sql");
+    private static final String qPlayerRank = getQuery("playerRank.sql");
+
+    private static String getQuery(String query) {
+        try {
+            return Resources.toString(Resources.getResource("sql/rank/" + query), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
@@ -27,7 +45,7 @@ public class MapLeaders extends HttpServlet {
             JsonObject result = new JsonObject();
 
             {
-                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT `nick`, MAX(`score`) as `sc` FROM `games` WHERE `map_id`=? GROUP BY `nick` ORDER BY `sc` DESC LIMIT ?");
+                PreparedStatement statement = Launcher.connection.prepareStatement(qLeaders);
                 statement.setString(1, mapId);
                 statement.setLong(2, count);
                 ResultSet rs = statement.executeQuery();
@@ -43,7 +61,7 @@ public class MapLeaders extends HttpServlet {
             }
 
             {
-                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT MAX(`score`) AS `sc` FROM `games` WHERE `nick`=? AND `map_id`=?");
+                PreparedStatement statement = Launcher.connection.prepareStatement(qPlayerBest);
                 statement.setString(1, nick);
                 statement.setString(2, mapId);
                 ResultSet rs = statement.executeQuery();
@@ -53,7 +71,7 @@ public class MapLeaders extends HttpServlet {
             }
 
             {
-                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT COUNT(DISTINCT `nick`) as `players` FROM `games` WHERE `map_id`=?");
+                PreparedStatement statement = Launcher.connection.prepareStatement(qMapPlayerCount);
                 statement.setString(1, mapId);
                 ResultSet rs = statement.executeQuery();
                 if(rs.next()) {
@@ -62,7 +80,7 @@ public class MapLeaders extends HttpServlet {
             }
 
             {
-                PreparedStatement statement = Launcher.connection.prepareStatement("SELECT COUNT(`nick`) as `playCount` FROM `games` WHERE `nick`=?");
+                PreparedStatement statement = Launcher.connection.prepareStatement(qPlayerPlayCount);
                 statement.setString(1, nick);
                 ResultSet rs = statement.executeQuery();
                 if(rs.next()) {
@@ -71,7 +89,15 @@ public class MapLeaders extends HttpServlet {
             }
 
             {
-                result.addProperty("position", 212212);
+                PreparedStatement statement = Launcher.connection.prepareStatement(qPlayerRank);
+                statement.setString(1, mapId);
+                statement.setString(2, nick);
+                statement.setString(3, mapId);
+                ResultSet rs = statement.executeQuery();
+
+                if(rs.next()) {
+                    result.addProperty("position", rs.getLong("rank") + 1);
+                }
             }
 
             result.addProperty("state", "OK");

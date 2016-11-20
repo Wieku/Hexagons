@@ -15,6 +15,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = [ "resources/" ]
 project.ext.mainClassName = "xyz.hexagons.server.Launcher"
 
 retrolambda {
