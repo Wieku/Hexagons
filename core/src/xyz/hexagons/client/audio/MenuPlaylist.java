@@ -167,7 +167,7 @@ public class MenuPlaylist {
 		}
 		current = map;
 		//System.out.println(map.getMetaData().getAudioFileName());
-		player = new AudioPlayer(new ArchiveFileHandle(map.file, map.info.audioFileName));
+		player = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file, map.info.audioFileName));
 	}
 
 	public static float getPosition(){

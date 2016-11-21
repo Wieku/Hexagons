@@ -1,240 +1,44 @@
 package xyz.hexagons.client.audio;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.AudioRecorder;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.backends.lwjgl.audio.Ogg;
-import com.badlogic.gdx.backends.lwjgl.audio.OggInputStream;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALMusic;
 import com.badlogic.gdx.files.FileHandle;
-import me.wieku.audio.analysis.BeatDetect;
-import me.wieku.audio.analysis.FFT;
-import org.lwjgl.BufferUtils;
-import xyz.hexagons.client.utils.Utils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.nio.ByteBuffer;
+public interface AudioPlayer {
 
-public class AudioPlayer {
-
-	boolean ended;
-	boolean pause;
-	FileHandle handle;
-	boolean firstStart = false;
-	FFT fft;
-	BeatDetect detect;
-	float[] outBuf = new float[60];
-	Music musicPlayer;
-	static Field buffr;
-	static final int SIZE = 4096;
-
-	static int BUFFER_SIZE;
-	float secPerBuffer;
-	float audioLength;
-
-	static void setFinalStatic(Field field, Object newValue) throws Exception {
-		field.setAccessible(true);
-
-		Field modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
-		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-		field.set(null, newValue);
+	interface IAudioPlayerFactory {
+		AudioPlayer instance(FileHandle file);
 	}
 
-	static {
-		try {
+	FileHandle getFile();
 
-			//setFinalStatic(OpenALMusic.class.getDeclaredField("bufferSize"), SIZE*2);
-			//setFinalStatic(OpenALMusic.class.getDeclaredField("tempBytes"), new byte[SIZE*2]);
-			//setFinalStatic(OpenALMusic.class.getDeclaredField("tempBuffer"), BufferUtils.createByteBuffer(SIZE*2));
-			Field field = OpenALMusic.class.getDeclaredField("bufferSize");
-			field.setAccessible(true);
-			BUFFER_SIZE = (int) field.get(null);
+	float getVolume();
 
+	void setVolume(float volume);
 
-			buffr = OpenALMusic.class.getDeclaredField("tempBytes");
-			buffr.setAccessible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	float getPosition();
 
-	public AudioPlayer(FileHandle file) {
-		if(!file.exists()) throw new IllegalStateException("Cannot find audio");
-		handle = file;
+	void setPosition(float milis);
 
-		musicPlayer = Gdx.audio.newMusic(handle);
+	void play();
 
-		try {
-			Field sPB = OpenALMusic.class.getDeclaredField("secondsPerBuffer");
-			sPB.setAccessible(true);
-			secPerBuffer = (float) sPB.get(musicPlayer);
+	void play(float time);
 
-			Field inp = Ogg.Music.class.getDeclaredField("input");
-			inp.setAccessible(true);
+	void update(float delta);
 
-			OggInputStream str = (OggInputStream) inp.get(musicPlayer);
+	void glideVolume(float volume, float time);
 
-			//System.out.println(((str.getLength()*1f)/BUFFER_SIZE));
-			audioLength = ((str.getLength()*1f)/BUFFER_SIZE)/secPerBuffer;
-			//System.out.println(audioLength);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
+	float[] getFFT();
 
-		//musicPlayer.setLooping(true);
-		musicPlayer.setOnCompletionListener(m -> ended = true);
+	boolean isOnset();
 
-		fft = new FFT(SIZE, ((OpenALMusic)musicPlayer).getRate());
-		fft.linAverages(60);
+	void pause();
 
-		detect = new BeatDetect(2048, ((OpenALMusic)musicPlayer).getRate());
+	boolean hasEnded();
 
-	}
+	void stop();
 
-	public FileHandle getFile(){
-		return handle;
-	}
+	void dispose();
 
-	public float getVolume() {
-		return musicPlayer.getVolume();
-	}
+	boolean isPaused();
 
-	public void setVolume(float volume){
-		musicPlayer.setVolume(volume);
-	}
-	
-	public float getPosition(){
-		return musicPlayer.getPosition();
-	}
-	
-	public void setPosition(float milis){
-		new Thread(()->{
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			float vol = musicPlayer.getVolume();
-			setVolume(0);
-			musicPlayer.setPosition(milis);
-			if(pause) musicPlayer.pause();
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			setVolume(vol);
-		}).start();
-	}
-
-	public void play(){
-		musicPlayer.play();
-		firstStart = true;
-		ended = false;
-		pause = false;
-	}
-
-	public void play(float time){
-		musicPlayer.play();
-		if(firstStart || time > 0){
-			setPosition(time);
-		}
-		firstStart = true;
-		ended = false;
-
-	}
-
-	byte[] bufferByte = new byte[SIZE*2];
-	float[] bufferFloat = new float[SIZE*2];
-	float[] bufferFloat2 = new float[SIZE];
-
-	public void update(float delta){
-
-
-		if(timedelta < time){
-			timedelta+=delta;
-
-			setVolume(bgvol+((dstvol-bgvol)*timedelta)/time);
-
-		} else {
-			time = -2;
-			timedelta = -1;
-		}
-
-
-		/*try {
-			bufferByte = (byte[]) buffr.get(null);
-
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}*/
-		/*delta0+=delta;
-		System.out.println(byteIndex);
-		//byteIndex = Math.max(0, Math.min(9, (int) (secPB/delta0)));
-
-		if(delta0 > secPB/20f) {
-			delta0 = 0;
-			++byteIndex;
-			if(byteIndex>19){
-				byteIndex=0;
-				try {
-					bufferByte = (byte[]) buffr.get(null);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}*/
-	}
-
-	float bgvol, dstvol, timedelta = -1, time = -2;
-
-	public void glideVolume(float volume, float time){
-		bgvol = getVolume();
-		dstvol = volume;
-		this.time = time;
-		timedelta=0;
-	}
-
-	public float[] analyze(){
-		Utils.byteToFloat(bufferByte, 0, bufferFloat, 0, bufferFloat.length);
-
-		for(int i = 0, j = 0; i < bufferFloat2.length; i++, j+=2)
-			bufferFloat2[i] = (bufferFloat[j] + bufferFloat[j+1]) / 2;
-
-		fft.forward(bufferFloat2);
-
-		for(int i = 0; i < fft.avgSize(); i++)
-			outBuf[i] = fft.getAvg(i);
-
-		return outBuf;
-	}
-
-	public void pause(){
-		pause = true;
-		musicPlayer.pause();
-	}
-	
-	public boolean hasEnded(){
-		return ended;
-	}
-	
-	public void stop(){
-		musicPlayer.stop();
-		ended = true;
-	}
-
-	public void dispose(){
-		musicPlayer.dispose();
-	}
-
-	public boolean isPaused() {
-		return !musicPlayer.isPlaying() && !ended;
-	}
-
-	public void setLooping(boolean looping) {
-		musicPlayer.setLooping(looping);
-	}
+	void setLooping(boolean looping);
 }
