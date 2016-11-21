@@ -1,35 +1,24 @@
 package xyz.hexagons.server.servlets;
 
-import com.google.common.io.Resources;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import xyz.hexagons.server.Launcher;
+import xyz.hexagons.server.util.SqlUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class MapLeaders extends HttpServlet {
-    private static final String qLeaders = getQuery("leaders.sql");
-    private static final String qMapPlayerCount = getQuery("mapPlayerCount.sql");
-    private static final String qPlayerBest = getQuery("playerBest.sql");
-    private static final String qPlayerPlayCount = getQuery("playerPlayCount.sql");
-    private static final String qPlayerRank = getQuery("playerRank.sql");
-
-    private static String getQuery(String query) {
-        try {
-            return Resources.toString(Resources.getResource("sql/rank/" + query), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+    private static final String qLeaders = SqlUtil.getQuery("rank/leaders.sql");
+    private static final String qMapPlayerCount = SqlUtil.getQuery("rank/mapPlayerCount.sql");
+    private static final String qPlayerBest = SqlUtil.getQuery("rank/playerBest.sql");
+    private static final String qPlayerPlayCount = SqlUtil.getQuery("rank/playerPlayCount.sql");
+    private static final String qPlayerRank = SqlUtil.getQuery("rank/playerRank.sql");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

@@ -3,21 +3,29 @@ package xyz.hexagons.server;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import xyz.hexagons.server.servlets.*;
+import xyz.hexagons.server.util.SqlUtil;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Launcher {
     private static Server server = new Server(9999);
     private static ServletContextHandler ctx = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
     public static Connection connection = null;
+    private static final String qPerpareDatabase = SqlUtil.getQuery("prepare");
+    private static final String qCheckConfig = SqlUtil.getQuery("config/check");
+    private static final String qInitConfig = SqlUtil.getQuery("config/init");
 
     private static void prepareDatabase(Connection connection) {
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS `games`(`id` INTEGER PRIMARY KEY AUTOINCREMENT, `map_id` varchar(36) NOT NULL, `score` bigint(20) NOT NULL,  `nick` varchar(24) NOT NULL);");
+            statement.executeUpdate(qPerpareDatabase);
+
+            ResultSet checkResult = statement.executeQuery(qCheckConfig);
+            if(checkResult.next()) {
+                if(checkResult.getInt("ok") == 0) {
+                    statement.executeUpdate(qInitConfig);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

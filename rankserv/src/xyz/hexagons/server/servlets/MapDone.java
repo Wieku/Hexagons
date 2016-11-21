@@ -1,6 +1,7 @@
 package xyz.hexagons.server.servlets;
 
 import xyz.hexagons.server.Launcher;
+import xyz.hexagons.server.util.SqlUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,8 @@ import java.sql.Statement;
 import java.time.Instant;
 
 public class MapDone extends HttpServlet {
+    public static final String qInstertGame = SqlUtil.getQuery("rank/insertGame.sql");
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
@@ -23,7 +26,7 @@ public class MapDone extends HttpServlet {
             long score = Long.valueOf(req.getParameter("score"));
             System.out.println("New score report "+mapid+"/"+nick+": "+score);
 
-            PreparedStatement statement = Launcher.connection.prepareStatement("INSERT INTO `games` (`map_id`, `score`, `nick`, `at`) VALUES (?, ?, ?, ?)");
+            PreparedStatement statement = Launcher.connection.prepareStatement(qInstertGame);
             statement.setString(1, mapid);
             statement.setLong(2, score);
             statement.setString(3, nick);
