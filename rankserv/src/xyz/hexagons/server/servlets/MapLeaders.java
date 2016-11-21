@@ -14,11 +14,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class MapLeaders extends HttpServlet {
-    private static final String qLeaders = SqlUtil.getQuery("rank/leaders.sql");
-    private static final String qMapPlayerCount = SqlUtil.getQuery("rank/mapPlayerCount.sql");
-    private static final String qPlayerBest = SqlUtil.getQuery("rank/playerBest.sql");
-    private static final String qPlayerPlayCount = SqlUtil.getQuery("rank/playerPlayCount.sql");
-    private static final String qPlayerRank = SqlUtil.getQuery("rank/playerRank.sql");
+    private static final String qLeaders = SqlUtil.getQuery("rank/leaders");
+    private static final String qMapPlayerCount = SqlUtil.getQuery("rank/mapPlayerCount");
+    private static final String qPlayerBest = SqlUtil.getQuery("rank/playerBest");
+    private static final String qPlayerPlayCount = SqlUtil.getQuery("rank/playerPlayCount");
+    private static final String qPlayerRank = SqlUtil.getQuery("rank/playerRank");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

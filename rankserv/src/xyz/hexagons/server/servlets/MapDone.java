@@ -14,7 +14,7 @@ import java.sql.Statement;
 import java.time.Instant;
 
 public class MapDone extends HttpServlet {
-    public static final String qInstertGame = SqlUtil.getQuery("rank/insertGame.sql");
+    public static final String qInstertGame = SqlUtil.getQuery("rank/insertGame");
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

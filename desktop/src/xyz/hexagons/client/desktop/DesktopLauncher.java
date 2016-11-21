@@ -41,6 +41,7 @@ public class DesktopLauncher {
 		}
 
 		Instance.storageRoot = new File(".");
+		Instance.accountManager = new DesktopAccountManager();
 
 		config = new LwjglApplicationConfiguration();
 

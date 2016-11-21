@@ -4,6 +4,7 @@ import me.wieku.animation.AnimationManager;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.rankserv.AccountManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Instance {
     public static File storageRoot = null;
     public static Executor executor = Executors.newSingleThreadExecutor();
     public static Globals luaGlobals = JsePlatform.standardGlobals();
+    public static AccountManager accountManager = null;
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

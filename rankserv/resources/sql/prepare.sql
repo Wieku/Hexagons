@@ -5,3 +5,8 @@ CREATE TABLE IF NOT EXISTS `games`( `id` INTEGER PRIMARY KEY AUTOINCREMENT,
 
 CREATE TABLE IF NOT EXISTS `config`(`key` varchar(36) PRIMARY KEY,
                                     `value` TEXT);
+
+CREATE TABLE IF NOT EXISTS `users`( `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    `nick` VARCHAR(64),
+
+                                    `type` INTEGER);
