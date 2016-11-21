@@ -3,12 +3,8 @@ package xyz.hexagons.client.desktop;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.scenes.scene2d.actions.IntAction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.JsePlatform;
 import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 import xyz.hexagons.client.Hexagons;
 import xyz.hexagons.client.Instance;
@@ -45,6 +41,7 @@ public class DesktopLauncher {
 		config = new LwjglApplicationConfiguration();
 
 		Instance.setForegroundFps = fps -> config.foregroundFPS = fps;
+		Instance.audioPlayerFactory = new DesktopAudioPlayerFactory();
 
 		config.width = 1024;
 		config.height = 768;

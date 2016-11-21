@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -62,6 +63,7 @@ public class MainMenu implements Screen {
 	private Label motdLabel;
 	private Timeline motdAnimation;
 
+	private float[] dfg = new float[60];
 
 	public boolean optionsShowed;
 
@@ -164,7 +166,7 @@ public class MainMenu implements Screen {
 		beatIHigh.setScaling(Scaling.fit);
 
 		beatILow = new Image(tex);
-		beatILow.setColor(1, 1, 1, 0.5f);
+		beatILow.setColor(1, 1, 1, 0.3f);
 		beatILow.setScaling(Scaling.fit);
 
 		stage.addActor(beatIHigh);
@@ -184,9 +186,9 @@ public class MainMenu implements Screen {
 		list.add(button2 = new MenuButton("Options"));
 		list.add(button3 = new MenuButton("Exit"));
 
-		button.setBounds(stage.getWidth() - 313, 252, 512, 100);
-		button2.setBounds(stage.getWidth() - 379, 142, 512, 100);
-		button3.setBounds(stage.getWidth() - 445, 32, 512, 100);
+		button.setBounds(stage.getWidth() - 328, 252, 512, 100);
+		button2.setBounds(stage.getWidth() - 394, 142, 512, 100);
+		button3.setBounds(stage.getWidth() - 460, 32, 512, 100);
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
@@ -198,7 +200,7 @@ public class MainMenu implements Screen {
 		motdLabel = GUIHelper.text(MotdApi.instance.getMotd().text, Color.WHITE, 20);
 		motdTable.add(motdLabel).center();
 		motdTable.pack();
-		motdTable.setWidth(1024);
+		motdTable.setWidth(stage.getWidth());
 		motdTable.setPosition(0, 1f/3 * 768);
 		stage.addActor(motdTable);
 	}
@@ -237,6 +239,9 @@ public class MainMenu implements Screen {
 	private Timeline beatLow;
 	private float delta0 = 0;
 	private float delta1 = 0;
+
+	private boolean lo = false;
+
 	@Override
 	public void render(float delta) {
 
@@ -264,34 +269,42 @@ public class MainMenu implements Screen {
 				}
 			}
 
-
 			title.setText(MenuPlaylist.getCurrent().info.songAuthor + " - " + MenuPlaylist.getCurrent().info.songName);
 			music.pack();
-
+			
+			motdTable.setWidth(stage.getWidth());
+			motdTable.layout();
 			//lel.set(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
 			//float gx = (stage.getWidth()/1024f) * music.getWidth();
 			//float gy = (stage.getHeight()/1024f) * music.getHeight();
 			music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
 
-			if(beatHigh == null || beatHigh.isFinished()){
-				
-				beatHigh = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.04f/2*(0.96f/ beatIHigh.getScaleX()), 0.96f, 0))
-						.push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.3f, 1f, 0)).end();
-				beatHigh.start(Instance.getAnimationManager());
+			float[] cv = MenuPlaylist.getCurrentPlayer().getFFT();
+			for(int i=0;i<40;i++) {
+				dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50, dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
 			}
-			
-			if(beatLow == null || beatLow.isFinished()){
-				
+
+			if(!lo && MenuPlaylist.getCurrentPlayer().isOnset()/*beatLow == null || beatLow.isFinished()*/){
+				lo=true;
+				if(beatLow != null) beatLow.kill();
 				beatLow = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.1f*(1.025f/beatILow.getScaleX()), 1.025f, 0))
-						.push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.3f, 1f, 0)).end();
+						.push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.2f, 1f, 0)).end();
 				beatLow.start(Instance.getAnimationManager());
+
+				if(beatHigh != null) beatHigh.kill();
+
+				beatHigh = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.1f/2*(0.96f/ beatIHigh.getScaleX()), 0.96f, 0))
+						.push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.2f, 1f, 0)).end();
+				beatHigh.start(Instance.getAnimationManager());
+
 			}
+
+			if(!MenuPlaylist.getCurrentPlayer().isOnset()) lo = false;
 
 			delta0 = 0;
 		}
 
 		if((delta1 += delta)>=1f) {
-			//System.out.println((int)cd.getFPS());
 			delta1=0;
 		}
 
@@ -308,6 +321,21 @@ public class MainMenu implements Screen {
 		blurEffect.unbind();
 
 		blurEffect.render(stage.getBatch());
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.identity();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		shapeRenderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 0.1f);
+		float g = stage.getHeight()/40f;
+		for(int i=0;i<40;i++){
+			shapeRenderer.rect(0, i*g, dfg[i], g-1);
+		}
+		shapeRenderer.end();
+
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		stage.act(delta);
 		stage.draw();
@@ -327,9 +355,9 @@ public class MainMenu implements Screen {
 		beatILow.setPosition((401f / 1024) * stage.getWidth() - beatIHigh.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - beatIHigh.getHeight() / 2);
 
 
-		button.setBounds(stage.getWidth() - 313 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
-		button2.setBounds(stage.getWidth() - 379 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
-		button3.setBounds(stage.getWidth() - 445 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
+		button.setBounds(stage.getWidth() - 328 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
+		button2.setBounds(stage.getWidth() - 394 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
+		button3.setBounds(stage.getWidth() - 460 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
 
 		blurEffect.resize(width, height);
 		music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
@@ -339,14 +367,14 @@ public class MainMenu implements Screen {
 	private void selectIndex(int index){
 		if(currentIndex != -1){
 			list.get(currentIndex).select(false);
-			float x=(currentIndex==0?stage.getWidth() - 313:currentIndex==1?stage.getWidth() - 379:stage.getWidth() - 445);
+			float x=(currentIndex==0?stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 
 			ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x , 0f));
 		}
 		currentIndex = index;
 		SoundManager.playSound("click");
 		list.get(currentIndex).select(true);
-		float x=(currentIndex==0?stage.getWidth() - 313:currentIndex==1?stage.getWidth() - 379:stage.getWidth() - 445);
+		float x=(currentIndex==0?stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 		ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x - 20, 0f));
 	}
 

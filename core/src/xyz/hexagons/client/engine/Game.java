@@ -121,7 +121,7 @@ public class Game implements Screen {
 
 		stage.addActor(next);
 		
-		audioPlayer = new AudioPlayer(new ArchiveFileHandle(map.file,map.info.audioFileName));
+		audioPlayer = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file,map.info.audioFileName));
 		audioPlayer.setLooping(true);
 
 
