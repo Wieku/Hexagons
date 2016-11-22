@@ -263,9 +263,9 @@ public class MapSelect implements Screen {
 		myScoreTable.pack();
 		stage.addActor(myScoreTable);
 
-		nickname = GUIHelper.text("Your nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
+		nickname = GUIHelper.text("Nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
 		nickname.pack();
-		nickname.setPosition(5, 5);
+		nickname.setPosition(5, 70);
 		stage.addActor(nickname);
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
@@ -366,7 +366,7 @@ public class MapSelect implements Screen {
 	@Override
 	public void show() {
 
-		Instance.setForegroundFps.accept(120);
+		Instance.setForegroundFps.accept(0);
 		Gdx.graphics.setTitle("Hexagons! " + Version.version);
 		selectIndex(mapIndex= Instance.maps.indexOf(MenuPlaylist.getCurrent()));
 
@@ -403,7 +403,7 @@ public class MapSelect implements Screen {
 			info.pack();
 			info.setPosition(5, stage.getHeight()-5-info.getHeight());
 		} else {
-			SoundManager.playSound("click");
+
 			Map map = maps.get(index);
 			CurrentMap.reset();
 			maps.get(mapIndex).script.initColors();
@@ -415,6 +415,8 @@ public class MapSelect implements Screen {
 				MenuPlaylist.skipToPreview();
 				MenuPlaylist.setVolume(((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.menuMusicVolume) / 10000f);
 			}
+
+			SoundManager.playSound("click");
 
 			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
 			name.setText(map.info.name);
