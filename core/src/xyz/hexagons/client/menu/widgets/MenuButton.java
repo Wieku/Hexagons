@@ -1,10 +1,12 @@
 package xyz.hexagons.client.menu.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import xyz.hexagons.client.utils.GUIHelper;
@@ -24,6 +26,9 @@ public class MenuButton extends Table {
 	private float fluctuate = 0f;
 	private int fluctDir = 1;
 
+	Vector2 st = new Vector2();
+	Vector2 lo = new Vector2();
+
 	public MenuButton(String text){
 		renderer = new ShapeRenderer();
 		left();
@@ -38,6 +43,9 @@ public class MenuButton extends Table {
 		fluctDir = (fluctuate == 0.4f ? -1 : fluctuate == 0f ? 1 : fluctDir);
 
 		mixin = MathUtils.clamp((mixin += delta * (selected?4:-4)), 0f, 1f);
+
+		st.set(Gdx.input.getX(), Gdx.input.getY());
+		lo = stageToLocalCoordinates(st);
 	}
 
 	@Override

@@ -320,17 +320,17 @@ public class MapSelect implements Screen {
 		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 300, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
 
+		if(mapButtons.size() > 0)
+			if(!showed) {
+				MenuMap ms = mapButtons.get(mapIndex);
 
-		if(!showed) {
-			MenuMap ms = mapButtons.get(mapIndex);
-
-			if(ms.getY()+ms.getHeight()/2<scrollPane.getHeight()/2) {
-				scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
-			} else if((table.getHeight()-ms.getY()-ms.getHeight()/2) < scrollPane.getHeight()/2) {
-				scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+				if(ms.getY()+ms.getHeight()/2<scrollPane.getHeight()/2) {
+					scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+				} else if((table.getHeight()-ms.getY()-ms.getHeight()/2) < scrollPane.getHeight()/2) {
+					scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+				}
+				showed = true;
 			}
-			showed = true;
-		}
 
 		stage.act(delta);
 		stage.draw();
