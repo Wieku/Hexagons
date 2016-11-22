@@ -274,6 +274,7 @@ public class MainMenu implements Screen {
 					CurrentMap.reset();
 					MenuPlaylist.getCurrent().script.initColors();
 					MenuPlaylist.getCurrent().script.onInit();
+					camera.reset();
 				}
 			}
 
