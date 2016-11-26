@@ -455,7 +455,8 @@ public class MapSelect implements Screen {
 
 
 	public void addScore(int position, String name, int score) {
-			Table table = GUIHelper.getTable(new Color(0,0,0,0.5f));
+			float ty = (Settings.instance.ranking.nickname.equals(name)?0.2f:0.0f);
+			Table table = GUIHelper.getTable(new Color(ty,ty,ty,0.5f));
 			table.left();
 
 			Table subTable = new Table();
