@@ -206,4 +206,7 @@ public class MenuPlaylist {
 		return current;
 	}
 
+	public static boolean isPaused() {
+		return player == null || player.isPaused();
+	}
 }

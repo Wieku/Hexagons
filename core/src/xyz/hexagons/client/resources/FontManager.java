@@ -98,7 +98,7 @@ public enum FontManager{
 				field.setAccessible(true);
 
 				fontData.regions = (Array<TextureRegion>) field.get(d);
-
+				
 				fonts.put(val, fontData);
 
 				generator.dispose();

@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -207,6 +208,8 @@ public class MainMenu implements Screen {
 		motdTable.pack();
 		motdTable.setWidth(stage.getWidth());
 		motdTable.setPosition(0, 1f/3 * 768);
+		motdTable.setTouchable(Touchable.disabled);
+		
 		stage.addActor(motdTable);
 	}
 

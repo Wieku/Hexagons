@@ -372,7 +372,7 @@ public class MapSelect implements Screen {
 
 		if(game != null){
 			MenuPlaylist.play();
-			MenuPlaylist.setPosition(game.exitPosition);
+			//MenuPlaylist.setPosition(game.exitPosition);
 			game = null;
 		}
 		MenuPlaylist.setLooping(true);
@@ -527,7 +527,9 @@ public class MapSelect implements Screen {
 	public void resume() {}
 
 	@Override
-	public void hide() {}
+	public void hide() {
+
+	}
 
 	@Override
 	public void dispose() {}

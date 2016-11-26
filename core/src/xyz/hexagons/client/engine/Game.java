@@ -23,6 +23,7 @@ import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.AudioPlayer;
+import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.menu.screens.MapSelect;
@@ -55,7 +56,7 @@ public class Game implements Screen {
 
 
 	Map map;
-	AudioPlayer audioPlayer;
+	//AudioPlayer audioPlayer;
 
 	public float exitPosition;
 
@@ -112,12 +113,12 @@ public class Game implements Screen {
 
 		stage.addActor(next);
 		
-		audioPlayer = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file,map.info.audioFileName));
-		audioPlayer.setLooping(true);
+		//audioPlayer = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file,map.info.audioFileName));
+		//audioPlayer.setLooping(true);
 
 
 		//addRenderer(player);
-
+		MenuPlaylist.setLooping(true);
 		start(map.info.startTimes[0]);
 	}
 
@@ -129,7 +130,6 @@ public class Game implements Screen {
 
 	@Override
 	public void show() {
-
 		Instance.setForegroundFps.accept(0);
 		Gdx.graphics.setTitle("Hexagons! " + Version.version + " — " + map.info.songAuthor + " - " + map.info.songName);
 	}
@@ -182,8 +182,10 @@ public class Game implements Screen {
 		score = 0;
 		player.reset();
 		camera.reset();
-		audioPlayer.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
-		audioPlayer.play(startTime);
+		/*audioPlayer*/MenuPlaylist.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
+		//audioPlayer.play(startTime);
+		MenuPlaylist.play();
+		MenuPlaylist.setPosition(startTime);
 
 		map.script.onInit();
 		map.script.initColors();
@@ -212,12 +214,14 @@ public class Game implements Screen {
 
 		if(player.dead){
 
-			if (audioPlayer != null && !audioPlayer.hasEnded()) {
+			if (!MenuPlaylist.isPaused()/*audioPlayer != null && !audioPlayer.hasEnded()*/) {
 				SoundManager.playSound("death");
 				SoundManager.playSound("gameover");
 				camera.rumble(20f, 1f);
-				exitPosition = audioPlayer.getPosition();
-				audioPlayer.stop();
+				//exitPosition = audioPlayer.getPosition();
+				//audioPlayer.stop();
+				exitPosition = MenuPlaylist.getPosition();
+				MenuPlaylist.pause();
 			}
 
 			if(Gdx.input.isKeyPressed(Keys.SPACE)){
@@ -225,7 +229,7 @@ public class Game implements Screen {
 			}
 
 			if(Gdx.input.isKeyPressed(Keys.ESCAPE) && !escClick){
-				audioPlayer.dispose();
+				//audioPlayer.dispose();
 				Instance.game.setScreen(MapSelect.getInstance());
 			}
 
