@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Scaling;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.api.HColor;
+import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.map.Map;
@@ -120,6 +121,8 @@ public class MenuMap extends Button {
 		super.act(delta);
 
 		if(laststatus != isOver()){
+			
+			SoundManager.playSound("click");
 
 			if(animation != null && !animation.isFinished()){
 				animation.kill();

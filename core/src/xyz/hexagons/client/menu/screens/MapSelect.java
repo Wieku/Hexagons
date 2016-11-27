@@ -153,11 +153,11 @@ public class MapSelect implements Screen {
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				Vector2 r = scrollPane.screenToLocalCoordinates(new Vector2(x, Gdx.graphics.getHeight()-y));
 				for(MenuMap m : mapButtons) {
-					if(m.isIn((int)r.x, (int)r.y)) {
+					if(m.isOver()) {
 
 						System.out.println(m.map.info.name);
 						if(mapButtons.indexOf(m) != mapIndex) {
-							if(mapButtons.indexOf(m) > mapIndex){
+							if(mapButtons.indexOf(m) < mapIndex){
 
 								mapButtons.get(mapIndex).check(false);
 
@@ -171,7 +171,7 @@ public class MapSelect implements Screen {
 								mapButtons.forEach(MenuMap::update);
 							}
 
-							if(mapButtons.indexOf(m) < mapIndex){
+							if(mapButtons.indexOf(m) > mapIndex){
 
 								mapButtons.get(mapIndex).check(false);
 								mapIndex = mapButtons.indexOf(m);

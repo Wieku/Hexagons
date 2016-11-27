@@ -56,7 +56,7 @@ public class DesktopAudioPlayer implements AudioPlayer{
 		handle = fileHandle;
 
 		musicPlayer = (OpenALMusic) Gdx.audio.newMusic(handle);
-
+		setSPB();
 		try {
 
 			Field inp = Ogg.Music.class.getDeclaredField("input");
@@ -112,8 +112,8 @@ public class DesktopAudioPlayer implements AudioPlayer{
 	@Override
 	public void setPosition(float milis) {
 		System.out.println("llllll "+milis);
-		Gdx.app.postRunnable(()->musicPlayer.setPosition(milis));
-		/*new Thread(()->{
+		//Gdx.app.postRunnable(()->musicPlayer.setPosition(milis));
+		new Thread(()->{
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -130,7 +130,7 @@ public class DesktopAudioPlayer implements AudioPlayer{
 			}
 			setVolume(vol);
 			System.out.println(musicPlayer.getPosition());
-		}).start();*/
+		}).start();
 	}
 
 	@Override
