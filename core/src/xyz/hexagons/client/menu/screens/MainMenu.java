@@ -1,5 +1,6 @@
 package xyz.hexagons.client.menu.screens;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -147,6 +148,36 @@ public class MainMenu implements Screen {
 					escclick = false;
 				}
 				return false;
+			}
+			
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				
+				for (int i = 0; i < list.size(); i++) {
+					if(list.get(i).isPressed()) {
+						selectIndex(i);
+						list.get(i).getClickListener().touchUp(event, x, y, pointer, button);
+						if(currentIndex == 0){
+							Instance.scheduleOnMain.accept(()->Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps)))));
+						}
+						
+						if(currentIndex == 1) {
+							optionsShowed = true;
+							
+							if(sTab.isShowed())
+								sTab.hide();
+							else
+								sTab.show();
+						}
+						
+						if(currentIndex == 2){
+							Gdx.app.exit();
+						}
+						
+					}
+				}
+				
+				return super.touchDown(event, x, y, pointer, button);
 			}
 		});
 
@@ -296,7 +327,15 @@ public class MainMenu implements Screen {
 			//float gx = (stage.getWidth()/1024f) * music.getWidth();
 			//float gy = (stage.getHeight()/1024f) * music.getHeight();
 			music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
-
+			
+			boolean cd = false;
+			for (int i = 0; i < list.size(); i++) {
+				if(list.get(i).isOver()) {
+					cd=true;
+					selectIndex(i);
+				}
+			}
+			if(!cd && Gdx.app.getType() == ApplicationType.Android) selectIndex(-1);
 			if(MenuPlaylist.getCurrentPlayer() != null) {
 				if(!lo && MenuPlaylist.getCurrentPlayer().isOnset()/*beatLow == null || beatLow.isFinished()*/){
 					lo=true;
@@ -394,7 +433,18 @@ public class MainMenu implements Screen {
 	}
 
 	private void selectIndex(int index){
-		if(currentIndex != -1){
+		if(currentIndex == index) return;
+		
+		if(index == -1) {
+			currentIndex = index;
+			for (int i = 0; i < list.size(); i++) {
+				list.get(i).select(false);
+				float x=(i==0?stage.getWidth() - 328:i==1?stage.getWidth() - 394:stage.getWidth() - 460);
+				
+				ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(i), ActorAccessor.SLIDEX, 0.5f, x , 0f));
+			}
+			return;
+		} else if (currentIndex != -1) {
 			list.get(currentIndex).select(false);
 			float x=(currentIndex==0?stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 
