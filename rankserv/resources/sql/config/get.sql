@@ -1,1 +1,1 @@
-SELECT `value` FROM `config` WHERE `key`=?
+SELECT value FROM config WHERE key=?

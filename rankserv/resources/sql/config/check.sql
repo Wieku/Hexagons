@@ -1,1 +1,1 @@
-SELECT count(*) > 0 as `ok` FROM `config`
+SELECT count(*) > 0 as ok FROM config

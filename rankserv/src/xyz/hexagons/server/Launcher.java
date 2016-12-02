@@ -2,6 +2,9 @@ package xyz.hexagons.server;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import xyz.hexagons.server.auth.GoogleAuth;
+import xyz.hexagons.server.auth.GoogleAuthOut;
+import xyz.hexagons.server.auth.GooglePoll;
 import xyz.hexagons.server.auth.GoogleToken;
 import xyz.hexagons.server.servlets.*;
 import xyz.hexagons.server.util.SqlUtil;
@@ -25,7 +28,7 @@ public class Launcher {
 
             ResultSet checkResult = statement.executeQuery(qCheckConfig);
             if(checkResult.next()) {
-                if(checkResult.getInt("ok") == 0) {
+                if(checkResult.getString("ok").equals("f")) {
                     PreparedStatement cf = Launcher.connection.prepareStatement(qInitConfig);
                     System.out.println("Google OAuth ClientID:");
                     cf.setString(1, input.nextLine());
@@ -43,13 +46,13 @@ public class Launcher {
 
     public static void main(String[] args) {
         try {
-            Class.forName("org.sqlite.JDBC");
+            Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:rankserv.db");
+            connection = DriverManager.getConnection("jdbc:postgresql://" + Settings.dbAddress + "/" + Settings.dbDatabase, Settings.dbUser, Settings.dbPass);
             prepareDatabase(connection);
 
             ctx.setContextPath("/");
@@ -60,6 +63,9 @@ public class Launcher {
             ctx.addServlet(Motd.class,          "/motd");
 
             ctx.addServlet(GoogleToken.class,   "/auth/google/challenge");
+            ctx.addServlet(GoogleAuth.class,    "/auth/google/in");
+            ctx.addServlet(GoogleAuthOut.class, "/auth/google/out");
+            ctx.addServlet(GooglePoll.class,    "/auth/google/poll");
 
             server.start();
             server.join();

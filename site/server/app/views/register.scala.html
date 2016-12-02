@@ -1,0 +1,10 @@
+@(err: Boolean)
+
+@main("Register") {
+<div class="register-root">
+    Claim a name: <input type="text" placeholder="Name"/>
+    This will be displayed on leader boards and used to invite friends
+</div>
+@playscalajs.html.selectScript("client")
+@playscalajs.html.launcher("client")
+}

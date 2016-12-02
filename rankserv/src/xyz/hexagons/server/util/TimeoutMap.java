@@ -18,13 +18,29 @@ public class TimeoutMap<K, V> {
         check();
     }
 
-    private V get(K key) {
+    public V get(K key) {
         V value;
         synchronized (backing) {
             value = backing.get(key);
         }
         check();
         return value;
+    }
+
+    public boolean containsKey(K key) {
+        boolean value;
+        synchronized (backing) {
+            value = backing.containsKey(key);
+        }
+        check();
+        return value;
+    }
+
+    public void remove(K key) {
+        synchronized (backing) {
+            backing.remove(key);
+        }
+        check();
     }
 
     private void check() {

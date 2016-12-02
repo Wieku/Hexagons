@@ -1,0 +1,1 @@
+WITH U AS (INSERT INTO users (nick) VALUES (?) RETURNING id) INSERT INTO user_auth VALUES((SELECT id FROM U), ?, ?)

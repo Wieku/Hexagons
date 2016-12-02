@@ -147,8 +147,11 @@ project(":rankserv") {
         compile 'org.eclipse.jetty:jetty-servlet:9.4.0.M1'
         compile 'org.eclipse.jetty:jetty-continuation:9.4.0.M1'
         compile 'com.google.code.gson:gson:2.7'
-        compile 'org.xerial:sqlite-jdbc:3.8.10.1'
         compile 'com.google.guava:guava:19.0'
+        compile 'org.apache.httpcomponents:httpclient:4.5.2'
+        compile 'com.google.api-client:google-api-client:1.22.0'
+        compile 'com.google.apis:google-api-services-oauth2:v2-rev124-1.22.0'
+        compile 'postgresql:postgresql:9.1-901-1.jdbc4'
     }
 }
 

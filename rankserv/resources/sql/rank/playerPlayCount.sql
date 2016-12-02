@@ -1,1 +1,1 @@
-SELECT COUNT(`nick`) as `playCount` FROM `games` WHERE `nick`=?
+SELECT COUNT(nick) as playCount FROM games WHERE nick=?
