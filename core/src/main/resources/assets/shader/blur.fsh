@@ -5,7 +5,7 @@ uniform vec2 resolution;
 uniform float power;
 uniform float darkness;
 
-float normpdf(in float x, in float sigma)
+/*float normpdf(in float x, in float sigma)
 {
 	return 0.39894*exp(-0.5*x*x/(sigma*sigma))/sigma;
 }
@@ -48,9 +48,30 @@ vec4 blur(sampler2D iChannel0, vec2 iResolution, vec2 fragCoord) {
  		}
 
  		return vec4(final_colour/(Z*Z), 1.0);
+}*/
+
+void sampl(int d, vec2 uv, inout vec4 fragColor, int totalPasses)
+{
+
+    vec2 step1 = (vec2(d) + 0.5) / resolution.xy;
+
+   	fragColor += texture2D(u_texture, uv + step1) / float(totalPasses*4);
+    fragColor += texture2D(u_texture,  uv - step1) / float(totalPasses*4);
+  	vec2 step2 = step1;
+    step2.x = -step2.x;
+    fragColor += texture2D(u_texture, uv + step2) / float(totalPasses*4);
+    fragColor += texture2D(u_texture,  uv - step2) / float(totalPasses*4);
+
 }
 
-void main(){
-	gl_FragColor = (vColor * blur(u_texture, resolution, gl_FragCoord.xy)) / darkness;
+void main() {
+	//gl_FragColor = (vColor * blur(u_texture, resolution, gl_FragCoord.xy)) / darkness;
+	vec2 uv = gl_FragCoord.xy / resolution.xy ;
+    	sampl(0, uv, gl_FragColor, 5);
+       sampl(1, uv, gl_FragColor, 5);
+       sampl(2, uv, gl_FragColor, 5);
+       sampl(2, uv, gl_FragColor, 5);
+       sampl(3, uv, gl_FragColor, 5);
+       gl_FragColor = gl_FragColor / darkness;
 }
 

@@ -46,13 +46,12 @@ public class Slider extends Element<Integer> {
 			@Override
 			public void touchDragged(InputEvent event, float x, float y, int pointer) {
 				super.touchDragged(event, x, y, pointer);
-				System.out.println("nanana");
 			}
 		};
 		slider.addListener(stopTouchDown);
 
 		slider.setValue(value);
-		add(slider).padRight(5);
+		add(slider).fillX().padRight(5);
 		valueLabel = new Label(Integer.toString(value), GUIHelper.getLabelStyle(Color.WHITE, 10));
 		valueLabel.setAlignment(Align.center);
 		add(valueLabel).width(45).padRight(2);
@@ -61,6 +60,7 @@ public class Slider extends Element<Integer> {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				value = (int) slider.getValue();
+				writeValue(value);
 				valueLabel.setText(Integer.toString(value));
 			}
 		});

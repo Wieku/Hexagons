@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
@@ -137,7 +138,12 @@ public class GUIHelper{
 	}
 	
 	public static SliderStyle getSliderStyle(){
-		SliderStyle stl = new SliderStyle(getTxRegion(Color.WHITE,1,3),getTxRegion(Color.LIGHT_GRAY,10,10));
+
+		Pixmap pix = new Pixmap(16, 16, Format.RGBA8888);
+		pix.setColor(Color.LIGHT_GRAY);
+		pix.fillCircle(8, 8, 7);
+
+		SliderStyle stl = new SliderStyle(getTxRegion(Color.WHITE,1,3),getTxRegion(pix));
 		return stl;
 	}
 	
@@ -214,7 +220,9 @@ public class GUIHelper{
 	}
 	
 	public static TextureRegionDrawable getTxRegion(Pixmap pixMap){
-		TextureRegionDrawable rg = new TextureRegionDrawable(new TextureRegion(new Texture(pixMap)));
+		Texture tex = new Texture(pixMap);
+		tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		TextureRegionDrawable rg = new TextureRegionDrawable(new TextureRegion(tex));
 		return rg;
 	}
 	

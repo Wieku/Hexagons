@@ -153,11 +153,11 @@ public class MapSelect implements Screen {
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				Vector2 r = scrollPane.screenToLocalCoordinates(new Vector2(x, Gdx.graphics.getHeight()-y));
 				for(MenuMap m : mapButtons) {
-					if(m.isIn((int)r.x, (int)r.y)) {
+					if(m.isOver()) {
 
 						System.out.println(m.map.info.name);
 						if(mapButtons.indexOf(m) != mapIndex) {
-							if(mapButtons.indexOf(m) > mapIndex){
+							if(mapButtons.indexOf(m) < mapIndex){
 
 								mapButtons.get(mapIndex).check(false);
 
@@ -171,7 +171,7 @@ public class MapSelect implements Screen {
 								mapButtons.forEach(MenuMap::update);
 							}
 
-							if(mapButtons.indexOf(m) < mapIndex){
+							if(mapButtons.indexOf(m) > mapIndex){
 
 								mapButtons.get(mapIndex).check(false);
 								mapIndex = mapButtons.indexOf(m);
@@ -263,9 +263,9 @@ public class MapSelect implements Screen {
 		myScoreTable.pack();
 		stage.addActor(myScoreTable);
 
-		nickname = GUIHelper.text("Your nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
+		nickname = GUIHelper.text("Nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
 		nickname.pack();
-		nickname.setPosition(5, 5);
+		nickname.setPosition(5, 70);
 		stage.addActor(nickname);
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
@@ -320,17 +320,17 @@ public class MapSelect implements Screen {
 		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 300, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
 
+		if(mapButtons.size() > 0)
+			if(!showed) {
+				MenuMap ms = mapButtons.get(mapIndex);
 
-		if(!showed) {
-			MenuMap ms = mapButtons.get(mapIndex);
-
-			if(ms.getY()+ms.getHeight()/2<scrollPane.getHeight()/2) {
-				scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
-			} else if((table.getHeight()-ms.getY()-ms.getHeight()/2) < scrollPane.getHeight()/2) {
-				scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+				if(ms.getY()+ms.getHeight()/2<scrollPane.getHeight()/2) {
+					scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+				} else if((table.getHeight()-ms.getY()-ms.getHeight()/2) < scrollPane.getHeight()/2) {
+					scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
+				}
+				showed = true;
 			}
-			showed = true;
-		}
 
 		stage.act(delta);
 		stage.draw();
@@ -366,13 +366,13 @@ public class MapSelect implements Screen {
 	@Override
 	public void show() {
 
-		Instance.setForegroundFps.accept(120);
+		Instance.setForegroundFps.accept(0);
 		Gdx.graphics.setTitle("Hexagons! " + Version.version);
 		selectIndex(mapIndex= Instance.maps.indexOf(MenuPlaylist.getCurrent()));
 
 		if(game != null){
 			MenuPlaylist.play();
-			MenuPlaylist.setPosition(game.exitPosition);
+			//MenuPlaylist.setPosition(game.exitPosition);
 			game = null;
 		}
 		MenuPlaylist.setLooping(true);
@@ -403,7 +403,7 @@ public class MapSelect implements Screen {
 			info.pack();
 			info.setPosition(5, stage.getHeight()-5-info.getHeight());
 		} else {
-			SoundManager.playSound("click");
+
 			Map map = maps.get(index);
 			CurrentMap.reset();
 			maps.get(mapIndex).script.initColors();
@@ -415,6 +415,8 @@ public class MapSelect implements Screen {
 				MenuPlaylist.skipToPreview();
 				MenuPlaylist.setVolume(((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.menuMusicVolume) / 10000f);
 			}
+
+			SoundManager.playSound("click");
 
 			number.setText("[" + (index + 1) + "/" + maps.size() + "] Pack: " + map.info.pack);
 			name.setText(map.info.name);
@@ -453,7 +455,8 @@ public class MapSelect implements Screen {
 
 
 	public void addScore(int position, String name, int score) {
-			Table table = GUIHelper.getTable(new Color(0,0,0,0.5f));
+			float ty = (Settings.instance.ranking.nickname.equals(name)?0.2f:0.0f);
+			Table table = GUIHelper.getTable(new Color(ty,ty,ty,0.5f));
 			table.left();
 
 			Table subTable = new Table();
@@ -524,7 +527,9 @@ public class MapSelect implements Screen {
 	public void resume() {}
 
 	@Override
-	public void hide() {}
+	public void hide() {
+
+	}
 
 	@Override
 	public void dispose() {}

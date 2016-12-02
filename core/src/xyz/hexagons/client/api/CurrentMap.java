@@ -70,6 +70,7 @@ public abstract class CurrentMap {
 		
 		public Timeline<Wall> wallTimeline = new Timeline<>();
 		public Timeline<TimelineRunnable> eventTimeline = new Timeline<>();
+
 	}
 
 

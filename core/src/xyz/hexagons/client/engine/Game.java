@@ -23,6 +23,7 @@ import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.AudioPlayer;
+import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.menu.screens.MapSelect;
@@ -55,7 +56,7 @@ public class Game implements Screen {
 
 
 	Map map;
-	AudioPlayer audioPlayer;
+	//AudioPlayer audioPlayer;
 
 	public float exitPosition;
 
@@ -66,7 +67,6 @@ public class Game implements Screen {
 
 	Player player = new Player();
 
-	Label fps;
 	Label points;
 	Label time;
 	Label message;
@@ -84,9 +84,6 @@ public class Game implements Screen {
 	private int inc = 1;
 
 	DecimalFormat timeFormat = new DecimalFormat("0.000");
-	DecimalFormat delayFormat = new DecimalFormat("0.00");
-
-	FpsCounter fpsCounter = new FpsCounter(60);
 
 	public Game (Map map){
 		this.map = map;
@@ -95,11 +92,6 @@ public class Game implements Screen {
 
 		stage = new Stage(new ScreenViewport());
 		stage.getViewport().update(width, height, true);
-
-		fps = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 10));
-		fps.layout();
-		fps.setX(2);
-		stage.addActor(fps);
 
 		time = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 10));
 		time.layout();
@@ -121,12 +113,12 @@ public class Game implements Screen {
 
 		stage.addActor(next);
 		
-		audioPlayer = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file,map.info.audioFileName));
-		audioPlayer.setLooping(true);
+		//audioPlayer = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file,map.info.audioFileName));
+		//audioPlayer.setLooping(true);
 
 
 		//addRenderer(player);
-
+		MenuPlaylist.setLooping(true);
 		start(map.info.startTimes[0]);
 	}
 
@@ -138,7 +130,6 @@ public class Game implements Screen {
 
 	@Override
 	public void show() {
-
 		Instance.setForegroundFps.accept(0);
 		Gdx.graphics.setTitle("Hexagons! " + Version.version + " — " + map.info.songAuthor + " - " + map.info.songName);
 	}
@@ -191,8 +182,10 @@ public class Game implements Screen {
 		score = 0;
 		player.reset();
 		camera.reset();
-		audioPlayer.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
-		audioPlayer.play(startTime);
+		/*audioPlayer*/MenuPlaylist.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
+		//audioPlayer.play(startTime);
+		MenuPlaylist.play();
+		MenuPlaylist.setPosition(startTime);
 
 		map.script.onInit();
 		map.script.initColors();
@@ -221,12 +214,14 @@ public class Game implements Screen {
 
 		if(player.dead){
 
-			if (audioPlayer != null && !audioPlayer.hasEnded()) {
+			if (!MenuPlaylist.isPaused()/*audioPlayer != null && !audioPlayer.hasEnded()*/) {
 				SoundManager.playSound("death");
 				SoundManager.playSound("gameover");
 				camera.rumble(20f, 1f);
-				exitPosition = audioPlayer.getPosition();
-				audioPlayer.stop();
+				//exitPosition = audioPlayer.getPosition();
+				//audioPlayer.stop();
+				exitPosition = MenuPlaylist.getPosition();
+				MenuPlaylist.pause();
 			}
 
 			if(Gdx.input.isKeyPressed(Keys.SPACE)){
@@ -234,7 +229,7 @@ public class Game implements Screen {
 			}
 
 			if(Gdx.input.isKeyPressed(Keys.ESCAPE) && !escClick){
-				audioPlayer.dispose();
+				//audioPlayer.dispose();
 				Instance.game.setScreen(MapSelect.getInstance());
 			}
 
@@ -287,7 +282,6 @@ public class Game implements Screen {
 		this.delta0+=delta;
 		while (this.delta0 >= (1f / 60)) {
 
-			fpsCounter.update(delta);
 			updateText(1f / 60);
 			updateSkew(1f / 60);
 
@@ -295,7 +289,6 @@ public class Game implements Screen {
 				CurrentMap.data.walls.update(1f/60);
 				tmpColor.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 
-				fps.getStyle().fontColor = tmpColor;
 				time.getStyle().fontColor = tmpColor;
 				message.getStyle().fontColor = tmpColor;
 				points.getStyle().fontColor = tmpColor;
@@ -324,14 +317,13 @@ public class Game implements Screen {
 			}
 		}
 
-		fps.setText((int)(fpsCounter.getFPS()) + "FPS\n" + delayFormat.format(1000f/fpsCounter.getFPS())+"ms");
+
 		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
 		next.setPosition(stage.getWidth() - next.getWidth() - 5 , stage.getHeight() - next.getHeight() - points.getHeight() + 5);
-		
-		fps.pack();
+
 		time.pack();
 		message.pack();
 

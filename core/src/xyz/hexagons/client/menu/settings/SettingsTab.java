@@ -90,21 +90,23 @@ public class SettingsTab extends Table{
 			}
 		});
 
-		add(field).center().fillX().padTop(30).padBottom(5).expandX().row();
+		add(field).center().fillX().height(30).padTop(30).padBottom(5).expandX().row();
 
 		chld = new Table();
 		chld.top().left().setFillParent(true);
 		//Conf.init();
 
 		scr = new ScrollPane(chld, GUIHelper.getScrollPaneStyle(Color.BLACK, Color.WHITE));
+		scr.setScrollingDisabled(true, false);
+		add(scr).top().fillY().fillX().height(768-115).row();
 
-		add(scr).top().fillY().fillX().uniform().row();
-
-		add(button = new TextButton("Back", GUIHelper.getTextButtonStyle(Color.WHITE, 20))).left().bottom().height(40).uniform().padTop(10).expandX();
-		button.addListener(new ClickListener(Buttons.LEFT){@Override
-		public void clicked(InputEvent event, float x, float y) {
-			hide();
-		}});
+		add(button = new TextButton("Back", GUIHelper.getTextButtonStyle(Color.WHITE, 20))).right().padRight(5).bottom().height(40).padTop(10).expandX();
+		button.addListener(new ClickListener(Buttons.LEFT){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				hide();
+			}
+		});
 
 		button.setVisible(false);
 
@@ -122,7 +124,7 @@ public class SettingsTab extends Table{
 		setPosition(0, 0);
 		layout();
 		if(showd){
-			setWidth(Gdx.graphics.getWidth()*0.45f);
+			setWidth(400);
 		}
 
 		super.draw(batch, parentAlpha);
@@ -138,7 +140,7 @@ public class SettingsTab extends Table{
 
 		showed = true;
 		hidden = false;
-		showingTween = new Timeline().beginParallel().push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEX, 1.0f, Gdx.graphics.getWidth()*0.45f, 0)).push(ActorAccessor.createFadeTween(this, 1.0f, 0, 1.0f))
+		showingTween = new Timeline().beginParallel().push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEX, 1.0f, 400, 0)).push(ActorAccessor.createFadeTween(this, 1.0f, 0, 1.0f))
 				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0, 1.0f))
 				.push(ActorAccessor.createFadeTween(field, 1.0f, 0, 1.0f))
 				.end().setCallback((b)->{showd=true;});
@@ -167,12 +169,6 @@ public class SettingsTab extends Table{
 
 	public void build(String phrase){
 		chld.clear();
-		TreeStyle style = new TreeStyle();
-		style.background = GUIHelper.getTxRegion(new Color(0,0,0,0));
-		style.minus = GUIHelper.getTxRegion(new Color(0,0,0,0));
-		style.over = GUIHelper.getTxRegion(new Color(0,0,0,0));
-		style.plus = GUIHelper.getTxRegion(new Color(0,0,0,0));
-		style.selection = GUIHelper.getTxRegion(new Color(0,0,0,0));
 
 		//Tree mainTree = new Tree(style);
 		Table mainTable = new Table();

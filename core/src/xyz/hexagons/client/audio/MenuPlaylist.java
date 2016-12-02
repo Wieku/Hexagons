@@ -121,7 +121,6 @@ public class MenuPlaylist {
 		}
 
 		loadAndPlay(id);
-
 	}
 
 	public static AudioPlayer getCurrentPlayer(){
@@ -160,11 +159,15 @@ public class MenuPlaylist {
 		}
 	}
 
-	private static void load(Map map){
+	public static void stopAndDispose(){
 		if(player != null){
 			player.stop();
 			player.dispose();
 		}
+	}
+
+	private static void load(Map map){
+		stopAndDispose();
 		current = map;
 		//System.out.println(map.getMetaData().getAudioFileName());
 		player = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file, map.info.audioFileName));
@@ -183,7 +186,7 @@ public class MenuPlaylist {
 	}
 
 	public static void loadAndPlay(int id){
-		stop();
+		stopAndDispose();
 		currentId = id;
 		load(playlist.get(id));
 		play();
@@ -203,4 +206,7 @@ public class MenuPlaylist {
 		return current;
 	}
 
+	public static boolean isPaused() {
+		return player == null || player.isPaused();
+	}
 }

@@ -26,6 +26,9 @@ public class DesktopAudioPlayer implements AudioPlayer{
 		field.set(null, newValue);
 	}
 
+	//private class MethVisitor
+
+
 	private boolean ended;
 	private boolean pause;
 	private FileHandle handle;
@@ -53,16 +56,11 @@ public class DesktopAudioPlayer implements AudioPlayer{
 		handle = fileHandle;
 
 		musicPlayer = (OpenALMusic) Gdx.audio.newMusic(handle);
-
+		setSPB();
 		try {
-			Field sPB = OpenALMusic.class.getDeclaredField("secondsPerBuffer");
-			sPB.setAccessible(true);
-			sPB.set(musicPlayer, (float)SIZE*2/(musicPlayer.getChannels()*musicPlayer.getRate()*2));
-			secPerBuffer = (float) sPB.get(musicPlayer);
 
 			Field inp = Ogg.Music.class.getDeclaredField("input");
 			inp.setAccessible(true);
-
 			OggInputStream str = (OggInputStream) inp.get(musicPlayer);
 
 			audioLength = ((str.getLength()*1f)/SIZE*2)/secPerBuffer;
@@ -78,6 +76,17 @@ public class DesktopAudioPlayer implements AudioPlayer{
 
 		detect = new BeatDetect(SIZE*2, musicPlayer.getRate());
 		detect.setSensitivity(10);
+	}
+
+	private void setSPB() {
+		try {
+			Field sPB = OpenALMusic.class.getDeclaredField("secondsPerBuffer");
+			sPB.setAccessible(true);
+			sPB.set(musicPlayer, (float)SIZE*2/(musicPlayer.getChannels()*musicPlayer.getRate()*2));
+			secPerBuffer = (float) sPB.get(musicPlayer);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -102,6 +111,8 @@ public class DesktopAudioPlayer implements AudioPlayer{
 
 	@Override
 	public void setPosition(float milis) {
+		System.out.println("llllll "+milis);
+		//Gdx.app.postRunnable(()->musicPlayer.setPosition(milis));
 		new Thread(()->{
 			try {
 				Thread.sleep(10);

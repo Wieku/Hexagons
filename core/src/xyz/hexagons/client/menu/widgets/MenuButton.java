@@ -1,15 +1,19 @@
 package xyz.hexagons.client.menu.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import xyz.hexagons.client.utils.GUIHelper;
 
-public class MenuButton extends Table {
+public class MenuButton extends Button {
 
 	private Color bgColor = new Color(0x272727ff);
 	private Color bgFocusColor = new Color(0x4d4d4dff);
@@ -24,20 +28,31 @@ public class MenuButton extends Table {
 	private float fluctuate = 0f;
 	private int fluctDir = 1;
 
+	Vector2 st = new Vector2();
+	Vector2 lo = new Vector2();
+
 	public MenuButton(String text){
+		super(GUIHelper.getBlankButtonStyle());
 		renderer = new ShapeRenderer();
 		left();
+		addListener(new ClickListener(){
+			
+		});
 		add(new Label(text, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 40))).padLeft(70);
 	}
 
 	@Override
 	public void act(float delta) {
+		
 		super.act(delta);
 
 		fluctuate = MathUtils.clamp((fluctuate += (delta/(5f/4)) * fluctDir), 0f, 0.4f);
 		fluctDir = (fluctuate == 0.4f ? -1 : fluctuate == 0f ? 1 : fluctDir);
 
 		mixin = MathUtils.clamp((mixin += delta * (selected?4:-4)), 0f, 1f);
+
+		st.set(Gdx.input.getX(), Gdx.input.getY());
+		lo = stageToLocalCoordinates(st);
 	}
 
 	@Override
