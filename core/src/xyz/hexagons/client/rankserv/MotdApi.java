@@ -39,10 +39,14 @@ public class MotdApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new Motd("RankServ is down");
     }
 
     public static class Motd implements Serializable {
         public String text = "";
+
+        protected Motd(String text) {
+            this.text = text;
+        }
     }
 }
