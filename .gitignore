@@ -9,3 +9,13 @@ android/assets/
 android/gen/
 android/libs/
 .idea/
+
+site/client/target/
+site/common/.js/
+site/common/.jvm/
+site/project/project/
+site/project/target/
+site/server/logs/
+site/server/target/
+site/server/test/
+site/target/
