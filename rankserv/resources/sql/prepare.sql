@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS config(key varchar(36) PRIMARY KEY,
 
 CREATE TABLE IF NOT EXISTS users( id SERIAL,
                                   nick VARCHAR(64),
-                                  PRIMARY KEY(id));
+                                  PRIMARY KEY(id),
+                                  UNIQUE (nick));
 
 CREATE TABLE IF NOT EXISTS user_auth( user_id INTEGER,
                                       type INTEGER,

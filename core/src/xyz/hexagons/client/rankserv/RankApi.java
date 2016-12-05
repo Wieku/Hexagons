@@ -6,6 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
+import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.menu.settings.Settings;
 
@@ -23,8 +24,7 @@ public class RankApi {
 
     public LeaderBoard getScoreForMap(Map map, int count) {
         HttpClient httpclient = HttpClients.createDefault();
-        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v0/leaders?uuid="
-                + map.info.uuid + "&count=" + String.valueOf(count) + "&nick=" + Settings.instance.ranking.nickname);
+        HttpGet req = new HttpGet(getLeadersUri(map, count));
 
         try {
             HttpResponse response = httpclient.execute(req);
@@ -41,6 +41,16 @@ public class RankApi {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String getLeadersUri(Map map, int count) {
+        if(Instance.currentAccount != null) {
+            return Settings.instance.ranking.server + "/v0/leaders?uuid="
+                    + map.info.uuid + "&count=" + String.valueOf(count) + "&nick=" + Instance.currentAccount.nick();
+        } else {
+            return Settings.instance.ranking.server + "/v0/leaders?uuid="
+                    + map.info.uuid + "&count=" + String.valueOf(count);
+        }
     }
 
     public static class LeaderBoard implements Serializable {

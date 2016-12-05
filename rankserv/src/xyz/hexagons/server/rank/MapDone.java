@@ -1,4 +1,4 @@
-package xyz.hexagons.server.servlets;
+package xyz.hexagons.server.rank;
 
 import xyz.hexagons.server.Launcher;
 import xyz.hexagons.server.util.SqlUtil;
@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.Instant;
 
 public class MapDone extends HttpServlet {

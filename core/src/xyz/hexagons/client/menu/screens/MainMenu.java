@@ -36,7 +36,6 @@ import xyz.hexagons.client.menu.settings.SettingsTab;
 import xyz.hexagons.client.engine.render.BlurEffect;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.map.Map;
-import xyz.hexagons.client.rankserv.AccountManager;
 import xyz.hexagons.client.rankserv.MotdApi;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
@@ -131,8 +130,9 @@ public class MainMenu implements Screen {
 						Gdx.app.exit();
 					}
 				}
-				if(keycode == Keys.L)
-					Instance.accountManager.loginGoogle();
+				if(keycode == Keys.L) {
+					Instance.currentAccount = Instance.accountManager.loginGoogle();
+				}
 
 				if(keycode == Keys.ESCAPE)
 					escclick = true;

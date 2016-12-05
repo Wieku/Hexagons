@@ -7,6 +7,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfoplus;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.jca.JCAContext;
+import com.nimbusds.jose.util.Base64URL;
 import org.eclipse.jetty.continuation.Continuation;
 import xyz.hexagons.server.Launcher;
 import xyz.hexagons.server.Settings;
@@ -21,10 +25,11 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.UUID;
 
 public class GoogleAuthOut extends HttpServlet {
-    private static final String qAuthExists = SqlUtil.getQuery("user/hasAuth");
+    private static final String qUserByAuth = SqlUtil.getQuery("user/userByAuth");
     private static final String qInsertAuthUser = SqlUtil.getQuery("user/insertAuth");
 
     @Override
@@ -41,25 +46,27 @@ public class GoogleAuthOut extends HttpServlet {
 
         Oauth2 oauth2 = new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credential).setApplicationName("Hexagons").build();
         Userinfoplus ui = oauth2.userinfo().get().execute();
-        accountName = ui.getName();
 
-        boolean redirAuth = false;
+        accountName = "";
+        String userId = "-1";
 
         try {
-            PreparedStatement statement = Launcher.connection.prepareStatement(qAuthExists);
+            PreparedStatement statement = Launcher.connection.prepareStatement(qUserByAuth);
             statement.setInt(1, AuthType.GOOGLE.type);
             statement.setString(2, ui.getId());
             ResultSet rs = statement.executeQuery();
-            if(rs.next() && rs.getBoolean(1)) {
-                accountName = "registered";
+            if(rs.next()) {
+                accountName = rs.getString("nick");
+                userId = rs.getString("id");
             } else {
                 PreparedStatement istatement = Launcher.connection.prepareStatement(qInsertAuthUser);
-                istatement.setString(1, "u" + ui.getId());
-                istatement.setInt(2, AuthType.GOOGLE.type);
-                istatement.setString(3, ui.getId());
-                istatement.executeUpdate();
-                accountName = "u" + ui.getId();
-                redirAuth = true;
+                istatement.setInt(1, AuthType.GOOGLE.type);
+                istatement.setString(2, ui.getId());
+                ResultSet res = istatement.executeQuery();
+                if(res.next()) {
+                    accountName = "u" + res.getString("user_id");
+                    userId = res.getString("user_id");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,19 +77,26 @@ public class GoogleAuthOut extends HttpServlet {
             Continuation c = GoogleAuth.tokenContinuations.get(state);
             GoogleAuth.tokenContinuations.remove(state);
 
-            System.out.println("{\"account\":\"" + accountName +"\"}");
-            c.getServletResponse().getWriter().print("{\"account\":\"" + accountName +"\"}");
+            System.out.println("{\"account\":\"" + accountName +"\", id: "+ userId +"}");
+            c.getServletResponse().getWriter().print(RuntimeSecrets.signSession("{\"account\":\"" + accountName +"\", id: "+ userId +"}"));
             c.complete();
-
         } else if(GoogleAuth.tokenChallenges.containsKey(state)) {
             GoogleAuth.tokenChallenges.remove(state);
             GoogleAuth.tokenChallenges.put(state, accountName, 16000L);
         }
 
-        if(redirAuth) {
-            resp.sendRedirect(Settings.siteRedir + "/start/register");
+        if(accountName.matches("^u\\d+$")) {
+            JWSObject userToken = new JWSObject(new JWSHeader(JWSAlgorithm.HS256), new Payload(userId));
+            try {
+                userToken.sign(new MACSigner(Settings.instance.signSecret));
+                resp.sendRedirect(Settings.instance.siteRedir + "/start/register/"+userToken.serialize());
+                return;
+            } catch (JOSEException e) {
+                e.printStackTrace();
+            }
+            resp.sendRedirect(Settings.instance.siteRedir + "/error/rs/GAuthO/ra/r");
         } else {
-            resp.getWriter().print("OK, close the tab");
+            resp.sendRedirect(Settings.instance.siteRedir + "/welcome");
         }
     }
 }

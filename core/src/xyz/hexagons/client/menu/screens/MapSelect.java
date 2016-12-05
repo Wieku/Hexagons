@@ -263,10 +263,12 @@ public class MapSelect implements Screen {
 		myScoreTable.pack();
 		stage.addActor(myScoreTable);
 
-		nickname = GUIHelper.text("Nickname: " + Settings.instance.ranking.nickname, Color.WHITE, 12);
-		nickname.pack();
-		nickname.setPosition(5, 70);
-		stage.addActor(nickname);
+		if(Instance.currentAccount != null) {
+			nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
+			nickname.pack();
+			nickname.setPosition(5, 70);
+			stage.addActor(nickname);
+		}
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
@@ -302,7 +304,7 @@ public class MapSelect implements Screen {
 			description.getStyle().fontColor = tmpC;
 			author.getStyle().fontColor = tmpC;
 			music.getStyle().fontColor = tmpC;
-			nickname.getStyle().fontColor = tmpC;
+			if(nickname != null) nickname.getStyle().fontColor = tmpC;
 			myScoreLabel.getStyle().fontColor = tmpC;
 
 			delta0 = 0;
@@ -389,6 +391,12 @@ public class MapSelect implements Screen {
 		showed = false;
 		Gdx.input.setInputProcessor(stage);
 
+		if(Instance.currentAccount != null && nickname == null) {
+			nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
+			nickname.pack();
+			nickname.setPosition(5, 70);
+			stage.addActor(nickname);
+		}
 		//System.out.println("Map selection screen showed up");
 	}
 
@@ -453,9 +461,8 @@ public class MapSelect implements Screen {
 		}
 	}
 
-
 	public void addScore(int position, String name, int score) {
-			float ty = (Settings.instance.ranking.nickname.equals(name)?0.2f:0.0f);
+			float ty = (Instance.currentAccount != null && Instance.currentAccount.nick().equals(name)?0.2f:0.0f);
 			Table table = GUIHelper.getTable(new Color(ty,ty,ty,0.5f));
 			table.left();
 

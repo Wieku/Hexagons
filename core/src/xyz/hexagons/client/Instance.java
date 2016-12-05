@@ -25,6 +25,7 @@ public class Instance {
     public static Executor executor = Executors.newSingleThreadExecutor();
     public static Globals luaGlobals = JsePlatform.standardGlobals();
     public static AccountManager accountManager = null;
+    public static AccountManager.Account currentAccount = null;
     public static IAudioPlayerFactory audioPlayerFactory;
 
     public static AnimationManager getAnimationManager() {

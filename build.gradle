@@ -64,6 +64,8 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         compile "org.ow2.asm:asm-all:5.1"
+        compile "com.nimbusds:nimbus-jose-jwt:4.23"
+        compile "org.javatuples:javatuples:1.2"
     }
 }
 
@@ -153,6 +155,7 @@ project(":rankserv") {
         compile 'com.google.api-client:google-api-client:1.22.0'
         compile 'com.google.apis:google-api-services-oauth2:v2-rev124-1.22.0'
         compile 'postgresql:postgresql:9.1-901-1.jdbc4'
+        compile 'com.nimbusds:nimbus-jose-jwt:4.23'
     }
 }
 

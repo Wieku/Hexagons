@@ -1,4 +1,4 @@
-package xyz.hexagons.server.servlets;
+package xyz.hexagons.server.rank;
 
 import javax.servlet.http.HttpServlet;
 

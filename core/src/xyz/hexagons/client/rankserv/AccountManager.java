@@ -1,5 +1,14 @@
 package xyz.hexagons.client.rankserv;
 
 public interface AccountManager {
-    public void loginGoogle();
+    Account loginGoogle();
+
+    abstract class AuthInfo {
+        public abstract String toString();
+    }
+
+    abstract class Account {
+        public abstract String nick();
+        public abstract AuthInfo authInfo();
+    }
 }

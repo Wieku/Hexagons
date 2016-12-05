@@ -1,14 +1,21 @@
 package xyz.hexagons.server;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import xyz.hexagons.server.auth.GoogleAuth;
 import xyz.hexagons.server.auth.GoogleAuthOut;
 import xyz.hexagons.server.auth.GooglePoll;
 import xyz.hexagons.server.auth.GoogleToken;
-import xyz.hexagons.server.servlets.*;
+import xyz.hexagons.server.rank.*;
 import xyz.hexagons.server.util.SqlUtil;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -45,6 +52,18 @@ public class Launcher {
     }
 
     public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if(Settings.instance != null){
+                System.out.println("Saving settings");
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                try {
+                    Files.write(gson.toJson(Settings.instance), new File("settings.json"), Charsets.UTF_8);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -52,7 +71,7 @@ public class Launcher {
         }
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://" + Settings.dbAddress + "/" + Settings.dbDatabase, Settings.dbUser, Settings.dbPass);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + Settings.instance.dbAddress + "/" + Settings.instance.dbDatabase, Settings.instance.dbUser, Settings.instance.dbPass);
             prepareDatabase(connection);
 
             ctx.setContextPath("/");

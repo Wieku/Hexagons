@@ -1,9 +1,14 @@
-@(err: Boolean)
+@(err: Boolean, prev: String)
 
 @main("Register") {
 <div class="register-root">
-    Claim a name: <input type="text" placeholder="Name"/>
-    This will be displayed on leader boards and used to invite friends
+    <form method="post" action="/start/register"
+    @if(err) {
+        <p>Name already claimed!</p>
+    }
+    <p>Claim a name: <input name="nick" type="text" placeholder="@prev"/></p>
+    <p>This name will be displayed on leader boards and used to invite friends</p>
+    <p><input type="submit" value="Claim Name!"/></p>
 </div>
 @playscalajs.html.selectScript("client")
 @playscalajs.html.launcher("client")
