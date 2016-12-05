@@ -6,10 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import xyz.hexagons.server.auth.GoogleAuth;
-import xyz.hexagons.server.auth.GoogleAuthOut;
-import xyz.hexagons.server.auth.GooglePoll;
-import xyz.hexagons.server.auth.GoogleToken;
+import xyz.hexagons.server.auth.*;
 import xyz.hexagons.server.rank.*;
 import xyz.hexagons.server.util.SqlUtil;
 
@@ -79,6 +76,8 @@ public class Launcher {
 
             ctx.addServlet(MapDone.class,       "/v0/game");
             ctx.addServlet(MapLeaders.class,    "/v0/leaders");
+            ctx.addServlet(GetNick.class,       "/v0/nick");
+
             ctx.addServlet(Motd.class,          "/motd");
 
             ctx.addServlet(GoogleToken.class,   "/auth/google/challenge");

@@ -40,4 +40,13 @@ public class RuntimeSecrets {
         }
         return null;
     }
+
+    public static boolean check(JWSObject object) {
+        try {
+            return object.verify(sessionVerifier);
+        } catch (JOSEException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

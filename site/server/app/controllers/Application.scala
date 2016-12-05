@@ -39,7 +39,6 @@ class Application @Inject() (db: Database, conf: Configuration) extends Controll
         Status(500)
       }
 
-
     } else {
       Redirect("/error/auth")
     }
@@ -62,7 +61,6 @@ class Application @Inject() (db: Database, conf: Configuration) extends Controll
               val ustmt = conn.prepareStatement(qSetUserName)
               ustmt.setString(1, newNick)
               ustmt.setInt(2,id.toInt)
-              println("Ures:")
               try {
                 ustmt.executeUpdate()
                 Redirect("/welcome")

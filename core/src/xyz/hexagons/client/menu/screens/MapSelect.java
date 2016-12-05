@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.google.common.eventbus.Subscribe;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
@@ -31,6 +32,7 @@ import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -42,20 +44,20 @@ import java.util.ArrayList;
  */
 public class MapSelect implements Screen {
 
-	ArrayList<Map> maps;
-	Stage stage;
+	private ArrayList<Map> maps;
+	private Stage stage;
 
-	Table info;
-	Label number, name, description, author, music;
-	Game game;
+	private Table info;
+	private Label number, name, description, author, music;
+	private Game game;
 
-	Table table;
-	Label nickname;
+	private Table table;
+	private Label nickname;
 
-	SkewCamera camera = new SkewCamera();
-	ObjRender shapeRenderer;
+	private SkewCamera camera = new SkewCamera();
+	private ObjRender shapeRenderer;
 
-	MapRenderer mapRenderer = new MapRenderer();
+	private MapRenderer mapRenderer = new MapRenderer();
 
 	public ArrayList<MenuMap> mapButtons = new ArrayList<>();
 	public CScrollPane scrollPane;
@@ -269,15 +271,17 @@ public class MapSelect implements Screen {
 			nickname.setPosition(5, 70);
 			stage.addActor(nickname);
 		}
+
+		Instance.eventBus.register(this);
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
 	}
 
-	float delta0 = 0;
+	private float delta0 = 0;
 
-	Color tmpC = new Color();
+	private Color tmpC = new Color();
 
-	boolean showed = false;
+	private boolean showed = false;
 	@Override
 	public void render(float delta) {
 
@@ -400,6 +404,11 @@ public class MapSelect implements Screen {
 		//System.out.println("Map selection screen showed up");
 	}
 
+	@Subscribe public void onNickChange(EventUpdateNick event) {
+		if(Instance.currentAccount != null && nickname != null) {
+			nickname.setText(event.newNick());
+		}
+	}
 
 	public void selectIndex(int index){
 		if(maps.isEmpty()){
