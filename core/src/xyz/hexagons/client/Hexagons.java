@@ -20,6 +20,7 @@ import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.menu.screens.Updater;
 import xyz.hexagons.client.menu.settings.Settings;
+import xyz.hexagons.client.menu.settings.SettingsManager;
 import xyz.hexagons.client.resources.FontManager;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
@@ -132,14 +133,7 @@ public class Hexagons extends Game {
 		if(Instance.maps != null)
 			Instance.maps.forEach(m-> MapLoader.closeJar(m.file));
 
-		if(Settings.instance != null){
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			try {
-				Files.write(gson.toJson(Settings.instance), new File(Instance.storageRoot, "settings.json"), Charsets.UTF_8);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		SettingsManager.saveSettings();
 	}
 
 }

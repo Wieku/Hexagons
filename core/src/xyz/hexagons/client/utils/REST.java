@@ -1,4 +1,4 @@
-package xyz.hexagons.client.desktop;
+package xyz.hexagons.client.utils;
 
 import com.google.gson.Gson;
 import com.nimbusds.jose.JWSObject;

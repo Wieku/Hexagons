@@ -7,6 +7,7 @@ import xyz.hexagons.client.rankserv.AccountManager;
 import xyz.hexagons.client.rankserv.EventLogin;
 import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.utils.Holder;
+import xyz.hexagons.client.utils.REST;
 
 import java.awt.*;
 import java.io.IOException;
@@ -17,7 +18,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
-public class DesktopAccountManager implements AccountManager {
+public class DesktopAccountManager extends AccountManager {
+
+    public DesktopAccountManager() {
+        Instance.eventBus.register(this);
+    }
+
     @Override
     public AccountManager.Account loginGoogle() {
         if(Desktop.isDesktopSupported()) {
