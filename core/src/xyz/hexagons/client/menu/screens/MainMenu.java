@@ -242,7 +242,6 @@ public class MainMenu implements Screen {
 		motdTable.setTouchable(Touchable.disabled);
 		
 		stage.addActor(motdTable);
-
 		Instance.accountManager.loginSaved();
 	}
 
@@ -402,6 +401,7 @@ public class MainMenu implements Screen {
 		float g = stage.getHeight()/40f;
 		for(int i=0;i<40;i++){
 			shapeRenderer.rect(0, i*g, dfg[i], g-1);
+			shapeRenderer.rect(stage.getWidth()-dfg[i], stage.getHeight()-g-i*g, dfg[i], g-1);
 		}
 		shapeRenderer.end();
 
