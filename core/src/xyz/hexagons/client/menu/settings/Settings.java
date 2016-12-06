@@ -55,10 +55,10 @@ public class Settings implements Serializable {
 
 	@Section(name="ranking", enName="Ranking", order=4)
 	public class Ranking {
-		//@Section.Switch(name="server", enName="Server", def = "10.1.3.1:9999", order=0)
 		public String server = "https://rankserv.hexagons.xyz";
 
-		//@Section.Switch(name="nickname", enName="Nickname", def = "10.1.3.1:9999", order=0)
 		public String nickname = "Anonymous";
+
+		public String authToken = null;
 	}
 }

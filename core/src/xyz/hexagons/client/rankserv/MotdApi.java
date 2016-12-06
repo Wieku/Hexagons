@@ -36,7 +36,7 @@ public class MotdApi {
                 in.close();
                 return lb;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new Motd("RankServ is down");

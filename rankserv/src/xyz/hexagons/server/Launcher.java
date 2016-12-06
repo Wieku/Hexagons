@@ -37,8 +37,6 @@ public class Launcher {
                     cf.setString(1, input.nextLine());
                     System.out.println("Google OAuth ClientSecret:");
                     cf.setString(2, input.nextLine());
-                    System.out.println("Server base URL(like https://rankserv.hexagons.xyz):");
-                    cf.setString(3, input.nextLine());
                     cf.executeUpdate();
                 }
             }

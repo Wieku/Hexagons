@@ -242,7 +242,7 @@ public class MainMenu implements Screen {
 		motdTable.setTouchable(Touchable.disabled);
 		
 		stage.addActor(motdTable);
-		
+		Instance.accountManager.loginSaved();
 	}
 
 	private boolean first = false;

@@ -9,8 +9,6 @@ import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfoplus;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.jca.JCAContext;
-import com.nimbusds.jose.util.Base64URL;
 import org.eclipse.jetty.continuation.Continuation;
 import xyz.hexagons.server.Launcher;
 import xyz.hexagons.server.Settings;
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Set;
 import java.util.UUID;
 
 public class GoogleAuthOut extends HttpServlet {
@@ -40,7 +37,7 @@ public class GoogleAuthOut extends HttpServlet {
         String accountName = "";
 
         GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(new NetHttpTransport(), new JacksonFactory(),
-                Config.get("google_oauth_id"), Config.get("google_oauth_sec"), code, Config.get("url") + "/auth/google/out").execute();
+                Config.get("google_oauth_id"), Config.get("google_oauth_sec"), code, Settings.instance.selfUrl + "/auth/google/out").execute();
 
         GoogleCredential credential = new GoogleCredential().setAccessToken(tokenResponse.getAccessToken());
 
