@@ -4,6 +4,7 @@ import org.javatuples.Pair;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.rankserv.AccountManager;
+import xyz.hexagons.client.rankserv.EventLogin;
 import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.utils.Holder;
 
@@ -30,7 +31,14 @@ public class DesktopAccountManager implements AccountManager {
                 Pair<Account, String> acc = REST.getJWS(Settings.instance.ranking.server + "/auth/google/poll?challenge=" + c.challenge, Account.class);
                 System.out.println("ACCOUNT: " + (acc == null ? "null" : acc.getValue0().account));
                 if(acc != null) {
-                    return onLogin(acc.getValue0(), acc.getValue1());
+                    AccountManager.Account account = onLogin(acc.getValue0(), acc.getValue1());
+                    Instance.eventBus.post(new EventLogin() {
+                        @Override
+                        public AccountManager.Account getAccount() {
+                            return account;
+                        }
+                    });
+                    return account;
                 } else return null;
             }
         }
