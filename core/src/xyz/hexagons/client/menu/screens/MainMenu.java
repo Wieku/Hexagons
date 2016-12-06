@@ -47,6 +47,7 @@ public class MainMenu implements Screen {
 	public static MainMenu instance = new MainMenu();
 
 	private Stage stage;
+	private Stage stage2;
 	private MenuButton button, button2, button3;
 	private ArrayList<MenuButton> list = new ArrayList<>();
 	private Label version, copyright;
@@ -70,6 +71,14 @@ public class MainMenu implements Screen {
 
 	public boolean optionsShowed;
 
+	
+	private static float COUNT = 10f;
+	private float countDown = COUNT;
+	private boolean visible = true;
+	private boolean activity = false;
+	private Animation uiAnimation;
+	private float beginDarkness, targetDarkness, deltaTime = -1, time = -2;
+	
 	SettingsTab sTab;
 
 	public MapSelect sl;
@@ -77,7 +86,10 @@ public class MainMenu implements Screen {
 	public MainMenu(){
 		stage = new Stage(new ExtendViewport(1024, 768));
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-
+		
+		stage2 = new Stage(new ExtendViewport(1024, 768));
+		stage2.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		
 		blurEffect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		blurEffect.setPower(5f);
 		blurEffect.setDarkness(1.5f);
@@ -136,6 +148,9 @@ public class MainMenu implements Screen {
 
 				if(keycode == Keys.ESCAPE)
 					escclick = true;
+				
+				
+				activity = true;
 				return false;
 			}
 
@@ -176,8 +191,14 @@ public class MainMenu implements Screen {
 						
 					}
 				}
-				
+				activity = true;
 				return super.touchDown(event, x, y, pointer, button);
+			}
+			
+			@Override
+			public boolean mouseMoved(InputEvent event, float x, float y) {
+				activity = true;
+				return super.mouseMoved(event, x, y);
 			}
 		});
 
@@ -206,8 +227,8 @@ public class MainMenu implements Screen {
 		beatILow.setColor(1, 1, 1, 0.3f);
 		beatILow.setScaling(Scaling.fit);
 
-		stage.addActor(beatIHigh);
-		stage.addActor(beatILow);
+		stage2.addActor(beatIHigh);
+		stage2.addActor(beatILow);
 
 
 		music = new Table();
@@ -241,8 +262,9 @@ public class MainMenu implements Screen {
 		motdTable.setPosition(0, 1f/3 * 768);
 		motdTable.setTouchable(Touchable.disabled);
 		
-		stage.addActor(motdTable);
+		stage2.addActor(motdTable);
 		Instance.accountManager.loginSaved();
+		
 	}
 
 	private boolean first = false;
@@ -276,6 +298,8 @@ public class MainMenu implements Screen {
 
 		MenuPlaylist.setLooping(false);
 		currentPlaying = MenuPlaylist.getCurrent();
+		
+		countDown = COUNT;
 
 	}
 
@@ -317,7 +341,7 @@ public class MainMenu implements Screen {
 				title.setText(MenuPlaylist.getCurrent().info.songAuthor + " - " + MenuPlaylist.getCurrent().info.songName);
 				float[] cv = MenuPlaylist.getCurrentPlayer().getFFT();
 				for(int i=0;i<40;i++) {
-					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50, dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
+					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50 * (visible?1:1.5f), dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
 				}
 			} else title.setText("No maps available");
 			music.pack();
@@ -370,6 +394,39 @@ public class MainMenu implements Screen {
 				}
 			}
 
+			countDown -= 1f/60;
+			
+			if(countDown < 0 && visible) {
+				
+				if(uiAnimation != null) uiAnimation.kill();
+				
+				uiAnimation = ActorAccessor.createFadeGroupTween(stage.getRoot(), 5f, 0f, 0f);
+				uiAnimation.start(Instance.getAnimationManager());
+				
+				visible = false;
+				glideDarkness(0.75f, 5f);
+			}
+			
+			if(activity) {
+				
+				if(!visible) {
+					if(uiAnimation != null) uiAnimation.kill();
+					
+					uiAnimation = ActorAccessor.createFadeGroupTween(stage.getRoot(), 1f*(1f-stage.getRoot().getColor().a), 0f, 1f);
+					uiAnimation.start(Instance.getAnimationManager());
+					glideDarkness(1.5f, (1f-stage.getRoot().getColor().a));
+				}
+				
+				countDown = COUNT;
+				visible = true;
+				activity = false;
+			}
+			
+			if (deltaTime < time) {
+				deltaTime += 1f/60;
+				blurEffect.setDarkness(beginDarkness + ((targetDarkness - beginDarkness) * deltaTime) / time);
+			}
+			
 			delta0 = 0;
 		}
 
@@ -409,12 +466,23 @@ public class MainMenu implements Screen {
 
 		stage.act(delta);
 		stage.draw();
-
+		
+		stage2.act(delta);
+		stage2.draw();
+		
 	}
-
+	
+	public void glideDarkness(float darkness, float time) {
+		beginDarkness = blurEffect.darkness;
+		targetDarkness = darkness;
+		this.time = time;
+		deltaTime = 0;
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
+		stage2.getViewport().update(width, height, true);
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		

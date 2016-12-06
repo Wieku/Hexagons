@@ -2,6 +2,7 @@ package xyz.hexagons.client.menu.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -58,23 +59,30 @@ public class MenuButton extends Button {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		batch.end();
-
+		
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		
 		renderer.setProjectionMatrix(batch.getProjectionMatrix());
 		renderer.identity();
 		renderer.translate(getX(), getY(), 0);
 
 		renderer.begin(ShapeType.Filled);
-
-		renderer.setColor(tmpColor.set(bgColor).lerp(bgFocusColor, MathUtils.clamp(mixin - fluctuate, 0f, 1f)));
+		
+		tmpColor.set(bgColor).lerp(bgFocusColor, MathUtils.clamp(mixin - fluctuate, 0f, 1f));
+		renderer.setColor(tmpColor.r, tmpColor.g, tmpColor.b, tmpColor.a*getColor().a);
 		renderer.triangle(4, 4, getWidth(), 4, getWidth(), getHeight() - 4);
 		renderer.triangle(4, 4, 60, getHeight() - 4, getWidth(), getHeight()-4);
 
-		renderer.setColor(lineColor);
+		renderer.setColor(lineColor.r, lineColor.g, lineColor.b, lineColor.a * getColor().a);
 		renderer.rectLine(2, 2, 60, getHeight() - 2, 4);
 		renderer.circle(2, 2, 2);
 		renderer.circle(60, getHeight() - 2, 2);
 
 		renderer.end();
+		
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+		
 		batch.begin();
 		super.draw(batch, parentAlpha);
 	}

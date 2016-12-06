@@ -2,6 +2,7 @@ package xyz.hexagons.client.menu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
@@ -21,6 +22,7 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 	public static final int TEXTCOLOR = 5;
 	public static final int SIZEC = 6;
 	public static final int SIZEY = 7;
+	public static final int FADEGROUP = 8;
 
 	@Override
 	public int getValues(Actor target, int tweenType, float[] returnValues) {
@@ -44,6 +46,9 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 				returnValues[0] = target.getScaleX();
 				return 1;
 			case FADETABLE:
+				returnValues[0] = target.getColor().a;
+				return 1;
+			case FADEGROUP:
 				returnValues[0] = target.getColor().a;
 				return 1;
 			case TEXTCOLOR:
@@ -91,6 +96,15 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 					child.setColor(colr.r, colr.g, colr.b, newValues[0]);
 				}
 				return;
+			case FADEGROUP:
+				Group group = (Group) target;
+				Color colt = group.getColor();
+				group.setColor(colt.r, colt.g, colt.b, newValues[0]);
+				for (Actor child : group.getChildren()) {
+					colt = child.getColor();
+					child.setColor(colt.r, colt.g, colt.b, newValues[0]);
+				}
+				return;
 			case SIZEC:
 				float posX = target.getX(Align.center);
 				float posY = target.getY(Align.center);
@@ -133,7 +147,11 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 	public static Animation createFadeTableTween(Table ac, float duration, float delay, float fade) {
 		return new Animation(ac, FADETABLE, duration).ease(AnimationEquations.easeOutSine).target(fade).delay(delay);
 	}
-
+	
+	public static Animation createFadeGroupTween(Group ac, float duration, float delay, float fade) {
+		return new Animation(ac, FADEGROUP, duration).ease(AnimationEquations.easeOutSine).target(fade).delay(delay);
+	}
+	
 	public static Animation createFadeTween(Actor ac, float duration, float delay, float fade) {
 		return new Animation(ac, FADE, duration).ease(AnimationEquations.easeInOutSine).target(fade).delay(delay);
 	}
