@@ -9,6 +9,6 @@ public interface AccountManager {
 
     abstract class Account {
         public abstract String nick();
-        public abstract AuthInfo authInfo();
+        public abstract AuthInfo authToken();
     }
 }

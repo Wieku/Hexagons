@@ -234,7 +234,7 @@ public class MainMenu implements Screen {
 
 		CurrentMap.reset();
 
-		motdLabel = GUIHelper.text(MotdApi.instance.getMotd().text, Color.WHITE, 20);
+		motdLabel = GUIHelper.text(MotdApi.instance.getMotd().getText(), Color.WHITE, 20);
 		motdTable.add(motdLabel).center();
 		motdTable.pack();
 		motdTable.setWidth(stage.getWidth());

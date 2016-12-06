@@ -11,7 +11,6 @@ import xyz.hexagons.server.rank.*;
 import xyz.hexagons.server.util.SqlUtil;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
@@ -20,7 +19,7 @@ public class Launcher {
     private static Server server = new Server(9999);
     private static ServletContextHandler ctx = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
     public static Connection connection = null;
-    private static final String qPerpareDatabase = SqlUtil.getQuery("prepare");
+    private static final String qPrepareDatabase = SqlUtil.getQuery("prepare");
     private static final String qCheckConfig = SqlUtil.getQuery("config/check");
     private static final String qInitConfig = SqlUtil.getQuery("config/init");
     private static final Scanner input = new Scanner(System.in);
@@ -28,7 +27,7 @@ public class Launcher {
     private static void prepareDatabase(Connection connection) {
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate(qPerpareDatabase);
+            statement.executeUpdate(qPrepareDatabase);
 
             ResultSet checkResult = statement.executeQuery(qCheckConfig);
             if(checkResult.next()) {
@@ -77,6 +76,7 @@ public class Launcher {
             ctx.addServlet(MapDone.class,       "/v0/game");
             ctx.addServlet(MapLeaders.class,    "/v0/leaders");
             ctx.addServlet(GetNick.class,       "/v0/nick");
+            ctx.addServlet(PlayerRank.class,    "/v0/rank");
 
             ctx.addServlet(Motd.class,          "/motd");
 

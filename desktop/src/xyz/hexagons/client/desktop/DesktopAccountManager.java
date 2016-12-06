@@ -4,6 +4,7 @@ import org.javatuples.Pair;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.rankserv.AccountManager;
+import xyz.hexagons.client.rankserv.EventLogin;
 import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.utils.Holder;
 
@@ -30,24 +31,34 @@ public class DesktopAccountManager implements AccountManager {
                 Pair<Account, String> acc = REST.getJWS(Settings.instance.ranking.server + "/auth/google/poll?challenge=" + c.challenge, Account.class);
                 System.out.println("ACCOUNT: " + (acc == null ? "null" : acc.getValue0().account));
                 if(acc != null) {
-                    return onLogin(acc.getValue0(), acc.getValue1());
+                    AccountManager.Account account = onLogin(acc.getValue0(), acc.getValue1());
+                    Instance.eventBus.post(new EventLogin() {
+                        @Override
+                        public AccountManager.Account getAccount() {
+                            return account;
+                        }
+                    });
+                    return account;
                 } else return null;
             }
         }
         return null;
     }
 
-    private AccountManager.Account onLogin(Account account, String token) {
+    private AccountManager.Account onLogin(Account account, String t) {
+        Holder<String> token = new Holder<>(t);
+
         if(account.account.matches("^u\\d+$")) {
             Holder<ScheduledFuture> f  = new Holder<>();
 
             f.value = Instance.executor.scheduleWithFixedDelay(() -> {
                 if(f.value != null) {
-                    Account newAcc = REST.get(Settings.instance.ranking.server + "/v0/nick?token=" + token, Account.class);
-                    if(newAcc != null && !newAcc.account.matches("^u\\d+$")) {
+                    Pair<Account, String> newAcc = REST.getJWS(Settings.instance.ranking.server + "/v0/nick?token=" + token.value, Account.class);
+                    if(newAcc != null && !newAcc.getValue0().account.matches("^u\\d+$")) {
                         f.value.cancel(false);
                         f.value = null;
-                        Instance.eventBus.post((EventUpdateNick) () -> newAcc.account);
+                        Instance.eventBus.post((EventUpdateNick) () -> newAcc.getValue0().account);
+                        token.value = newAcc.getValue1();
                     }
                 }
             }, 20, 10, TimeUnit.SECONDS);
@@ -60,11 +71,11 @@ public class DesktopAccountManager implements AccountManager {
             }
 
             @Override
-            public AuthInfo authInfo() {
+            public AuthInfo authToken() {
                 return new AuthInfo() {
                     @Override
                     public String toString() {
-                        return token;
+                        return token.value;
                     }
                 };
             }
