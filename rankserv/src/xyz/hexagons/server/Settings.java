@@ -10,7 +10,8 @@ import java.security.SecureRandom;
 
 public class Settings implements Serializable {
     public static final Settings instance;
-    public final String siteRedir = "http://10.1.3.1:9000";
+    public final String siteRedir = "https://hexagons.xyz";
+    public final String selfUrl = "https://rankserv.hexagons.xyz";
 
     public final String dbAddress = "10.1.0.1";
     public final String dbDatabase = "hexagons";

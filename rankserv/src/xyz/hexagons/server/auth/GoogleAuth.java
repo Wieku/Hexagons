@@ -1,6 +1,7 @@
 package xyz.hexagons.server.auth;
 
 import org.eclipse.jetty.continuation.Continuation;
+import xyz.hexagons.server.Settings;
 import xyz.hexagons.server.util.Config;
 import xyz.hexagons.server.util.TimeoutMap;
 
@@ -19,7 +20,7 @@ public class GoogleAuth extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setStatus(301);
         resp.sendRedirect("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id="
-                + Config.get("google_oauth_id") + "&redirect_uri=" + Config.get("url") + "/auth/google/out&scope=profile&state="
+                + Config.get("google_oauth_id") + "&redirect_uri=" + Settings.instance.selfUrl + "/auth/google/out&scope=profile&state="
                 + req.getParameter("challenge"));
     }
 }
