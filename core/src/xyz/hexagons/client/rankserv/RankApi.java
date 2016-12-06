@@ -43,6 +43,29 @@ public class RankApi {
         return null;
     }
 
+    public PlayerRankInfo getPlayerRankInfo() {
+        if(Instance.currentAccount == null) return null;
+
+        HttpClient httpclient = HttpClients.createDefault();
+        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v0/leaders?token=" + Instance.currentAccount.authToken());
+
+        try {
+            HttpResponse response = httpclient.execute(req);
+            HttpEntity entity = response.getEntity();
+
+            if (entity != null) {
+                InputStream in = entity.getContent();
+
+                PlayerRankInfo info = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), PlayerRankInfo.class);
+                in.close();
+                return info;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private String getLeadersUri(Map map, int count) {
         if(Instance.currentAccount != null) {
             return Settings.instance.ranking.server + "/v0/leaders?uuid="
@@ -51,6 +74,12 @@ public class RankApi {
             return Settings.instance.ranking.server + "/v0/leaders?uuid="
                     + map.info.uuid + "&count=" + String.valueOf(count);
         }
+    }
+
+    public static class PlayerRankInfo implements Serializable {
+        public int rankedScore = 0;
+        public int globalRank = 0;
+        public int overallScore = 0;
     }
 
     public static class LeaderBoard implements Serializable {

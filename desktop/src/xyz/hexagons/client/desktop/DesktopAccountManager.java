@@ -37,17 +37,20 @@ public class DesktopAccountManager implements AccountManager {
         return null;
     }
 
-    private AccountManager.Account onLogin(Account account, String token) {
+    private AccountManager.Account onLogin(Account account, String t) {
+        Holder<String> token = new Holder<>(t);
+
         if(account.account.matches("^u\\d+$")) {
             Holder<ScheduledFuture> f  = new Holder<>();
 
             f.value = Instance.executor.scheduleWithFixedDelay(() -> {
                 if(f.value != null) {
-                    Account newAcc = REST.get(Settings.instance.ranking.server + "/v0/nick?token=" + token, Account.class);
-                    if(newAcc != null && !newAcc.account.matches("^u\\d+$")) {
+                    Pair<Account, String> newAcc = REST.getJWS(Settings.instance.ranking.server + "/v0/nick?token=" + token.value, Account.class);
+                    if(newAcc != null && !newAcc.getValue0().account.matches("^u\\d+$")) {
                         f.value.cancel(false);
                         f.value = null;
-                        Instance.eventBus.post((EventUpdateNick) () -> newAcc.account);
+                        Instance.eventBus.post((EventUpdateNick) () -> newAcc.getValue0().account);
+                        token.value = newAcc.getValue1();
                     }
                 }
             }, 20, 10, TimeUnit.SECONDS);
@@ -60,11 +63,11 @@ public class DesktopAccountManager implements AccountManager {
             }
 
             @Override
-            public AuthInfo authInfo() {
+            public AuthInfo authToken() {
                 return new AuthInfo() {
                     @Override
                     public String toString() {
-                        return token;
+                        return token.value;
                     }
                 };
             }

@@ -1,24 +1,21 @@
-package xyz.hexagons.server.auth;
+package xyz.hexagons.server.rank;
 
 import com.google.gson.Gson;
 import com.nimbusds.jose.JWSObject;
-import xyz.hexagons.server.Launcher;
+import xyz.hexagons.server.auth.RuntimeSecrets;
 import xyz.hexagons.server.util.SqlUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
 
-public class GetNick extends HttpServlet {
-    private static final String qUserByAuth = SqlUtil.getQuery("user/userById");
+public class PlayerRank extends HttpServlet {
+    private static final String qPlayerRankedScore = SqlUtil.getQuery("rank/playerRankedScore");
+    private static final String qPlayerGlobalRank = SqlUtil.getQuery("rank/playerGlobalRank");
+    private static final String qPlayerOverallScore = SqlUtil.getQuery("rank/playerOverallScore");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
@@ -37,14 +34,11 @@ public class GetNick extends HttpServlet {
 
             Account account = new Gson().fromJson(t.getPayload().toString(), Account.class);
 
-            PreparedStatement statement = Launcher.connection.prepareStatement(qUserByAuth);
-            statement.setInt(1, account.id);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                String name = rs.getString(1);
-                resp.getOutputStream().print(RuntimeSecrets.signSession("{\"account\":\"" + name +"\", id: "+ account.id +"}"));
-            }
-        } catch (ParseException | SQLException | IOException e) {
+            resp.getOutputStream().print("{\"rankedScore\":" + SqlUtil.getIntForQuery(qPlayerRankedScore, account.account) + "," +
+                    "\"globalRank\":" + SqlUtil.getIntForQuery(qPlayerGlobalRank, account.account) + "," +
+                    "\"overallScore\":" + SqlUtil.getIntForQuery(qPlayerOverallScore, account.account) + "}");
+
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
             resp.setStatus(500);
         }

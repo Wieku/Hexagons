@@ -45,6 +45,10 @@ public class MotdApi {
     public static class Motd implements Serializable {
         public String text = "";
 
+        public String getText() {
+            return text != null ? text : "MOTD Error";
+        }
+
         protected Motd(String text) {
             this.text = text;
         }
