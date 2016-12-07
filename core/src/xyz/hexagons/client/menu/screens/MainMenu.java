@@ -103,7 +103,9 @@ public class MainMenu implements Screen {
 		blurEffect.setDarkness(1.5f);
 
 		shapeRenderer = new ShapeRenderer();
-
+		
+		Instance.eventBus.register(this);
+		
 		ConfigEngine.register();
 
 		sTab = SettingsTab.getInstance();
@@ -274,9 +276,8 @@ public class MainMenu implements Screen {
 		motdTable.setTouchable(Touchable.disabled);
 		
 		stage2.addActor(motdTable);
-		Instance.accountManager.loginSaved();
 		
-		Instance.eventBus.register(this);
+		Instance.accountManager.loginSaved();
 	}
 
 	private boolean first = false;
@@ -312,7 +313,11 @@ public class MainMenu implements Screen {
 		currentPlaying = MenuPlaylist.getCurrent();
 		
 		countDown = COUNT;
-
+		
+		if(Instance.currentAccount != null) {
+			PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
+			rank.update(Instance.currentAccount.nick(), info.globalRank, info.rankedScore);
+		}
 	}
 
 	private Timeline beatHigh;

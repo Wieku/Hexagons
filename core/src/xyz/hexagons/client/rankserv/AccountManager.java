@@ -45,14 +45,16 @@ public abstract class AccountManager {
                         };
                     }
                 };
-
+                
+                Instance.currentAccount = account;
+                
                 Instance.eventBus.post(new EventLogin() {
                     @Override
                     public AccountManager.Account getAccount() {
                         return account;
                     }
                 });
-                Instance.currentAccount = account;
+                
             });
         }
     }

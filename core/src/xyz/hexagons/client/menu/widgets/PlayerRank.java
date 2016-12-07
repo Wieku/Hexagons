@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import xyz.hexagons.client.utils.GUIHelper;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class PlayerRank extends Stack {
 	
 	Table uTable;
@@ -76,7 +79,7 @@ public class PlayerRank extends Stack {
 		rankLabel.setText("#"+rank);
 		image.setVisible(true);
 		nickLabel.setText(nickname);
-		rScoreLabel.setText("Score: " + score);
+		rScoreLabel.setText("Score: " + String.format(Locale.US, "%,d", score));
 	}
 	
 }

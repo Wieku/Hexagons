@@ -47,7 +47,7 @@ public class RankApi {
         if(Instance.currentAccount == null) return null;
 
         HttpClient httpclient = HttpClients.createDefault();
-        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v0/leaders?token=" + Instance.currentAccount.authToken());
+        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v0/rank?token=" + Instance.currentAccount.authToken());
 
         try {
             HttpResponse response = httpclient.execute(req);
