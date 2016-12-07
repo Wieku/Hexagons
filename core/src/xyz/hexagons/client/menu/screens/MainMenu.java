@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.google.common.eventbus.Subscribe;
 import me.wieku.animation.animations.Animation;
 import me.wieku.animation.timeline.AnimationSequence;
 import me.wieku.animation.timeline.Timeline;
@@ -36,7 +37,12 @@ import xyz.hexagons.client.menu.settings.SettingsTab;
 import xyz.hexagons.client.engine.render.BlurEffect;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.menu.widgets.PlayerRank;
+import xyz.hexagons.client.rankserv.EventLogin;
+import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.rankserv.MotdApi;
+import xyz.hexagons.client.rankserv.RankApi;
+import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -80,6 +86,8 @@ public class MainMenu implements Screen {
 	private float beginDarkness, targetDarkness, deltaTime = -1, time = -2;
 	
 	SettingsTab sTab;
+	
+	PlayerRank rank;
 
 	public MapSelect sl;
 	FpsCounter cd = new FpsCounter(60);
@@ -122,7 +130,7 @@ public class MainMenu implements Screen {
 					SoundManager.playSound("click");
 					MenuPlaylist.nextSong();
 				}
-
+				
 				if(keycode == Keys.ENTER){
 					if(currentIndex == 0){
 						Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps))));
@@ -250,9 +258,12 @@ public class MainMenu implements Screen {
 		stage.addActor(button);
 		stage.addActor(button2);
 		stage.addActor(button3);
-		stage.addActor(sTab);
+		stage2.addActor(sTab);
 		selectIndex(0);
-
+		
+		rank = new PlayerRank();
+		stage.addActor(rank);
+		
 		CurrentMap.reset();
 
 		motdLabel = GUIHelper.text(MotdApi.instance.getMotd().getText(), Color.WHITE, 20);
@@ -265,6 +276,7 @@ public class MainMenu implements Screen {
 		stage2.addActor(motdTable);
 		Instance.accountManager.loginSaved();
 		
+		Instance.eventBus.register(this);
 	}
 
 	private boolean first = false;
@@ -404,7 +416,10 @@ public class MainMenu implements Screen {
 				uiAnimation.start(Instance.getAnimationManager());
 				
 				visible = false;
-				glideDarkness(0.75f, 5f);
+				
+				sTab.hide();
+				
+				glideDarkness(1f, 5f);
 			}
 			
 			if(activity) {
@@ -426,6 +441,8 @@ public class MainMenu implements Screen {
 				deltaTime += 1f/60;
 				blurEffect.setDarkness(beginDarkness + ((targetDarkness - beginDarkness) * deltaTime) / time);
 			}
+			
+			rank.setPosition(stage.getWidth()-300, stage.getHeight() - music.getHeight() - 5 - rank.getHeight());
 			
 			delta0 = 0;
 		}
@@ -526,7 +543,15 @@ public class MainMenu implements Screen {
 		float x=(currentIndex==0?stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 		ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x - 20, 0f));
 	}
-
+	
+	@Subscribe
+	public void onLogin(EventLogin event) {
+		if(Instance.currentAccount != null) {
+			PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
+			rank.update(event.getAccount().nick(), info.globalRank, info.rankedScore);
+		}
+	}
+	
 	@Override
 	public void pause() {}
 

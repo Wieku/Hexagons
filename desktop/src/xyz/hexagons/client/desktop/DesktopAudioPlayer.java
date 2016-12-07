@@ -63,6 +63,11 @@ public class DesktopAudioPlayer implements AudioPlayer {
 	}
 	
 	@Override
+	public float getDuration() {
+		return musicPlayer.getDuration();
+	}
+	
+	@Override
 	public void setPosition(float milis) {
 		Instance.executor.execute(() -> musicPlayer.setPosition(milis));
 	}

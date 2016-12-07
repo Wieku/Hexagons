@@ -16,6 +16,8 @@ public interface AudioPlayer {
 
 	float getPosition();
 
+	float getDuration();
+	
 	void setPosition(float milis);
 
 	void play();

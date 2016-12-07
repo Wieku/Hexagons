@@ -6,6 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+import com.jcraft.jorbis.JOrbisException;
+import com.jcraft.jorbis.VorbisFile;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.openal.AL10.AL_BUFFERS_PROCESSED;
 import static org.lwjgl.openal.AL10.AL_BUFFERS_QUEUED;
@@ -77,11 +79,18 @@ public class OpenALPlayer extends OpenALMusic {
 		setup(input.getChannels(), input.getSampleRate());
 	}
 	
+	float length;
 	
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
 		secondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
+		try {
+			VorbisFile file1 = new VorbisFile(file.file().getAbsolutePath());
+			length = file1.time_total(-1);
+		} catch (JOrbisException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void play () {
@@ -209,6 +218,11 @@ public class OpenALPlayer extends OpenALMusic {
 		if (audio.noDevice) return 0;
 		if (sourceID == -1) return 0;
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
+	}
+	
+	public float getDuration() {
+		//System.out.println(input.getLength());
+		return input.getLength() * 1f / bufferSize / secondsPerBuffer;
 	}
 	
 	public int read (byte[] buffer) {
