@@ -1,8 +1,24 @@
 @()
 
-@main("Test") {
-    <div class="test">
-
+@main("Hexagons!") {
+    <div class="root">
+        <div class="start-logo">
+            <img src="@routes.Assets.versioned("images/hexlogobig.png")">
+        </div>
+        <div class="start-welcome">
+            <div>
+                <p><span class="start-welcome-text">Welcome to </span>Hexagons<span class="text-cyan">!</span></p>
+            </div>
+        </div>
+        <div class="start-buttons">
+            <div class="start-button"><span>Download</span></div>
+            <div class="start-spacer"><div><span>-</span></div></div>
+            <div class="start-button"><span>Maps</span></div>
+            <div class="start-spacer"><div><span>-</span></div></div>
+            <div class="start-button"><span>Community</span></div>
+            <div class="start-spacer"><div><span>-</span></div></div>
+            <div class="start-button"><span>Profile</span></div>
+        </div>
     </div>
     @playscalajs.html.selectScript("client")
     @playscalajs.html.launcher("client")

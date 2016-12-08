@@ -6,6 +6,6 @@ import org.scalajs.dom.document
 
 object Main extends JSApp {
   def main(): Unit = {
-    document.getElementsByClassName("test")(0).asInstanceOf[HTMLElement].innerHTML = "hello"
+    //document.getElementsByClassName("test")(0).asInstanceOf[HTMLElement].innerHTML = "hello"
   }
 }

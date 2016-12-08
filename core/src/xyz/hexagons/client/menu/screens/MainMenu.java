@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.google.common.eventbus.Subscribe;
 import me.wieku.animation.animations.Animation;
-import me.wieku.animation.timeline.AnimationSequence;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
@@ -39,7 +38,6 @@ import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.menu.widgets.PlayerRank;
 import xyz.hexagons.client.rankserv.EventLogin;
-import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.rankserv.MotdApi;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
@@ -54,7 +52,7 @@ public class MainMenu implements Screen {
 
 	private Stage stage;
 	private Stage stage2;
-	private MenuButton button, button2, button3;
+	private MenuButton buttonStart, buttonOptions, buttonExit;
 	private ArrayList<MenuButton> list = new ArrayList<>();
 	private Label version, copyright;
 	private int currentIndex = -1;
@@ -250,16 +248,16 @@ public class MainMenu implements Screen {
 
 		stage.addActor(music);
 
-		list.add(button = new MenuButton("Start"));
-		list.add(button2 = new MenuButton("Options"));
-		list.add(button3 = new MenuButton("Exit"));
+		list.add(buttonStart = new MenuButton("Start"));
+		list.add(buttonOptions = new MenuButton("Options"));
+		list.add(buttonExit = new MenuButton("Exit"));
 
-		button.setBounds(stage.getWidth() - 328, 252, 512, 100);
-		button2.setBounds(stage.getWidth() - 394, 142, 512, 100);
-		button3.setBounds(stage.getWidth() - 460, 32, 512, 100);
-		stage.addActor(button);
-		stage.addActor(button2);
-		stage.addActor(button3);
+		buttonStart.setBounds(stage.getWidth() - 328, 252, 512, 100);
+		buttonOptions.setBounds(stage.getWidth() - 394, 142, 512, 100);
+		buttonExit.setBounds(stage.getWidth() - 460, 32, 512, 100);
+		stage.addActor(buttonStart);
+		stage.addActor(buttonOptions);
+		stage.addActor(buttonExit);
 		stage2.addActor(sTab);
 		selectIndex(0);
 		
@@ -515,9 +513,9 @@ public class MainMenu implements Screen {
 		beatILow.setPosition((401f / 1024) * stage.getWidth() - beatIHigh.getWidth() / 2, ((768f - 301f) / 768) * stage.getHeight() - beatIHigh.getHeight() / 2);
 
 
-		button.setBounds(stage.getWidth() - 328 - (list.indexOf(button) == currentIndex ? 20 : 0), 252, 512, 100);
-		button2.setBounds(stage.getWidth() - 394 - (list.indexOf(button2) == currentIndex ? 20 : 0), 142, 512, 100);
-		button3.setBounds(stage.getWidth() - 460 - (list.indexOf(button3) == currentIndex ? 20 : 0), 32, 512, 100);
+		buttonStart.setBounds(stage.getWidth() - 328 - (list.indexOf(buttonStart) == currentIndex ? 20 : 0), 252, 512, 100);
+		buttonOptions.setBounds(stage.getWidth() - 394 - (list.indexOf(buttonOptions) == currentIndex ? 20 : 0), 142, 512, 100);
+		buttonExit.setBounds(stage.getWidth() - 460 - (list.indexOf(buttonExit) == currentIndex ? 20 : 0), 32, 512, 100);
 
 		blurEffect.resize(width, height);
 		music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
