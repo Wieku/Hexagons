@@ -3,7 +3,11 @@
 @main("Download Hexagons!") {
     <div class="root">
         <div class="start-logo">
-            <img src="@routes.Assets.versioned("images/hexdl.png")">
+            <div>
+                <a href="/">
+                    <img src="@routes.Assets.versioned("images/hexdl.png")">
+                </a>
+            </div>
         </div>
         <div class="start-welcome">
             <div>
@@ -11,13 +15,13 @@
             </div>
         </div>
         <div class="start-buttons">
-            <div class="start-button"><span class="download-notyet">Windows</span></div>
+            <div class="start-button"><span class="download-not-yet">Windows</span></div>
             <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span class="download-notyet">Android</span></div>
+            <div class="start-button"><span class="download-not-yet">Android</span></div>
             <div class="start-spacer"><div><span>-</span></div></div>
             <div class="start-button"><span><a href="http://ci.starchasers.ovh/job/Hexagons/lastSuccessfulBuild/artifact/artifacts/Hexagons-desktop.jar">Java</a></span></div>
             <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span class="download-notyet">Other</span></div>
+            <div class="start-button"><span class="download-not-yet">Other</span></div>
         </div>
     </div>
     @playscalajs.html.selectScript("client")

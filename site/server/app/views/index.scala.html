@@ -3,7 +3,11 @@
 @main("Hexagons!") {
     <div class="root">
         <div class="start-logo">
-            <img src="@routes.Assets.versioned("images/hexlogobig.png")">
+            <div>
+                <a href="/">
+                    <img src="@routes.Assets.versioned("images/hexlogobig.png")">
+                </a>
+            </div>
         </div>
         <div class="start-welcome">
             <div>
@@ -13,11 +17,11 @@
         <div class="start-buttons">
             <div class="start-button"><span><a href="/download">Download</a></span></div>
             <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span>Maps</span></div>
+            <div class="start-button"><span><a href="/maps">Maps</a></span></div>
             <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span>Community</span></div>
+            <div class="start-button"><span class="download-not-yet">Community</span></div>
             <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span>Profile</span></div>
+            <div class="start-button"><span class="download-not-yet">Profile</span></div>
         </div>
     </div>
     @playscalajs.html.selectScript("client")
