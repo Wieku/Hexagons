@@ -20,6 +20,14 @@ class Application @Inject() (db: Database, conf: Configuration) extends Controll
     Ok(views.html.index())
   }
 
+  def download = Action { request =>
+    Ok(views.html.download())
+  }
+
+  def maps = Action { request =>
+    Ok(views.html.maps())
+  }
+
   def welcome = Action { request =>
     Ok(views.html.welcome())
   }

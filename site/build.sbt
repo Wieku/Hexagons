@@ -31,6 +31,8 @@ lazy val server = (project in file("server")).settings(commonSettings("server"):
     jdbc,
     specs2 % Test
   ),
+  LessKeys.compress in Assets := true,
+  includeFilter in (Assets, LessKeys.less) := "main.less",
   routesGenerator := InjectedRoutesGenerator,
 
   (compile in Compile) <<= (compile in Compile)
