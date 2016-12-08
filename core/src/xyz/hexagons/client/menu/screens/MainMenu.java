@@ -43,6 +43,7 @@ import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
+import xyz.hexagons.client.utils.Glider;
 
 import java.util.ArrayList;
 
@@ -81,7 +82,6 @@ public class MainMenu implements Screen {
 	private boolean visible = true;
 	private boolean activity = false;
 	private Animation uiAnimation;
-	private float beginDarkness, targetDarkness, deltaTime = -1, time = -2;
 	
 	SettingsTab sTab;
 	
@@ -212,7 +212,7 @@ public class MainMenu implements Screen {
 
 		version = new Label("Build: " + Version.version, GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 8));
 		version.pack();
-		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
+		version.setPosition(5, stage.getHeight() - version.getHeight() - 7);
 		stage.addActor(version);
 
 		copyright = new Label("Hexagons! 2016 Written by Wieku and Magik6k", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 10));
@@ -324,6 +324,9 @@ public class MainMenu implements Screen {
 	private float delta1 = 0;
 
 	private boolean lo = false;
+	
+	private Glider darknessGlider = new Glider(1.5f);
+	private Glider alphaGlider = new Glider(0.1f);
 
 	@Override
 	public void render(float delta) {
@@ -335,6 +338,10 @@ public class MainMenu implements Screen {
 		camera.update(delta);
 		if((delta0 += delta)>=1f/60) {
 			cd.update(delta);
+			
+			darknessGlider.update(1f/60);
+			alphaGlider.update(1f/60);
+			
 			CurrentMap.data.walls.update(delta0);
 			CurrentMap.data.skew = 1f;
 			CurrentMap.setMinSkew(0.9999f);
@@ -356,7 +363,7 @@ public class MainMenu implements Screen {
 				title.setText(MenuPlaylist.getCurrent().info.songAuthor + " - " + MenuPlaylist.getCurrent().info.songName);
 				float[] cv = MenuPlaylist.getCurrentPlayer().getFFT();
 				for(int i=0;i<40;i++) {
-					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50 * (visible?1:1.5f), dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
+					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50 * (1.5f/darknessGlider.getValue()), dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
 				}
 			} else title.setText("No maps available");
 			music.pack();
@@ -422,7 +429,8 @@ public class MainMenu implements Screen {
 				
 				sTab.hide();
 				
-				glideDarkness(1f, 5f);
+				darknessGlider.glide(1f, 5f);
+				alphaGlider.glide(0.4f, 5f);
 			}
 			
 			if(activity) {
@@ -432,7 +440,9 @@ public class MainMenu implements Screen {
 					
 					uiAnimation = ActorAccessor.createFadeGroupTween(stage.getRoot(), 1f*(1f-stage.getRoot().getColor().a), 0f, 1f);
 					uiAnimation.start(Instance.getAnimationManager());
-					glideDarkness(1.5f, (1f-stage.getRoot().getColor().a));
+					
+					darknessGlider.glide(1.5f, (1f-stage.getRoot().getColor().a));
+					alphaGlider.glide(0.1f, (1f-stage.getRoot().getColor().a));
 				}
 				
 				countDown = COUNT;
@@ -440,10 +450,7 @@ public class MainMenu implements Screen {
 				activity = false;
 			}
 			
-			if (deltaTime < time) {
-				deltaTime += 1f/60;
-				blurEffect.setDarkness(beginDarkness + ((targetDarkness - beginDarkness) * deltaTime) / time);
-			}
+			blurEffect.setDarkness(darknessGlider.getValue());
 			
 			rank.setPosition(stage.getWidth()-300, stage.getHeight() - music.getHeight() - 5 - rank.getHeight());
 			
@@ -474,7 +481,7 @@ public class MainMenu implements Screen {
 		shapeRenderer.identity();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-		shapeRenderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 0.1f);
+		shapeRenderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, alphaGlider.getValue());
 		float g = stage.getHeight()/40f;
 		for(int i=0;i<40;i++){
 			shapeRenderer.rect(0, i*g, dfg[i], g-1);
@@ -492,18 +499,11 @@ public class MainMenu implements Screen {
 		
 	}
 	
-	public void glideDarkness(float darkness, float time) {
-		beginDarkness = blurEffect.darkness;
-		targetDarkness = darkness;
-		this.time = time;
-		deltaTime = 0;
-	}
-	
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		stage2.getViewport().update(width, height, true);
-		version.setPosition(5, stage.getHeight() - version.getHeight() - 5);
+		version.setPosition(5, stage.getHeight() - version.getHeight() - 7);
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		
 		beatIHigh.setSize((508f / 1024) * stage.getWidth(), (508f / 768) * stage.getHeight());
