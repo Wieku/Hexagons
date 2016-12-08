@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /download                   controllers.Application.download
 GET     /start/register/*token      controllers.Application.register(token: String)
 POST    /start/register             controllers.Application.registerPost
 GET     /welcome                    controllers.Application.welcome
