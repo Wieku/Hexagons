@@ -32,6 +32,12 @@ public class Player {
 	private RotatationState rotatationState = RotatationState.STILL;
 
 	float delta;
+	Game game;
+
+	public Player(Game game) {
+		this.game = game;
+	}
+
 	public void update(float delta){
 		this.delta += delta;
 
@@ -137,6 +143,7 @@ public class Player {
 
 			if(Intersector.isPointInPolygon(wall.getPolygon().getVertices(), 0, 8, tmp.x, tmp.y)){
 				dead = true;
+				game.onDie();
 			}
 		}
 

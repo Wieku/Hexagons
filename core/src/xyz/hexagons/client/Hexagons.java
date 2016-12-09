@@ -1,6 +1,5 @@
 package xyz.hexagons.client;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,10 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import me.wieku.animation.animations.Animation;
 import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.api.CurrentMap;
@@ -26,9 +21,6 @@ import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.utils.PathUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,7 +34,7 @@ public class Hexagons extends Game {
 	Color color = new Color(Color.WHITE);
 	FpsCounter fpsCounter = new FpsCounter(60);
 	Stage stage;
-	Label fps;
+	public Label fps;
 
 	int width, height;
 	private List<Runnable> taskList = new LinkedList<>();

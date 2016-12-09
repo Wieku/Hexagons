@@ -51,6 +51,9 @@ public class Settings implements Serializable {
 	public class GamePlay {
 		@Section.Switch(name="invincibility", enName="Invincibility", def = false, order=0)
 		public boolean invincibility = false;
+
+		@Section.Switch(name="hideUi", enName="Hide UI when in game", def = false, order=1)
+		public boolean hideUi = false;
 	}
 
 	@Section(name="ranking", enName="Ranking", order=4)

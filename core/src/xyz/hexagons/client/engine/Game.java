@@ -22,7 +22,6 @@ import org.apache.http.message.BasicNameValuePair;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
-import xyz.hexagons.client.audio.AudioPlayer;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.camera.SkewCamera;
@@ -33,21 +32,15 @@ import xyz.hexagons.client.engine.render.ObjRender;
 //import xyz.hexagons.client.engine.render.Renderer;
 import xyz.hexagons.client.menu.widgets.HProgressBar;
 import xyz.hexagons.client.map.Map;
-import xyz.hexagons.client.resources.ArchiveFileHandle;
-import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * @author Sebastian Krajewski on 28.03.15.
@@ -65,7 +58,7 @@ public class Game implements Screen {
 	SkewCamera camera = new SkewCamera();
 	Stage stage;
 
-	Player player = new Player();
+	Player player = new Player(this);
 
 	Label points;
 	Label time;
@@ -191,6 +184,13 @@ public class Game implements Screen {
 		map.script.initColors();
 		map.script.initEvents();
 
+		if(Settings.instance.gameplay.hideUi) {
+			points.setVisible(false);
+			time.setVisible(false);
+			next.setVisible(false);
+			Instance.game.fps.setVisible(false);
+		}
+
 		//CurrentMap.data.eventTimeline.update(startTime);
 		SoundManager.playSound("start");
 	}
@@ -199,12 +199,21 @@ public class Game implements Screen {
 		start(map.info.startTimes[MathUtils.random(0, map.info.startTimes.length - 1)]);
 	}
 
+	void onDie() {
+		if(Settings.instance.gameplay.hideUi) {
+			points.setVisible(true);
+			time.setVisible(true);
+			next.setVisible(true);
+			Instance.game.fps.setVisible(true);
+		}
+	}
+
 	float fastRotate = 0f;
 	float delta0;
 	boolean escClick = false;
 	Color tmpColor = new Color();
 
-	public void updateGame(float delta){
+	private void updateGame(float delta) {
 
 		if(!player.dead && CurrentMap.data.wallTimeline.isFirstRemoved())
 			score += delta * (CurrentMap.data.difficulty * CurrentMap.data.speed * (((int)CurrentMap.data.currentTime) * 5 + 300));
@@ -269,6 +278,7 @@ public class Game implements Screen {
 			if(Gdx.input.isKeyPressed(Keys.ESCAPE)){
 				player.dead = true;
 				escClick = true;
+				onDie();
 			}
 		}
 
