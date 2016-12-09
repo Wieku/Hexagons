@@ -35,7 +35,7 @@ public class Glider {
 	
 	public void update(float delta) {
 		if (delta0 < time) {
-			delta0+=delta;
+			delta0 += delta;
 			value = beginval + ((targetVal - beginval) * delta0) / time;
 		} else {
 			value = targetVal;
