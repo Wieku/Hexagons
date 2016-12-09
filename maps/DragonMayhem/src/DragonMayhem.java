@@ -73,10 +73,10 @@ public class DragonMayhem implements MapScript {
 			public void run() {
 				CurrentMap.data.colors.clear();
 				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.data.colors.add(new HColor(225f/255, 0f, 0f, 1f));
 				CurrentMap.data.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
 				CurrentMap.data.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.data.colors.add(new HColor(225f/255, 0f, 0f, 1f));
 				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
 			}
 		});
