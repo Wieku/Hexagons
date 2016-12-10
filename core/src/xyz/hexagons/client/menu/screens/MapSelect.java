@@ -5,8 +5,10 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -16,9 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.google.common.eventbus.Subscribe;
+import com.sun.org.apache.xerces.internal.util.SAX2XNI;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
@@ -32,8 +36,11 @@ import xyz.hexagons.client.engine.camera.SkewCamera;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.menu.widgets.PlayerRank;
+import xyz.hexagons.client.rankserv.EventLogin;
 import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.rankserv.RankApi;
+import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.lang.reflect.Method;
@@ -52,7 +59,7 @@ public class MapSelect implements Screen {
 	private Game game;
 
 	private Table table;
-	private Label nickname;
+	//private Label nickname;
 
 	private SkewCamera camera = new SkewCamera();
 	private ObjRender shapeRenderer;
@@ -74,7 +81,10 @@ public class MapSelect implements Screen {
 	private Table myScore;
 
 	int tnumber=1;
-
+	
+	private Table bg;
+	private PlayerRank rank;
+	
 	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
 		maps.sort((e1, e2)->e1.info.name.compareTo(e2.info.name));
@@ -207,17 +217,32 @@ public class MapSelect implements Screen {
 				}
 			}
 		});
-		info = new Table();
-		info.add(number = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
-		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
-		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
-		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
-		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 8))).left().row();
-		number.getStyle().font.setFixedWidthGlyphs("01234567890");
+		info = new Table() {
+			Rectangle sciss = new Rectangle();
+			Rectangle bounds = new Rectangle();
+			
+			@Override
+			protected void drawChildren(Batch batch, float parentAlpha) {
+				bounds.set(0, getStage().getHeight()-getHeight(), getWidth()-5, getHeight());
+				batch.flush();
+				ScissorStack.calculateScissors(getStage().getCamera(), batch.getTransformMatrix(), bounds, sciss);
+				ScissorStack.pushScissors(sciss);
+				super.drawChildren(batch, parentAlpha);
+				batch.flush();
+				ScissorStack.popScissors();
+			}
+		};
+		info.setBackground(GUIHelper.getTxRegion(new Color(0,0,0,0.5f)));
+		info.add(number = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).padLeft(5).padTop(5).left().width(345).row();
+		info.add(name = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).padLeft(5).left().width(345).row();
+		info.add(description = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).padLeft(5).left().width(345).row();
+		info.add(author = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 8))).padLeft(5).left().width(345).row();
+		info.add(music = new Label("No maps available!", GUIHelper.getLabelStyle(Color.WHITE, 8))).padLeft(5).padBottom(5).left().width(345).row();
 		info.pack();
 
-		info.setWidth(Gdx.graphics.getWidth()/3);
-		info.setPosition(5, stage.getHeight()-5-info.getHeight());
+		
+		info.setWidth(350);
+		info.setPosition(0, stage.getHeight()-info.getHeight());
 
 		stage.addActor(info);
 		
@@ -258,20 +283,25 @@ public class MapSelect implements Screen {
 
 		stage.addActor(leaderboard);
 
-		myScoreTable.add(myScoreLabel = GUIHelper.text("Personal score:", Color.WHITE, 12)).left().pad(5).width(300).row();
+		myScoreTable.add(myScoreLabel = GUIHelper.text("Personal score:", Color.WHITE, 12)).left().pad(5).width(345).row();
 		myScore = GUIHelper.getTable(new Color(0,0,0,0.5f));
-		myScoreTable.add(myScore).width(300).left();
+		myScoreTable.add(myScore).width(350).left();
 		addMyScore(0, 0, 0);
 		myScoreTable.pack();
 		stage.addActor(myScoreTable);
 
-		if(Instance.currentAccount != null) {
-			nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
-			nickname.pack();
-			nickname.setPosition(5, 70);
-			stage.addActor(nickname);
-		}
-
+		//if(Instance.currentAccount != null) {
+		//	nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
+		//	nickname.pack();
+		//	nickname.setPosition(5, 70);
+		//	stage.addActor(nickname);
+		//}
+		
+		bg = GUIHelper.getTable(new Color(0,0,0,0.65f));
+		stage.addActor(bg);
+		rank = new PlayerRank();
+		stage.addActor(rank);
+		
 		Instance.eventBus.register(this);
 		//if(Settings.instance.graphics.fullscreen)
 		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
@@ -303,12 +333,12 @@ public class MapSelect implements Screen {
 
 			tmpC.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 
-			number.getStyle().fontColor = tmpC;
-			name.getStyle().fontColor = tmpC;
-			description.getStyle().fontColor = tmpC;
-			author.getStyle().fontColor = tmpC;
-			music.getStyle().fontColor = tmpC;
-			if(nickname != null) nickname.getStyle().fontColor = tmpC;
+			//number.getStyle().fontColor = tmpC;
+			//name.getStyle().fontColor = tmpC;
+			//description.getStyle().fontColor = tmpC;
+			//author.getStyle().fontColor = tmpC;
+			//music.getStyle().fontColor = tmpC;
+			//if(nickname != null) nickname.getStyle().fontColor = tmpC;
 			myScoreLabel.getStyle().fontColor = tmpC;
 
 			delta0 = 0;
@@ -322,10 +352,12 @@ public class MapSelect implements Screen {
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
 		scrollPane.layout();
 
-		myScoreTable.setBounds(0, 100, 300, myScoreTable.getHeight());
-		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 300, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
+		myScoreTable.setBounds(0, 100, 350, myScoreTable.getHeight());
+		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 350, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
-
+		
+		rank.setPosition(stage.getWidth()-350, 0);
+		bg.setBounds(0, 0, stage.getWidth(), rank.getHeight());
 		if(mapButtons.size() > 0)
 			if(!showed) {
 				MenuMap ms = mapButtons.get(mapIndex);
@@ -355,18 +387,18 @@ public class MapSelect implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		info.setWidth(Gdx.graphics.getWidth()/3);
+		info.setWidth(350);
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3)-15, 0, Math.max(468, stage.getWidth()/3)+15, stage.getHeight());
 		scrollPane.layout();
 
-		myScoreTable.setBounds(0, 100, 300, myScoreTable.getHeight());
-		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 300, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
+		myScoreTable.setBounds(0, 100, 350, myScoreTable.getHeight());
+		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 350, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
 
 		mapButtons.forEach(e->{e.setX(0);e.update();});
 
 		info.pack();
-		info.setPosition(5, stage.getHeight()-5-info.getHeight());
+		info.setPosition(0, stage.getHeight()-info.getHeight());
 	}
 
 	@Override
@@ -395,19 +427,22 @@ public class MapSelect implements Screen {
 		showed = false;
 		Gdx.input.setInputProcessor(stage);
 
-		if(Instance.currentAccount != null && nickname == null) {
-			nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
-			nickname.pack();
-			nickname.setPosition(5, 70);
-			stage.addActor(nickname);
-		}
+		//if(Instance.currentAccount != null && nickname == null) {
+		//	nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
+		//	nickname.pack();
+		//	nickname.setPosition(5, 70);
+		//	stage.addActor(nickname);
+		//}
+		
+		Instance.cachedExecutor.execute(()->{
+			onLogin(null);
+		});
+		
 		//System.out.println("Map selection screen showed up");
 	}
 
 	@Subscribe public void onNickChange(EventUpdateNick event) {
-		if(Instance.currentAccount != null && nickname != null) {
-			nickname.setText(event.newNick());
-		}
+		onLogin(null);
 	}
 
 	public void selectIndex(int index){
@@ -418,7 +453,7 @@ public class MapSelect implements Screen {
 			author.setText("");
 			music.setText("No maps available!");
 			info.pack();
-			info.setPosition(5, stage.getHeight()-5-info.getHeight());
+			info.setPosition(0, stage.getHeight()-info.getHeight());
 		} else {
 
 			Map map = maps.get(index);
@@ -441,7 +476,7 @@ public class MapSelect implements Screen {
 			author.setText("Author: " + map.info.author);
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
-			info.setPosition(5, stage.getHeight()-5-info.getHeight());
+			info.setPosition(0, stage.getHeight()-info.getHeight());
 
 			scoreTable.clear();
 
@@ -491,9 +526,9 @@ public class MapSelect implements Screen {
 			table.add(minTable).width(subTable.getHeight()).fillY();
 			table.add(new Image(GUIHelper.getTxWRegion(Color.WHITE, 2), Scaling.stretchY)).padTop(1).padBottom(1).fillY();
 
-			table.add(subTable).width(298-subTable.getHeight()).row();
+			table.add(subTable).width(348-subTable.getHeight()).row();
 
-			scoreTable.add(table).padBottom(2).padTop(2).width(300).row();
+			scoreTable.add(table).padBottom(2).padTop(2).width(350).row();
 			//subNode.expandAll();
 			//node.add(subNode);
 			leaderboard.setScrollPercentY(0);
@@ -509,8 +544,8 @@ public class MapSelect implements Screen {
 			Table subTable = new Table();
 
 			subTable.left();
-			subTable.add(new Label("#" + position + " of " + players, GUIHelper.getLabelStyle(Color.WHITE, 11))).padBottom(2).padLeft(5).left().expandX().row();
-			subTable.add(new Label("Score: " + score, GUIHelper.getLabelStyle(Color.WHITE, 10))).padBottom(2).padLeft(5).left().expandX().row();
+			subTable.add(new Label("#" + position + " of " + players, GUIHelper.getLabelStyle(Color.WHITE, 13))).padBottom(2).padLeft(5).left().expandX().row();
+			subTable.add(new Label("Score: " + score, GUIHelper.getLabelStyle(Color.WHITE, 9))).padBottom(2).padLeft(5).left().expandX().row();
 
 			subTable.layout();
 			subTable.pack();
@@ -522,15 +557,22 @@ public class MapSelect implements Screen {
 			table.add(minTable).width(subTable.getHeight()).fillY();
 			table.add(new Image(GUIHelper.getTxWRegion(Color.WHITE, 2), Scaling.stretchY)).padTop(1).padBottom(1).fillY();
 
-			table.add(subTable).width(298-subTable.getHeight()).row();
+			table.add(subTable).width(348-subTable.getHeight()).row();
 
-			myScore.add(table).width(300);
+			myScore.add(table).width(350);
 		} else {
 			myScore.add(GUIHelper.text("Never played", Color.WHITE, 14)).center().pad(9);
 		}
 		myScoreTable.pack();
 	}
-
+	
+	@Subscribe
+	public void onLogin(EventLogin event) {
+		if(Instance.currentAccount != null) {
+			PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
+			rank.update(Instance.currentAccount.nick(), info.globalRank, info.rankedScore);
+		}
+	}
 
 	public static MapSelect getInstance() {
 		return instance;

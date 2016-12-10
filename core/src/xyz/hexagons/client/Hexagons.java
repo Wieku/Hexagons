@@ -3,6 +3,7 @@ package xyz.hexagons.client;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -13,6 +14,7 @@ import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
+import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.menu.screens.Updater;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.menu.settings.SettingsManager;
@@ -71,6 +73,7 @@ public class Hexagons extends Game {
 		stage = new Stage(new ExtendViewport(1024, 768));
 
 		fps = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 10));
+		fps.getStyle().font.setFixedWidthGlyphs("01234567890");
 		fps.layout();
 		fps.setX(2);
 		stage.addActor(fps);
@@ -104,7 +107,10 @@ public class Hexagons extends Game {
 		if((delta0 += Gdx.graphics.getDeltaTime()) >=1f/60){
 			update(delta0);
 			fpsCounter.update(Gdx.graphics.getDeltaTime());
-			color.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 1);
+			if(getScreen() instanceof MapSelect)
+				color.set(Color.WHITE);
+			else
+				color.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 1);
 			fps.getStyle().fontColor = color;
 			fps.setText((int)(fpsCounter.getFPS()) + "FPS\n" + delayFormat.format(1000f/fpsCounter.getFPS())+"ms");
 			fps.pack();

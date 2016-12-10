@@ -40,6 +40,7 @@ public class GUIHelper{
 		LabelStyle stl = new LabelStyle();
 		stl.font =  FontManager.getFont(FontManager.MAIN, size);
 		stl.font.getData().markupEnabled = true;
+		//stl.font.setUseIntegerPositions(true);
 		stl.fontColor = color.cpy();
 		styles.put(size, stl);
 		return stl;
@@ -49,6 +50,7 @@ public class GUIHelper{
 		LabelStyle stl = new LabelStyle();
 		stl.background = getTxRegion(background);
 		stl.font = FontManager.getFont(FontManager.MAIN, size);
+		//stl.font.setUseIntegerPositions(true);
 		stl.fontColor = color.cpy();
 		styles.put(size, stl);
 		return stl;

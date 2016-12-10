@@ -312,10 +312,12 @@ public class MainMenu implements Screen {
 		
 		countDown = COUNT;
 		
-		if(Instance.currentAccount != null) {
-			PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
-			rank.update(Instance.currentAccount.nick(), info.globalRank, info.rankedScore);
-		}
+		Instance.cachedExecutor.execute(()->{
+			if(Instance.currentAccount != null) {
+				PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
+				rank.update(Instance.currentAccount.nick(), info.globalRank, info.rankedScore);
+			}
+		});
 	}
 
 	private Timeline beatHigh;

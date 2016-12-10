@@ -11,6 +11,7 @@ import xyz.hexagons.client.rankserv.AccountManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
@@ -25,6 +26,7 @@ public class Instance {
     public static Consumer<Runnable> scheduleOnMain = null;
     public static File storageRoot = null;
     public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    public static ExecutorService cachedExecutor = Executors.newCachedThreadPool();
     public static Globals luaGlobals = JsePlatform.standardGlobals();
     public static AccountManager accountManager = null;
     public static AccountManager.Account currentAccount = null;
