@@ -21,7 +21,7 @@ public abstract class Patterns {
 	}
 
 	//getHalfSides: returns half the number of sides (integer)
-	public static int getHalfSides() { return (int) Math.ceil(CurrentMap.data.sides / 2); }
+	public static int getHalfSides() { return (int) Math.ceil(CurrentMap.data.sides / 2f); }
 
 	//getRandomSide: returns random mSide
 	public static int getRandomSide() { return random(0, CurrentMap.data.sides - 1); }
