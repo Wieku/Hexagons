@@ -80,7 +80,7 @@ public class Pi implements MapScript {
 
 
 		CurrentMap.data.walls = new HColor(0, 0, 0, 225/255f).addPulse(99/255f, 30/255f, 165/255f, 0f).setMain(true);
-		CurrentMap.setColorPulse(1.5f);
+		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setColorSwitch(1f);
 	}

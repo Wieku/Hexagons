@@ -9,7 +9,11 @@ import java.util.ArrayList;
  * @author Sebastian Krajewski on 21.03.15.
  */
 public abstract class CurrentMap {
-
+	
+	public static void useRadians(boolean b) {
+		data.useRadians = b;
+	}
+	
 	public static class Data {
 		public float rotationSpeed = 0.5f;
 		public float rotationSpeedMax = 1.5f;
@@ -50,7 +54,8 @@ public abstract class CurrentMap {
 		/**colors*/
 		public ArrayList<HColor> colors = new ArrayList<>();
 		//public float menuColor = 0f;
-		public float colorPulse = 3f;
+		public float colorPulseMin = 0f;
+		public float colorPulseMax = 3f;
 		public float colorPulseInc = 1f;
 		public int colorOffset = 0;
 		public float colorSwitch = 1f;
@@ -70,7 +75,10 @@ public abstract class CurrentMap {
 		
 		public Timeline<Wall> wallTimeline = new Timeline<>();
 		public Timeline<TimelineRunnable> eventTimeline = new Timeline<>();
-
+		
+		public boolean gameCompleted = false;
+		public boolean useRadians = false;
+		
 	}
 
 
@@ -115,7 +123,7 @@ public abstract class CurrentMap {
 	*//**colors*//*
 	public static ArrayList<HColor> colors = new ArrayList<>();
 	//public static float menuColor = 0f;
-	public static float colorPulse = 3f;
+	public static float colorPulseMax = 3f;
 	public static float colorPulseInc = 1f;
 	public static int colorOffset = 0;
 	public static float colorSwitch = 1f;
@@ -182,7 +190,7 @@ public abstract class CurrentMap {
 
 		*//**colors*//*
 		colors.clear();
-		colorPulse = 3f;
+		colorPulseMax = 3f;
 		colorPulseInc = 1f;
 		colorOffset = 0;
 		colorSwitch = 1f;
@@ -320,9 +328,13 @@ public abstract class CurrentMap {
 	public static void setColors(ArrayList<HColor> colors) {
 		data.colors = colors;
 	}
-
-	public static void setColorPulse(float colorPulse) {
-		data.colorPulse = colorPulse;
+	
+	public static void setColorPulseMin(float colorPulse) {
+		data.colorPulseMin = colorPulse;
+	}
+	
+	public static void setColorPulseMax(float colorPulse) {
+		data.colorPulseMax = colorPulse;
 	}
 
 	public static void setColorPulseInc(float colorPulseInc) {
@@ -380,4 +392,9 @@ public abstract class CurrentMap {
 	public static void setAlphaFalloff(float alphaFalloff) {
 		data.alphaFalloff = alphaFalloff;
 	}
+	
+	public static void killPlayer() {
+		data.gameCompleted = true;
+	}
+	
 }

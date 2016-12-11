@@ -81,6 +81,12 @@ public class MapRenderer {
 
 				renderer.triangle(0, 0, tmp.x, tmp.y, tmp2.x, tmp2.y);
 
+				
+				if(shadLev==-10) {
+					renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 1);
+					renderer.line(0,0, tmp.x, tmp.y);
+				}
+				
 			}
 
 	}

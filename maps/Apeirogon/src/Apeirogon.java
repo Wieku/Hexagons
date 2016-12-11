@@ -74,7 +74,7 @@ public class Apeirogon implements MapScript {
 		CurrentMap.data.colors.add(new HColor(60f / 255, 60f / 255, 60f / 255, 1f));
 
 		CurrentMap.data.walls = new HColor(253f/255, 253f/255, 253f/255, 1);
-		CurrentMap.setColorPulse(1.8f);
+		CurrentMap.setColorPulseMax(1.8f);
 		CurrentMap.setColorPulseInc(0.027f);
 		CurrentMap.setColorSwitch(1f);
 	}

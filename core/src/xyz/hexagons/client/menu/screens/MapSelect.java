@@ -346,7 +346,7 @@ public class MapSelect implements Screen {
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		mapRenderer.renderBackground(shapeRenderer, delta, true, 0);
+		mapRenderer.renderBackground(shapeRenderer, delta, true, -10);
 		shapeRenderer.end();
 
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);

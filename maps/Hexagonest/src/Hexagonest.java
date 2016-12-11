@@ -113,7 +113,7 @@ public class Hexagonest implements MapScript {
 		CurrentMap.data.colors.add(new HColor(128f / 255, 128f / 255, 128f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
 
 		CurrentMap.data.walls = new HColor(1,1,1,1);
-		CurrentMap.setColorPulse(1.8f);
+		CurrentMap.setColorPulseMax(1.8f);
 		CurrentMap.setColorPulseInc(0.027f);
 		CurrentMap.setColorSwitch(1f);
 	}

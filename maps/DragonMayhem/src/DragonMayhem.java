@@ -114,7 +114,7 @@ public class DragonMayhem implements MapScript {
 		CurrentMap.data.colors.add(new HColor(255f / 255, 0, 0, 1f).addHue(new Hue(0, 25, 0.345f, true, false)));
 		CurrentMap.data.colors.add(new HColor(180f / 255, 0, 0, 1f));
 		CurrentMap.data.walls = new HColor(1,1,1,1);
-		CurrentMap.setColorPulse(2.5f);
+		CurrentMap.setColorPulseMax(2.5f);
 		CurrentMap.setColorPulseInc(0.345f);
 		CurrentMap.setColorSwitch(1f);
 	}

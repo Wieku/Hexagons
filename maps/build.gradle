@@ -43,6 +43,10 @@ task bundle << {
         from "Moonless/build/libs/Moonless-${version}.jar"
         into "../android/assets/Maps"
     }
+    copy {
+        from "Fairydust/build/libs/Fairydust-${version}.jar"
+        into "../android/assets/Maps"
+    }
 }
 
 bundle.dependsOn removeMaps
@@ -56,3 +60,4 @@ bundle.dependsOn 'Pi:jar'
 bundle.dependsOn 'Pointless:jar'
 bundle.dependsOn 'SecondDimension:jar'
 bundle.dependsOn 'Moonless:jar'
+bundle.dependsOn 'Fairydust:jar'

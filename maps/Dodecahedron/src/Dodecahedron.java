@@ -2,7 +2,6 @@ import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.api.Patterns;
-import xyz.hexagons.client.engine.Game;
 import xyz.hexagons.client.map.timeline.TimelineRunnable;
 
 import static xyz.hexagons.client.api.MapUtils.shuffle;
@@ -148,7 +147,7 @@ public class Dodecahedron implements MapScript {
 
 		CurrentMap.data.walls = new HColor(243f/255, 148f/255, 183f/255, 1).setMain(true).addPulse(60f/255, 60f/255, 60f/255, 0f);
 		CurrentMap.setAlphaFalloff(0.1f);
-		CurrentMap.setColorPulse(1.8f);
+		CurrentMap.setColorPulseMax(1.8f);
 		CurrentMap.setColorPulseInc(0.047f);
 		CurrentMap.setColorSwitch(0.6f);
 

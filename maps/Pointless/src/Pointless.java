@@ -74,7 +74,7 @@ public class Pointless implements MapScript {
 		CurrentMap.data.colors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(3.5f).addHue(new Hue(0, 360, 0.7f, false, false))/*.addHueOffset(5.0f)*/);
 
 		CurrentMap.data.walls = new HColor(1f, 0, 0, 1f).addPulse(-80f/255, 75f/255, 65f/255, 0f).addHue(new Hue(0, 360, 0.7f, false, false)).setMain(true);
-		CurrentMap.setColorPulse(1.5f);
+		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setColorSwitch(1f);
 	}

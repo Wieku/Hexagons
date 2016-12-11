@@ -43,16 +43,16 @@ public class SkewCamera extends PerspectiveCamera {
 			viewportHeight = Gdx.graphics.getHeight();
 		}
 		delta0+=delta * 60 * 2.5f * pulseInc;
-		if(delta0 < -CurrentMap.data.colorPulse/2){
-			delta0 = -CurrentMap.data.colorPulse/2;
+		if(delta0 < -CurrentMap.data.colorPulseMax /2){
+			delta0 = -CurrentMap.data.colorPulseMax /2;
 			pulseInc *= -1f;
 		}
-		if(delta0 > CurrentMap.data.colorPulse/2){
-			delta0 = CurrentMap.data.colorPulse/2;
+		if(delta0 > CurrentMap.data.colorPulseMax /2){
+			delta0 = CurrentMap.data.colorPulseMax /2;
 			pulseInc *= -1f;
 		}
 
-		//float percent = (delta0 / (CurrentMap.data.colorPulse*(  (dr< 0 && pulseInc<0) || (dr>0 && pulseInc>0) ?50:60)));
+		//float percent = (delta0 / (CurrentMap.data.colorPulseMax*(  (dr< 0 && pulseInc<0) || (dr>0 && pulseInc>0) ?50:60)));
 
 		if(currentRumbleTime <= rumbleTime) {
 			currentRumblePower = rumblePower * ((rumbleTime - currentRumbleTime) / rumbleTime);
@@ -66,7 +66,7 @@ public class SkewCamera extends PerspectiveCamera {
 			rumbleZ = 0;
 		}
 
-		skew += (delta0 / (CurrentMap.data.colorPulse * (((dr< 0 && delta0<0) || (dr>0 && delta0>0)) ?45f:60f)) );
+		skew += (delta0 / (CurrentMap.data.colorPulseMax * (((dr< 0 && delta0<0) || (dr>0 && delta0>0)) ?45f:60f)) );
 
 		if (skew >= 1) {
 			skew = 1;

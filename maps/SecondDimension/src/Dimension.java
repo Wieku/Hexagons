@@ -92,7 +92,7 @@ public class Dimension implements MapScript {
 		CurrentMap.data.colors.add(new HColor(190f/255, 190f/255, 190f/255, 1).addPulse(15f/255, 15f/255, 15f/255, 0).addHue(new Hue(200, 340, 1, true, false)).addHueOffset(4.7f));
 		CurrentMap.data.colors.add(new HColor(235/255f, 235/255f, 235/255f, 1));
 		CurrentMap.data.walls = new HColor(0, 0, 0, 1).addHue(new Hue(200, 340, 1, true, false)).setMain(true);
-		CurrentMap.setColorPulse(1.5f);
+		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setColorSwitch(1f);
 	}

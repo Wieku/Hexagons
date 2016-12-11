@@ -215,6 +215,8 @@ public class Game implements Screen {
 
 	private void updateGame(float delta) {
 
+		if(CurrentMap.data.gameCompleted) player.dead = true;
+		
 		if(!player.dead && CurrentMap.data.wallTimeline.isFirstRemoved())
 			score += delta * (CurrentMap.data.difficulty * CurrentMap.data.speed * (((int)CurrentMap.data.currentTime) * 5 + 300));
 
@@ -342,6 +344,7 @@ public class Game implements Screen {
 
 	float delta2;
 	public void updateSkew(float delta) {
+		
 		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.data.skewTime ? -1 : inc));
 		delta2 += delta * inc;
 		delta2 = Math.min(CurrentMap.data.skewTime, Math.max(delta2, 0));
@@ -399,7 +402,7 @@ public class Game implements Screen {
 				CurrentMap.data.rotationSpeed = Math.max(0.02f, CurrentMap.data.rotationSpeed - 0.002f * 60 * delta);
 			}
 		}
-		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta + (CurrentMap.data.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.data.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
+		camera.rotate(CurrentMap.data.rotationSpeed * (CurrentMap.data.useRadians?MathUtils.radiansToDegrees*10:360) * delta + (CurrentMap.data.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.data.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
 		fastRotate = Math.max(0, fastRotate - 60f * delta);
 		if(fastRotate == 0) CurrentMap.data.isFastRotation = false;
 	}

@@ -152,7 +152,7 @@ public class Acceleradiant implements MapScript {
 		CurrentMap.data.colors.add(new HColor(0, 0, 0, 1f).addPulse(1f / 255, 25f / 255, 45f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(9.5f));
 
 		CurrentMap.data.walls = new HColor(1, 155f/255, 155f/255, 230f/255).addPulse(50f/255, -75f/255, 125f/255, 0).addHue(new Hue(0, 360, 0.5f, false, false)).setMain(true);
-		CurrentMap.setColorPulse(1.5f);
+		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setAlphaMultiplier(5.9f);
 		CurrentMap.setAlphaFalloff(0.06f);

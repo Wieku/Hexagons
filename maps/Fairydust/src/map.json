@@ -1,0 +1,14 @@
+{
+  "className":"Fairydust",
+  "audioFileName":"fairy.ogg",
+  "name":"Fairydust",
+  "author":"LaChaineInutile",
+  "description":"Survive for 3 minutes! Rotation madness!",
+  "songName":"Fairydust",
+  "songAuthor":"NIGHTkilla",
+  "tags":"awesome",
+  "pack":"Useless",
+  "startTimes":[0],
+  "previewTime": 33,
+  "uuid": "330b815a-f940-4efe-ac5f-41631424931d"
+}
