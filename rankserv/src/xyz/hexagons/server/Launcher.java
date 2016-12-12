@@ -71,17 +71,18 @@ public class Launcher {
             ctx.setContextPath("/");
             server.setHandler(ctx);
 
-            ctx.addServlet(MapDone.class,       "/v0/game");
-            ctx.addServlet(MapLeaders.class,    "/v0/leaders");
-            ctx.addServlet(GetNick.class,       "/v0/nick");
-            ctx.addServlet(PlayerRank.class,    "/v0/rank");
+            ctx.addServlet(MapDone.class,           "/v0/game");
+            ctx.addServlet(MapLeaders.class,        "/v0/leaders");
+            ctx.addServlet(GetNick.class,           "/v0/nick");
+            ctx.addServlet(PlayerRank.class,        "/v0/rank");
 
-            ctx.addServlet(Motd.class,          "/motd");
+            ctx.addServlet(Motd.class,              "/motd");
 
-            ctx.addServlet(GoogleToken.class,   "/auth/google/challenge");
-            ctx.addServlet(GoogleAuth.class,    "/auth/google/in");
-            ctx.addServlet(GoogleAuthOut.class, "/auth/google/out");
-            ctx.addServlet(GooglePoll.class,    "/auth/google/poll");
+            ctx.addServlet(GoogleToken.class,       "/auth/google/challenge");
+            ctx.addServlet(GoogleAuthGame.class,    "/auth/google/in");
+            ctx.addServlet(GoogleAuthSite.class,    "/auth/google/in/site");
+            ctx.addServlet(GoogleAuthOut.class,     "/auth/google/out");
+            ctx.addServlet(GooglePoll.class,        "/auth/google/poll");
 
             server.start();
             server.join();
