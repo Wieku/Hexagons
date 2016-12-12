@@ -37,13 +37,16 @@ public class GetNick extends HttpServlet {
 
             Account account = new Gson().fromJson(t.getPayload().toString(), Account.class);
 
-            PreparedStatement statement = Launcher.connection.prepareStatement(qUserByAuth);
-            statement.setInt(1, account.id);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                String name = rs.getString(1);
-                resp.getOutputStream().print(RuntimeSecrets.signSession("{\"account\":\"" + name +"\", id: "+ account.id +"}"));
-            }
+            Launcher.withConnection(connection -> {
+                PreparedStatement statement = connection.prepareStatement(qUserByAuth);
+                statement.setInt(1, account.id);
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()) {
+                    String name = rs.getString(1);
+                    resp.getOutputStream().print(RuntimeSecrets.signSession("{\"account\":\"" + name +"\", id: "+ account.id +"}"));
+                }
+                return null;
+            });
         } catch (ParseException | SQLException | IOException e) {
             e.printStackTrace();
             resp.setStatus(500);

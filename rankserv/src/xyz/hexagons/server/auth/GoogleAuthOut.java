@@ -80,28 +80,31 @@ public class GoogleAuthOut extends HttpServlet {
 
     private Account getAccount(String googleUserId) {
         try {
-            PreparedStatement statement = Launcher.connection.prepareStatement(qUserByAuth);
-            statement.setInt(1, AuthType.GOOGLE.type);
-            statement.setString(2, googleUserId);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                Account account = new Account();
-                account.name = rs.getString("nick");
-                account.id = rs.getString("id");
-                return account;
-            } else {
-                PreparedStatement istatement = Launcher.connection.prepareStatement(qInsertAuthUser);
-                istatement.setInt(1, AuthType.GOOGLE.type);
-                istatement.setString(2, googleUserId);
-                ResultSet res = istatement.executeQuery();
-                if(res.next()) {
+            return Launcher.withConnection(connection -> {
+                PreparedStatement statement = connection.prepareStatement(qUserByAuth);
+                statement.setInt(1, AuthType.GOOGLE.type);
+                statement.setString(2, googleUserId);
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()) {
                     Account account = new Account();
-                    account.name = "u" + res.getString("user_id");
-                    account.id = res.getString("user_id");
+                    account.name = rs.getString("nick");
+                    account.id = rs.getString("id");
                     return account;
+                } else {
+                    PreparedStatement istatement = connection.prepareStatement(qInsertAuthUser);
+                    istatement.setInt(1, AuthType.GOOGLE.type);
+                    istatement.setString(2, googleUserId);
+                    ResultSet res = istatement.executeQuery();
+                    if(res.next()) {
+                        Account account = new Account();
+                        account.name = "u" + res.getString("user_id");
+                        account.id = res.getString("user_id");
+                        return account;
+                    }
                 }
-            }
-        } catch (SQLException e) {
+                return null;
+            });
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return null;

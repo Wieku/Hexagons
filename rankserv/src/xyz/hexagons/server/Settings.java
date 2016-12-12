@@ -13,10 +13,6 @@ public class Settings implements Serializable {
     public String siteRedir = "https://hexagons.xyz";
     public String selfUrl = "https://rankserv.hexagons.xyz";
 
-    public String dbAddress = "10.1.0.1";
-    public String dbDatabase = "hexagons";
-    public String dbUser = "hexagons";
-    public String dbPass = "";
     public byte[] signSecret = new byte[32];
 
     static {

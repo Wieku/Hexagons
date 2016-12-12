@@ -39,14 +39,15 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
     if(uid.verify(new MACVerifier(conf.getIntList("hexite.rankservSecret").map(_.byteValue()).toArray))) {
       val id = uid.getPayload.toString
 
-      val conn = db.getConnection
-      val stmt = conn.prepareStatement(qGetUserName)
-      stmt.setInt(1, id.toInt)
-      val rs = stmt.executeQuery()
-      if(rs.next()) {
-        Redirect("/" + next).withSession("uid" -> id, "name" -> rs.getString(1))
-      } else {
-        Status(500)
+      db.withConnection { conn =>
+        val stmt = conn.prepareStatement(qGetUserName)
+        stmt.setInt(1, id.toInt)
+        val rs = stmt.executeQuery()
+        if (rs.next()) {
+          Redirect("/" + next).withSession("uid" -> id, "name" -> rs.getString(1))
+        } else {
+          Status(500)
+        }
       }
     } else {
       Redirect("/error/auth")
@@ -58,16 +59,16 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
     if(uid.verify(new MACVerifier(conf.getIntList("hexite.rankservSecret").map(_.byteValue()).toArray))) {
       val id = uid.getPayload.toString
 
-      val conn = db.getConnection
-      val stmt = conn.prepareStatement(qGetUserName)
-      stmt.setInt(1, id.toInt)
-      val rs = stmt.executeQuery()
-      if(rs.next()) {
-        Ok(views.html.register(err = false, rs.getString(1))).withSession("uid" -> id, "name" -> rs.getString(1), "rnext" -> next)
-      } else {
-        Status(500)
+      db.withConnection { conn =>
+        val stmt = conn.prepareStatement(qGetUserName)
+        stmt.setInt(1, id.toInt)
+        val rs = stmt.executeQuery()
+        if (rs.next()) {
+          Ok(views.html.register(err = false, rs.getString(1))).withSession("uid" -> id, "name" -> rs.getString(1), "rnext" -> next)
+        } else {
+          Status(500)
+        }
       }
-
     } else {
       Redirect("/error/auth")
     }
@@ -77,37 +78,38 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
     val id = request.session.data("uid")
 
     if(id != null) {
-      val conn = db.getConnection
-      val stmt = conn.prepareStatement(qGetUserName)
-      stmt.setInt(1, id.toInt)
-      val rs = stmt.executeQuery()
-      if(rs.next()) {
-        val userName = rs.getString(1)
-        if(userName.matches("""^u\d+$""")) {
-          if(request.body.asFormUrlEncoded.get("nick") != null) {
-            val newNick = request.body.asFormUrlEncoded.get("nick").head
-            if(!newNick.matches("""^u\d+$""")) {
-              val ustmt = conn.prepareStatement(qSetUserName)
-              ustmt.setString(1, newNick)
-              ustmt.setInt(2,id.toInt)
-              try {
-                ustmt.executeUpdate()
-                Redirect("/" + request.session.data("rnext")).withSession("uid" -> id, "name" -> newNick)
-              } catch {
-                case _: SQLException => Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName)
-                case e: Exception => throw new Exception(e)
+      db.withConnection { conn =>
+        val stmt = conn.prepareStatement(qGetUserName)
+        stmt.setInt(1, id.toInt)
+        val rs = stmt.executeQuery()
+        if (rs.next()) {
+          val userName = rs.getString(1)
+          if (userName.matches("""^u\d+$""")) {
+            if (request.body.asFormUrlEncoded.get("nick") != null) {
+              val newNick = request.body.asFormUrlEncoded.get("nick").head
+              if (!newNick.matches("""^u\d+$""")) {
+                val ustmt = conn.prepareStatement(qSetUserName)
+                ustmt.setString(1, newNick)
+                ustmt.setInt(2, id.toInt)
+                try {
+                  ustmt.executeUpdate()
+                  Redirect("/" + request.session.data("rnext")).withSession("uid" -> id, "name" -> newNick)
+                } catch {
+                  case _: SQLException => Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName)
+                  case e: Exception => throw new Exception(e)
+                }
+              } else {
+                Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName, "rnext" -> request.session.data("rnext"))
               }
             } else {
-              Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName, "rnext" -> request.session.data("rnext"))
+              Status(500) // No nick in post form
             }
           } else {
-            Status(500) // No nick in post form
+            Status(500) // Already changed
           }
         } else {
-          Status(500) // Already changed
+          Status(500) // No account / wtf?
         }
-      } else {
-        Status(500) // No account / wtf?
       }
     } else {
       Status(500) // no id in session
