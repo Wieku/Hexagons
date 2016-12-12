@@ -1,0 +1,21 @@
+@(title: String, logo: String, headResponsive: String, headWord: String)(content: Html)
+
+@main(title) {
+    <div class="root">
+        <div class="start-logo">
+            <div>
+                <a href="/">
+                    <img src="@routes.Assets.versioned(s"images/$logo.png")">
+                </a>
+            </div>
+        </div>
+        <div class="start-welcome">
+            <div>
+                <p><span class="start-welcome-text">@headResponsive </span>@headWord<span class="text-cyan">!</span></p>
+            </div>
+        </div>
+        <div class="start-buttons">
+            @content
+        </div>
+    </div>
+}

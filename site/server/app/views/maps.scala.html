@@ -1,29 +1,11 @@
 @()
 
-@main("Hexagons!") {
-<div class="root">
-    <div class="start-logo">
-        <div>
-            <a href="/">
-                <img src="@routes.Assets.versioned("images/hexdl.png")">
-            </a>
-        </div>
-    </div>
-    <div class="start-welcome">
-        <div>
-            <p><span class="start-welcome-text">Download </span>Maps<span class="text-cyan">!</span></p>
-        </div>
-    </div>
-    <div class="start-buttons">
-        <div class="start-button"><span><a href="https://ci.hexagons.xyz/job/Hexagons/lastSuccessfulBuild/artifact/artifacts/Maps.zip">OpenHexagons Ports</a></span></div>
-        <div class="start-spacer"><div><span>-</span></div></div>
-        <div class="start-button"><span class="download-not-yet">Some</span></div>
-        <div class="start-spacer"><div><span>-</span></div></div>
-        <div class="start-button"><span class="download-not-yet">Other</span></div>
-        <div class="start-spacer"><div><span>-</span></div></div>
-        <div class="start-button"><span class="download-not-yet">Packs</span></div>
-    </div>
-</div>
-@playscalajs.html.selectScript("client")
-@playscalajs.html.launcher("client")
+@hexmain("Hexagons!", "hexdl", "Download", "maps") {
+    <div class="start-button"><span><a href="https://ci.hexagons.xyz/job/Hexagons/lastSuccessfulBuild/artifact/artifacts/Maps.zip">OpenHexagons Ports</a></span></div>
+    <div class="start-spacer"><div><span>-</span></div></div>
+    <div class="start-button"><span class="download-not-yet">Some</span></div>
+    <div class="start-spacer"><div><span>-</span></div></div>
+    <div class="start-button"><span class="download-not-yet">Other</span></div>
+    <div class="start-spacer"><div><span>-</span></div></div>
+    <div class="start-button"><span class="download-not-yet">Packs</span></div>
 }

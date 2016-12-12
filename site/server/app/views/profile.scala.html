@@ -1,0 +1,9 @@
+@(username: String)
+
+@usermain("Profile", username) {
+<div class="text-center">
+    <p class="text-big">Here be your profile</p>
+</div>
+@playscalajs.html.selectScript("client")
+@playscalajs.html.launcher("client")
+}

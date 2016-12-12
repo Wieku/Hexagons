@@ -6,9 +6,16 @@
 GET     /                           controllers.Application.index
 GET     /download                   controllers.Application.download
 GET     /maps                       controllers.Application.maps
-GET     /start/register/*token      controllers.Application.register(token: String)
-POST    /start/register             controllers.Application.registerPost
+GET     /start/register/*token      controllers.Account.register(token: String)
+POST    /start/register             controllers.Account.registerPost
 GET     /welcome                    controllers.Application.welcome
+GET     /profile                    controllers.Application.profile
+
+GET     /logout                     controllers.Account.logout
+GET     /login                      controllers.Account.login
+GET     /login/google               controllers.Account.loginGoogle
+GET     /login/rankserv/:token/*n   controllers.Account.loginRankserv(token: String, n: String)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

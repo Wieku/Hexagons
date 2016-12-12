@@ -1,29 +1,11 @@
 @()
 
-@main("Hexagons!") {
-    <div class="root">
-        <div class="start-logo">
-            <div>
-                <a href="/">
-                    <img src="@routes.Assets.versioned("images/hexlogobig.png")">
-                </a>
-            </div>
-        </div>
-        <div class="start-welcome">
-            <div>
-                <p><span class="start-welcome-text">Welcome to </span>Hexagons<span class="text-cyan">!</span></p>
-            </div>
-        </div>
-        <div class="start-buttons">
-            <div class="start-button"><span><a href="/download">Download</a></span></div>
-            <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span><a href="/maps">Maps</a></span></div>
-            <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span class="download-not-yet">Community</span></div>
-            <div class="start-spacer"><div><span>-</span></div></div>
-            <div class="start-button"><span class="download-not-yet">Profile</span></div>
-        </div>
-    </div>
-    @playscalajs.html.selectScript("client")
-    @playscalajs.html.launcher("client")
+@hexmain("Hexagons!", "hexlogobig", "Welcome to", "Hexagons") {
+    <div class="start-button"><span><a href="/download">Download</a></span></div>
+    <div class="start-spacer"><div><span>-</span></div></div>
+    <div class="start-button"><span><a href="/maps">Maps</a></span></div>
+    <div class="start-spacer"><div><span>-</span></div></div>
+    <div class="start-button"><span class="download-not-yet">Community</span></div>
+    <div class="start-spacer"><div><span>-</span></div></div>
+    <div class="start-button"><span><a href="/profile">Profile</a></span></div>
 }

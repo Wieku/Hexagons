@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, username: String)(content: Html)
 
 @main(title) {
     <div class="user-root">
@@ -10,6 +10,7 @@
                 <a href="/"><div><div>Home</div></div></a>
                 <a href="/profile"><div><div>Profile</div></div></a>
                 <a href="/logout"><div><div>Logout</div></div></a>
+                <div class="user-username"><div>@username</div></div>
             </div>
         </div>
         <div class="user-main">
