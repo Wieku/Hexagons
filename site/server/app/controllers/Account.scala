@@ -53,7 +53,7 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
     }
   }
 
-  def register(token: String) = Action { request =>
+  def register(token: String, next: String) = Action { request =>
     val uid = JWSObject.parse(token)
     if(uid.verify(new MACVerifier(conf.getIntList("hexite.rankservSecret").map(_.byteValue()).toArray))) {
       val id = uid.getPayload.toString
@@ -63,7 +63,7 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
       stmt.setInt(1, id.toInt)
       val rs = stmt.executeQuery()
       if(rs.next()) {
-        Ok(views.html.register(err = false, rs.getString(1))).withSession("uid" -> id, "name" -> rs.getString(1))
+        Ok(views.html.register(err = false, rs.getString(1))).withSession("uid" -> id, "name" -> rs.getString(1), "rnext" -> next)
       } else {
         Status(500)
       }
@@ -92,13 +92,13 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
               ustmt.setInt(2,id.toInt)
               try {
                 ustmt.executeUpdate()
-                Redirect("/welcome")
+                Redirect("/" + request.session.data("rnext")).withSession("uid" -> id, "name" -> newNick)
               } catch {
                 case _: SQLException => Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName)
                 case e: Exception => throw new Exception(e)
               }
             } else {
-              Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName)
+              Ok(views.html.register(err = true, rs.getString(1))).withSession("uid" -> id, "name" -> userName, "rnext" -> request.session.data("rnext"))
             }
           } else {
             Status(500) // No nick in post form

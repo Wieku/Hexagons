@@ -6,7 +6,7 @@
 GET     /                           controllers.Application.index
 GET     /download                   controllers.Application.download
 GET     /maps                       controllers.Application.maps
-GET     /start/register/*token      controllers.Account.register(token: String)
+GET     /start/register/:token/*n   controllers.Account.register(token: String, n: String)
 POST    /start/register             controllers.Account.registerPost
 GET     /welcome                    controllers.Application.welcome
 GET     /profile                    controllers.Application.profile
