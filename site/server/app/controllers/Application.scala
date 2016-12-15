@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
+import models.Profile
 import play.Configuration
 import play.api.db.Database
 import play.api.mvc._
@@ -31,7 +32,7 @@ class Application @Inject() (db: Database, conf: Configuration) extends Controll
 
   def profile = Action { request =>
     request.session.data.get("uid") match {
-      case Some(_ :String) => Ok(views.html.profile(request.session.data("name")))
+      case Some(_ :String) => Ok(views.html.profile(new Profile(request.session.data("uid").toInt, request.session.data("name"))))
       case _ => Redirect("/login")
     }
   }
