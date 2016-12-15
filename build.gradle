@@ -6,10 +6,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.2.0'
-        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.2.0'
-        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+        classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"
+        classpath "com.android.tools.build:gradle:2.2.0"
+        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:2.2.0"
+        classpath "me.tatarka:gradle-retrolambda:3.3.1"
     }
 }
 
@@ -17,7 +17,7 @@ def getGitRef() {
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'rev-parse', '--short', 'HEAD'
+            commandLine "git", "rev-parse", "--short", "HEAD"
             standardOutput = stdout
         }
         return stdout.toString().trim()
@@ -30,7 +30,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '0.2'
+    version = "0.2"
 
     if (System.getenv("BUILD_NUMBER") != null)
         version += ".${System.getenv("BUILD_NUMBER")}"
@@ -39,11 +39,11 @@ allprojects {
 
     ext {
         appName = "hexagons"
-        gdxVersion = '1.9.3'
-        roboVMVersion = '2.2.0'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
+        gdxVersion = "1.9.3"
+        roboVMVersion = "2.2.0"
+        box2DLightsVersion = "1.4"
+        ashleyVersion = "1.7.0"
+        aiVersion = "1.8.0"
     }
 
     repositories {
@@ -71,7 +71,7 @@ project(":desktop") {
 
 project(":android") {
     apply plugin: "android"
-    apply plugin: 'me.tatarka.retrolambda'
+    apply plugin: "me.tatarka.retrolambda"
 
     configurations { natives }
 
@@ -126,20 +126,20 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
 
-        compile 'com.google.guava:guava:19.0'
-        compile 'com.google.code.gson:gson:2.7'
-        compile 'com.typesafe:config:1.2.0'
+        compile "com.google.guava:guava:19.0"
+        compile "com.google.code.gson:gson:2.7"
+        compile "com.typesafe:config:1.2.0"
         //Logging
-        compile 'org.slf4j:slf4j-api:1.7.21'
-        compile 'ch.qos.logback:logback-classic:1.1.7'
-        compile 'ch.qos.logback:logback-core:1.1.7'
-        compile 'uk.org.lidalia:sysout-over-slf4j:1.0.2'
+        compile "org.slf4j:slf4j-api:1.7.21"
+        compile "ch.qos.logback:logback-classic:1.1.7"
+        compile "ch.qos.logback:logback-core:1.1.7"
+        compile "uk.org.lidalia:sysout-over-slf4j:1.0.2"
 
-        compile 'org.luaj:luaj-jse:3.0.1'
+        compile "org.luaj:luaj-jse:3.0.1"
 
-        compile 'org.apache.httpcomponents:httpclient:4.5.2'
-        compile 'org.javatuples:javatuples:1.2'
-        compile 'com.nimbusds:nimbus-jose-jwt:4.23'
+        compile "org.apache.httpcomponents:httpclient:4.5.2"
+        compile "org.javatuples:javatuples:1.2"
+        compile "com.nimbusds:nimbus-jose-jwt:4.23"
     }
 }
 
@@ -147,17 +147,17 @@ project(":rankserv") {
     apply plugin: "java"
 
     dependencies {
-        compile 'org.eclipse.jetty:jetty-server:9.4.0.M1'
-        compile 'org.eclipse.jetty:jetty-servlet:9.4.0.M1'
-        compile 'org.eclipse.jetty:jetty-continuation:9.4.0.M1'
-        compile 'com.google.code.gson:gson:2.7'
-        compile 'com.google.guava:guava:19.0'
-        compile 'org.apache.httpcomponents:httpclient:4.5.2'
-        compile 'com.google.api-client:google-api-client:1.22.0'
-        compile 'com.google.apis:google-api-services-oauth2:v2-rev124-1.22.0'
-        compile 'postgresql:postgresql:9.1-901-1.jdbc4'
-        compile 'com.nimbusds:nimbus-jose-jwt:4.23'
-        compile 'com.zaxxer:HikariCP:2.5.1'
+        compile "org.eclipse.jetty:jetty-server:9.4.0.M1"
+        compile "org.eclipse.jetty:jetty-servlet:9.4.0.M1"
+        compile "org.eclipse.jetty:jetty-continuation:9.4.0.M1"
+        compile "com.google.code.gson:gson:2.7"
+        compile "com.google.guava:guava:19.0"
+        compile "org.apache.httpcomponents:httpclient:4.5.2"
+        compile "com.google.api-client:google-api-client:1.22.0"
+        compile "com.google.apis:google-api-services-oauth2:v2-rev124-1.22.0"
+        compile "postgresql:postgresql:9.1-901-1.jdbc4"
+        compile "com.nimbusds:nimbus-jose-jwt:4.23"
+        compile "com.zaxxer:HikariCP:2.5.1"
     }
 }
 

@@ -4,14 +4,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.4"
+        classpath "me.tatarka:gradle-retrolambda:3.3.1"
     }
 }
 
 apply plugin: "java"
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "me.tatarka.retrolambda"
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -33,11 +33,11 @@ task run(dependsOn: classes, type: JavaExec) {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'xyz.hexagons.client.desktop.DesktopLauncher'
+        attributes "Main-Class": "xyz.hexagons.client.desktop.DesktopLauncher"
     }
 }
 
-build.dependsOn ':maps:bundle'
+build.dependsOn ":maps:bundle"
 
 task dist(type: Jar) {
     from files(sourceSets.main.output.classesDir)
@@ -46,7 +46,7 @@ task dist(type: Jar) {
     from files(project.assetsDir);
  
     manifest {
-        attributes 'Main-Class': project.mainClassName
+        attributes "Main-Class": project.mainClassName
     }
 }
 
@@ -55,14 +55,14 @@ dist.dependsOn classes
 eclipse {
     project {
         name = appName + "-desktop"
-        linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
+        linkedResource name: "assets", type: "2", location: "PARENT-1-PROJECT_LOC/android/assets"
     }
 }
 
 task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
   doLast {
     def classpath = new XmlParser().parse(file(".classpath"))
-    new Node(classpath, "classpathentry", [ kind: 'src', path: 'assets' ]);
+    new Node(classpath, "classpathentry", [ kind: "src", path: "assets" ]);
     def writer = new FileWriter(file(".classpath"))
     def printer = new XmlNodePrinter(new PrintWriter(writer))
     printer.setPreserveWhitespace(true)
@@ -71,5 +71,5 @@ task afterEclipseImport(description: "Post processing after project generation",
 }
 
 shadowJar {
-    baseName = 'Hexagons'
+    baseName = "Hexagons"
 }
