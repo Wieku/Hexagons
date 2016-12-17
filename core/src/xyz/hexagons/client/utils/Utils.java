@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -191,6 +190,10 @@ public class Utils {
 		return new float[]{r/255f, g/255f, b/255f};
 	}
 
+	public interface Supplier<T> {
+		T get() throws Exception;
+	}
+	
 	public static<T> T tryOr(Supplier<T> f, T alt) {
 		try {
 			return f.get();

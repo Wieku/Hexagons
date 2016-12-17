@@ -71,57 +71,13 @@ public class Fairydust implements MapScript {
 
 	@Override
 	public void initEvents() {
-		CurrentMap.data.eventTimeline.wait(10.9f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.setRotationSpeed(0.25f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(32.6f-10.4f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.setRotationSpeed(0.75f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(65.5f-32.6f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.setRotationSpeed(0.75f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(87.4f-65.5f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.setRotationSpeed(0.5f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(121f-87.4f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.setRotationSpeed(1.25f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(175.8f-121f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.setRotationSpeed(0.5f);
-			}
-		});
-		
-		CurrentMap.data.eventTimeline.wait(192f-175.8f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.killPlayer();
-			}
-		});
-		
+		CurrentMap.pushEvent(10.9f, "rotationSpeed", 0.25f);
+		CurrentMap.pushEvent(32.6f-10.4f, "rotationSpeed", 0.75f);
+		CurrentMap.pushEvent(65.5f-32.6f, "rotationSpeed", 0.75f);
+		CurrentMap.pushEvent(87.4f-65.5f, "rotationSpeed", 0.5f);
+		CurrentMap.pushEvent(121f-87.4f, "rotationSpeed", 1.25f);
+		CurrentMap.pushEvent(175.8f-121f, "rotationSpeed", 0.5f);
+		CurrentMap.pushEvent(192f-175.8f, "kill_player");
 	}
 
 	@Override

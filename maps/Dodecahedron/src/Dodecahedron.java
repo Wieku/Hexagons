@@ -68,40 +68,15 @@ public class Dodecahedron implements MapScript {
 
 	@Override
 	public void initEvents() {
-		CurrentMap.data.eventTimeline.wait(2f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.pushText("Are you ready?", 0.5f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(0.5f);
-		for (int i=0; i< 52;i++) {
-			CurrentMap.data.eventTimeline.wait(0.4f);
-			CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-				@Override
-				public void run() {
-					CurrentMap.pushText("EH", 0.2f);
-				}
-			});
-		}
-		CurrentMap.data.eventTimeline.wait(1.5f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.pushText("Are you ready?", 0.5f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(0.5f);
-		for (int i=0; i< 52;i++) {
-			CurrentMap.data.eventTimeline.wait(0.4f);
-			CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-				@Override
-				public void run() {
-					CurrentMap.pushText("EH", 0.2f);
-				}
-			});
-		}
+		lyric("Are you ready?", 2f, 0.5f);
+		
+		for (int i=0; i< 52;i++)
+			lyric("EH", 0.4f + (i==0?0.5f:0f), 0.2f);
+		
+		lyric("Are you ready?", 1.5f, 0.5f);
+		
+		for (int i=0; i< 52;i++)
+			lyric("EH", 0.4f + (i==0?0.5f:0f), 0.2f);
 
 		lyric("Adrenaline is pumping", 2f, 1.5f);
 		lyric("Adrenaline is pumping", 2f, 1.5f);
@@ -129,14 +104,7 @@ public class Dodecahedron implements MapScript {
 	}
 
 	public void lyric(String text, float wait, float duration) {
-		CurrentMap.data.eventTimeline.wait(wait);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.pushText(text, duration);
-			}
-		});
-
+		CurrentMap.pushEvent(wait, "push_text", text, duration);
 	}
 
 	@Override
