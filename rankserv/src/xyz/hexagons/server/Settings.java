@@ -10,14 +10,10 @@ import java.security.SecureRandom;
 
 public class Settings implements Serializable {
     public static final Settings instance;
-    public final String siteRedir = "https://hexagons.xyz";
-    public final String selfUrl = "https://rankserv.hexagons.xyz";
+    public String siteRedir = "https://hexagons.xyz";
+    public String selfUrl = "https://rankserv.hexagons.xyz";
 
-    public final String dbAddress = "10.1.0.1";
-    public final String dbDatabase = "hexagons";
-    public final String dbUser = "hexagons";
-    public final String dbPass = "";
-    public final byte[] signSecret = new byte[32];
+    public byte[] signSecret = new byte[32];
 
     static {
         Settings s = null;
@@ -29,6 +25,7 @@ public class Settings implements Serializable {
                 new SecureRandom().nextBytes(s.signSecret);
             } else
                 s = gson.fromJson(new FileReader(file), Settings.class);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

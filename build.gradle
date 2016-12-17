@@ -158,6 +158,7 @@ project(":rankserv") {
         compile 'com.google.apis:google-api-services-oauth2:v2-rev124-1.22.0'
         compile 'postgresql:postgresql:9.1-901-1.jdbc4'
         compile 'com.nimbusds:nimbus-jose-jwt:4.23'
+        compile 'com.zaxxer:HikariCP:2.5.1'
     }
 }
 

@@ -13,7 +13,7 @@ public class GoogleToken extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID challenge = UUID.randomUUID();
-        GoogleAuth.tokenChallenges.put(challenge, null, 5000L);
+        GoogleAuthGame.tokenChallenges.put(challenge, null, 5000L);
 
         resp.setContentType("application/json");
         JsonObject m = new JsonObject();

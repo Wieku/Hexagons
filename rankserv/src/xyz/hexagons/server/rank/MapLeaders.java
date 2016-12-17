@@ -31,66 +31,70 @@ public class MapLeaders extends HttpServlet {
             String nick = req.getParameter("nick");
             long count = Long.valueOf(req.getParameter("count"));
 
-            JsonObject result = new JsonObject();
+            JsonObject sres = Launcher.withConnection(connection -> {
+                JsonObject result = new JsonObject();
 
-            {
-                PreparedStatement statement = Launcher.connection.prepareStatement(qLeaders);
-                statement.setString(1, mapId);
-                statement.setLong(2, count);
-                ResultSet rs = statement.executeQuery();
+                {
+                    PreparedStatement statement = connection.prepareStatement(qLeaders);
+                    statement.setString(1, mapId);
+                    statement.setLong(2, count);
+                    ResultSet rs = statement.executeQuery();
 
-                JsonArray res = new JsonArray();
-                while (rs.next()) {
-                    JsonObject r = new JsonObject();
-                    r.addProperty("nick", rs.getString("nick"));
-                    r.addProperty("score", rs.getLong("sc"));
-                    res.add(r);
+                    JsonArray res = new JsonArray();
+                    while (rs.next()) {
+                        JsonObject r = new JsonObject();
+                        r.addProperty("nick", rs.getString("nick"));
+                        r.addProperty("score", rs.getLong("sc"));
+                        res.add(r);
+                    }
+                    result.add("list", res);
                 }
-                result.add("list", res);
-            }
 
-            {
-                PreparedStatement statement = Launcher.connection.prepareStatement(qPlayerBest);
-                statement.setString(1, nick);
-                statement.setString(2, mapId);
-                ResultSet rs = statement.executeQuery();
-                if(rs.next()) {
-                    result.addProperty("ownBest", rs.getLong("sc"));
+                {
+                    PreparedStatement statement = connection.prepareStatement(qPlayerBest);
+                    statement.setString(1, nick);
+                    statement.setString(2, mapId);
+                    ResultSet rs = statement.executeQuery();
+                    if(rs.next()) {
+                        result.addProperty("ownBest", rs.getLong("sc"));
+                    }
                 }
-            }
 
-            {
-                PreparedStatement statement = Launcher.connection.prepareStatement(qMapPlayerCount);
-                statement.setString(1, mapId);
-                ResultSet rs = statement.executeQuery();
-                if(rs.next()) {
-                    result.addProperty("mapPlayers", rs.getLong("players"));
+                {
+                    PreparedStatement statement = connection.prepareStatement(qMapPlayerCount);
+                    statement.setString(1, mapId);
+                    ResultSet rs = statement.executeQuery();
+                    if(rs.next()) {
+                        result.addProperty("mapPlayers", rs.getLong("players"));
+                    }
                 }
-            }
 
-            {
-                PreparedStatement statement = Launcher.connection.prepareStatement(qPlayerPlayCount);
-                statement.setString(1, nick);
-                ResultSet rs = statement.executeQuery();
-                if(rs.next()) {
-                    result.addProperty("ownPlayCount", rs.getLong("playCount"));
+                {
+                    PreparedStatement statement = connection.prepareStatement(qPlayerPlayCount);
+                    statement.setString(1, nick);
+                    ResultSet rs = statement.executeQuery();
+                    if(rs.next()) {
+                        result.addProperty("ownPlayCount", rs.getLong("playCount"));
+                    }
                 }
-            }
 
-            {
-                PreparedStatement statement = Launcher.connection.prepareStatement(qPlayerRank);
-                statement.setString(1, mapId);
-                statement.setString(2, nick);
-                statement.setString(3, mapId);
-                ResultSet rs = statement.executeQuery();
+                {
+                    PreparedStatement statement = connection.prepareStatement(qPlayerRank);
+                    statement.setString(1, mapId);
+                    statement.setString(2, nick);
+                    statement.setString(3, mapId);
+                    ResultSet rs = statement.executeQuery();
 
-                if(rs.next()) {
-                    result.addProperty("position", rs.getLong("rank") + 1);
+                    if(rs.next()) {
+                        result.addProperty("position", rs.getLong("rank") + 1);
+                    }
                 }
-            }
 
-            result.addProperty("state", "OK");
-            resp.getWriter().print(result.toString());
+                return result;
+            });
+
+            sres.addProperty("state", "OK");
+            resp.getWriter().print(sres.toString());
         } catch (Exception e) {
             e.printStackTrace();
             resp.getWriter().print("{\"state\": \"ERROR\"}");

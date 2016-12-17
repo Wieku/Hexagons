@@ -14,14 +14,14 @@ public class GooglePoll extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID challenge = UUID.fromString(req.getParameter("challenge"));
-        if(GoogleAuth.tokenChallenges.containsKey(challenge)) {
-            String token = GoogleAuth.tokenChallenges.get(challenge);
-            GoogleAuth.tokenChallenges.remove(challenge);
+        if(GoogleAuthGame.tokenChallenges.containsKey(challenge)) {
+            String token = GoogleAuthGame.tokenChallenges.get(challenge);
+            GoogleAuthGame.tokenChallenges.remove(challenge);
 
             if(token == null) {
                 Continuation continuation = ContinuationSupport.getContinuation(req);
                 continuation.suspend(resp);
-                GoogleAuth.tokenContinuations.put(challenge, continuation, 120000L);
+                GoogleAuthGame.tokenContinuations.put(challenge, continuation, 120000L);
             } else {
                 System.out.println("{\"account\":\"" + token +"\"}");
                 resp.getWriter().print("{\"account\":\"" + token +"\"}");

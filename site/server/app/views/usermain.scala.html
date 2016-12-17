@@ -1,0 +1,20 @@
+@(title: String, username: String)(content: Html)
+
+@main(title) {
+    <div class="user-root">
+        <div class="user-head">
+            <div class="user-logo">
+                <img src="@routes.Assets.versioned("images/hexlogobig.png")">
+            </div>
+            <div class="user-menu">
+                <a href="/"><div><div>Home</div></div></a>
+                <a href="/profile"><div><div>Profile</div></div></a>
+                <a href="/logout"><div><div>Logout</div></div></a>
+                <div class="user-username"><div>@username</div></div>
+            </div>
+        </div>
+        <div class="user-main">
+            @content
+        </div>
+    </div>
+}

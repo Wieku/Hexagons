@@ -24,13 +24,15 @@ public class MapDone extends HttpServlet {
             long score = Long.valueOf(req.getParameter("score"));
             System.out.println("New score report "+mapid+"/"+nick+": "+score);
 
-            PreparedStatement statement = Launcher.connection.prepareStatement(qInstertGame);
-            statement.setString(1, mapid);
-            statement.setLong(2, score);
-            statement.setString(3, nick);
-            statement.setLong(4, Instant.now().getEpochSecond());
-            statement.executeUpdate();
-
+            Launcher.withConnection(connection -> {
+                PreparedStatement statement = connection.prepareStatement(qInstertGame);
+                statement.setString(1, mapid);
+                statement.setLong(2, score);
+                statement.setString(3, nick);
+                statement.setLong(4, Instant.now().getEpochSecond());
+                statement.executeUpdate();
+                return null;
+            });
             resp.getWriter().print("{\"state\": \"OK\"}");
         } catch (Exception e) {
             e.printStackTrace();

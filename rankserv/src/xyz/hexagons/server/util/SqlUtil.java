@@ -21,16 +21,19 @@ public class SqlUtil {
 
     public static int getIntForQuery(String query, String... params) {
         try {
-            PreparedStatement statement = Launcher.connection.prepareStatement(query);
-            for (int i = 0; i < params.length; i++) {
-                statement.setString(i + 1, params[i]);
-            }
+            return Launcher.withConnection(connection -> {
+                PreparedStatement statement = connection.prepareStatement(query);
+                for (int i = 0; i < params.length; i++) {
+                    statement.setString(i + 1, params[i]);
+                }
 
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            });
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return 0;

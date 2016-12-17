@@ -63,8 +63,9 @@ public class DesktopAccountManager extends AccountManager {
                     if(newAcc != null && !newAcc.getValue0().account.matches("^u\\d+$")) {
                         f.value.cancel(false);
                         f.value = null;
-                        Instance.eventBus.post((EventUpdateNick) () -> newAcc.getValue0().account);
+                        System.out.println("Update nick!");
                         token.value = newAcc.getValue1();
+                        Instance.eventBus.post((EventUpdateNick) () -> newAcc.getValue0().account);
                     }
                 }
             }, 20, 10, TimeUnit.SECONDS);

@@ -1,7 +1,11 @@
-@main("Register") {
-<div class="welcome-root">
-    <p>Welcome to Hexagons!</p>
-</div>
-@playscalajs.html.selectScript("client")
-@playscalajs.html.launcher("client")
+@(username: String)
+
+@usermain("Profile", username) {
+    <div class="text-center">
+        <p class="text-big">Successfully logged in</p>
+        <p>Game should display your profile</p>
+        <p>You can now close this tab</p>
+    </div>
+    @playscalajs.html.selectScript("client")
+    @playscalajs.html.launcher("client")
 }
