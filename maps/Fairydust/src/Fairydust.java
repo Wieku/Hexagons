@@ -71,7 +71,7 @@ public class Fairydust implements MapScript {
 
 	@Override
 	public void initEvents() {
-		CurrentMap.data.eventTimeline.wait(10.4f);
+		CurrentMap.data.eventTimeline.wait(10.9f);
 		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
