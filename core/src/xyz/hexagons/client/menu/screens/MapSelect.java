@@ -100,37 +100,20 @@ public class MapSelect implements Screen {
 			public boolean keyDown(InputEvent event, int keycode) {
 
 				if(!maps.isEmpty()){
-
-					if(keycode == Keys.UP){
-
-						mapButtons.get(mapIndex).check(false);
-
-						if(--mapIndex < 0) mapIndex = maps.size()-1;
-						selectIndex(mapIndex);
-						mapButtons.get(mapIndex).check(true);
-
-						MenuMap ms = mapButtons.get(mapIndex);
-						scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
-
-						mapButtons.forEach(MenuMap::update);
-					}
-
-					if(keycode == Keys.DOWN){
-
-						mapButtons.get(mapIndex).check(false);
-						if(++mapIndex > maps.size()-1) mapIndex = 0;
-						selectIndex(mapIndex);
-						mapButtons.get(mapIndex).check(true);
-
-						MenuMap ms = mapButtons.get(mapIndex);
-						scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
-
-						mapButtons.forEach(MenuMap::update);
-					}
-
-					//System.out.println(mapButtons.get(mapIndex).getY());
-
+					
 					if(keycode == Keys.DOWN || keycode == Keys.UP) {
+						
+						mapButtons.get(mapIndex).check(false);
+						if(keycode == Keys.DOWN && ++mapIndex > maps.size()-1) mapIndex = 0;
+						if(keycode == Keys.UP && --mapIndex < 0) mapIndex = maps.size()-1;
+						selectIndex(mapIndex);
+						mapButtons.get(mapIndex).check(true);
+						
+						MenuMap ms = mapButtons.get(mapIndex);
+						//scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
+						scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
+						mapButtons.forEach(MenuMap::update);
+						
 						try {
 							Method method = scrollPane.getClass().getDeclaredMethod("resetFade");
 							method.setAccessible(true);
@@ -163,50 +146,24 @@ public class MapSelect implements Screen {
 		stage.addListener(new ActorGestureListener(){
 			@Override
 			public void tap(InputEvent event, float x, float y, int count, int button) {
-				Vector2 r = scrollPane.screenToLocalCoordinates(new Vector2(x, Gdx.graphics.getHeight()-y));
 				for(MenuMap m : mapButtons) {
 					if(m.isOver()) {
 
 						System.out.println(m.map.info.name);
 						if(mapButtons.indexOf(m) != mapIndex) {
-							if(mapButtons.indexOf(m) < mapIndex){
-
-								mapButtons.get(mapIndex).check(false);
-
-								mapIndex = mapButtons.indexOf(m);
-								selectIndex(mapIndex);
-								mapButtons.get(mapIndex).check(true);
-
-								MenuMap ms = mapButtons.get(mapIndex);
-								scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
-
-								mapButtons.forEach(MenuMap::update);
-							}
-
-							if(mapButtons.indexOf(m) > mapIndex){
-
-								mapButtons.get(mapIndex).check(false);
-								mapIndex = mapButtons.indexOf(m);
-								selectIndex(mapIndex);
-								mapButtons.get(mapIndex).check(true);
-
-								MenuMap ms = mapButtons.get(mapIndex);
-								scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
-
-								mapButtons.forEach(MenuMap::update);
-							}
+							
+							mapButtons.get(mapIndex).check(false);
+							mapIndex = mapButtons.indexOf(m);
+							selectIndex(mapIndex);
+							mapButtons.get(mapIndex).check(true);
+							
+							MenuMap ms = mapButtons.get(mapIndex);
+							scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
+							mapButtons.forEach(MenuMap::update);
+							
 						} else {
 							SoundManager.playSound("beep");
 							Gdx.input.setInputProcessor(null);
-							//audioPlayer.pause();
-							MenuPlaylist.pause();
-							Instance.game.setScreen(game = new Game(maps.get(mapIndex)));
-						}
-
-						if(count == 2) {
-							SoundManager.playSound("beep");
-							Gdx.input.setInputProcessor(null);
-							//audioPlayer.pause();
 							MenuPlaylist.pause();
 							Instance.game.setScreen(game = new Game(maps.get(mapIndex)));
 						}
@@ -217,6 +174,7 @@ public class MapSelect implements Screen {
 				}
 			}
 		});
+		
 		info = new Table() {
 			Rectangle sciss = new Rectangle();
 			Rectangle bounds = new Rectangle();
@@ -257,9 +215,7 @@ public class MapSelect implements Screen {
 		table.pack();
 		table.setHeight(Gdx.graphics.getHeight()-200);
 
-
-
-
+		
 		scrollPane = new CScrollPane(table, GUIHelper.getScrollPaneStyle(Color.WHITE));
 		scrollPane.setupFadeScrollBars(1f, 1f);
 		scrollPane.setSmoothScrolling(true);
@@ -290,12 +246,6 @@ public class MapSelect implements Screen {
 		myScoreTable.pack();
 		stage.addActor(myScoreTable);
 
-		//if(Instance.currentAccount != null) {
-		//	nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
-		//	nickname.pack();
-		//	nickname.setPosition(5, 70);
-		//	stage.addActor(nickname);
-		//}
 		
 		bg = GUIHelper.getTable(new Color(0,0,0,0.65f));
 		stage.addActor(bg);
@@ -303,8 +253,7 @@ public class MapSelect implements Screen {
 		stage.addActor(rank);
 		
 		Instance.eventBus.register(this);
-		//if(Settings.instance.graphics.fullscreen)
-		//	Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+		
 	}
 
 	private float delta0 = 0;
@@ -343,33 +292,12 @@ public class MapSelect implements Screen {
 
 			delta0 = 0;
 		}
-
+		
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		mapRenderer.renderBackground(shapeRenderer, delta, true, -10);
 		shapeRenderer.end();
-
-		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
-		scrollPane.layout();
-
-		myScoreTable.setBounds(0, 100, 350, myScoreTable.getHeight());
-		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 350, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
-		leaderboard.layout();
 		
-		rank.setPosition(stage.getWidth()-350, 0);
-		bg.setBounds(0, 0, stage.getWidth(), rank.getHeight());
-		if(mapButtons.size() > 0)
-			if(!showed) {
-				MenuMap ms = mapButtons.get(mapIndex);
-
-				if(ms.getY()+ms.getHeight()/2<scrollPane.getHeight()/2) {
-					scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
-				} else if((table.getHeight()-ms.getY()-ms.getHeight()/2) < scrollPane.getHeight()/2) {
-					scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==maps.size()-1?-1:1), ms.getWidth(), ms.getHeight());
-				}
-				showed = true;
-			}
-
 		stage.act(delta);
 		stage.draw();
 	}
@@ -387,58 +315,55 @@ public class MapSelect implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
+		
 		info.setWidth(350);
-		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3)-15, 0, Math.max(468, stage.getWidth()/3)+15, stage.getHeight());
+		info.pack();
+		info.setPosition(0, stage.getHeight()-info.getHeight());
+		
+		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
 		scrollPane.layout();
-
+		
+		mapButtons.forEach(e->{e.setX(0);e.update();});
+		
+		MenuMap ms = mapButtons.get(mapIndex);
+		scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
+		
 		myScoreTable.setBounds(0, 100, 350, myScoreTable.getHeight());
 		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 350, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();
-
-		mapButtons.forEach(e->{e.setX(0);e.update();});
-
-		info.pack();
-		info.setPosition(0, stage.getHeight()-info.getHeight());
+		rank.setPosition(stage.getWidth()-350, 0);
+		bg.setBounds(0, 0, stage.getWidth(), rank.getHeight());
 	}
 
 	@Override
 	public void show() {
 
-		Instance.setForegroundFps.accept(0);
+		Instance.setForegroundFps.accept(240);
 		Gdx.graphics.setTitle("Hexagons! " + Version.version);
-		selectIndex(mapIndex= Instance.maps.indexOf(MenuPlaylist.getCurrent()));
+		selectIndex(mapIndex = Instance.maps.indexOf(MenuPlaylist.getCurrent()));
 
 		if(game != null){
 			MenuPlaylist.play();
-			//MenuPlaylist.setPosition(game.exitPosition);
 			game = null;
 		}
+		
 		MenuPlaylist.setLooping(true);
+		
 		if(!mapButtons.isEmpty()){
-			for(int i=0; i<mapButtons.size();i++)mapButtons.get(i).check(i==mapIndex);
+			for(int i=0; i<mapButtons.size();i++) mapButtons.get(i).check(i==mapIndex);
 		}
 		mapButtons.forEach(MenuMap::update);
 
-		scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
-		scrollPane.layout();
+		//scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
+		//scrollPane.layout();
 
 		table.setHeight(Gdx.graphics.getHeight()-200);
 		table.layout();
 		showed = false;
 		Gdx.input.setInputProcessor(stage);
-
-		//if(Instance.currentAccount != null && nickname == null) {
-		//	nickname = GUIHelper.text("Nickname: " + Instance.currentAccount.nick(), Color.WHITE, 12);
-		//	nickname.pack();
-		//	nickname.setPosition(5, 70);
-		//	stage.addActor(nickname);
-		//}
 		
-		Instance.cachedExecutor.execute(()->{
-			onLogin(null);
-		});
+		Instance.cachedExecutor.execute(()->onLogin(null));
 		
-		//System.out.println("Map selection screen showed up");
 	}
 
 	@Subscribe public void onNickChange(EventUpdateNick event) {
@@ -453,7 +378,6 @@ public class MapSelect implements Screen {
 			author.setText("");
 			music.setText("No maps available!");
 			info.pack();
-			info.setPosition(0, stage.getHeight()-info.getHeight());
 		} else {
 
 			Map map = maps.get(index);
@@ -476,7 +400,6 @@ public class MapSelect implements Screen {
 			author.setText("Author: " + map.info.author);
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
-			info.setPosition(0, stage.getHeight()-info.getHeight());
 
 			scoreTable.clear();
 
@@ -585,9 +508,7 @@ public class MapSelect implements Screen {
 	public void resume() {}
 
 	@Override
-	public void hide() {
-
-	}
+	public void hide() {}
 
 	@Override
 	public void dispose() {}

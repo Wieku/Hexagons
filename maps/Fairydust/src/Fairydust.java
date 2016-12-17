@@ -83,14 +83,13 @@ public class Fairydust implements MapScript {
 			@Override
 			public void run() {
 				CurrentMap.setRotationSpeed(0.75f);
-				
 			}
 		});
 		CurrentMap.data.eventTimeline.wait(65.5f-32.6f);
 		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
-				CurrentMap.setRotationSpeed(-0.75f);
+				CurrentMap.setRotationSpeed(0.75f);
 			}
 		});
 		CurrentMap.data.eventTimeline.wait(87.4f-65.5f);
