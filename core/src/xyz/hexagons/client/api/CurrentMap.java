@@ -1,8 +1,14 @@
 package xyz.hexagons.client.api;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StringBuilder;
 import xyz.hexagons.client.map.timeline.Timeline;
+import xyz.hexagons.client.map.timeline.TimelineObject;
 import xyz.hexagons.client.map.timeline.TimelineRunnable;
+import xyz.hexagons.client.utils.Utils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -10,16 +16,12 @@ import java.util.ArrayList;
  */
 public abstract class CurrentMap {
 	
-	public static void useRadians(boolean b) {
-		data.useRadians = b;
-	}
-	
 	public static class Data {
 		public float rotationSpeed = 0.5f;
 		public float rotationSpeedMax = 1.5f;
 		public float rotationIncrement = 0.083f;
 		public float fastRotate = 70f;
-		public boolean isFastRotation = false;
+		public transient boolean isFastRotation = false;
 		
 		public float difficulty = 1f;
 		public float levelIncrement = 15f;
@@ -75,7 +77,6 @@ public abstract class CurrentMap {
 		
 		public Timeline<Wall> wallTimeline = new Timeline<>();
 		public Timeline<TimelineRunnable> eventTimeline = new Timeline<>();
-		
 		public boolean gameCompleted = false;
 		public boolean useRadians = false;
 		
@@ -83,132 +84,11 @@ public abstract class CurrentMap {
 
 
 
-	public static Data data = new Data();
-	/** rotations/s *//*
-	public static float rotationSpeed = 0.5f;
-	public static float rotationSpeedMax = 1.5f;
-	public static float rotationIncrement = 0.083f;
-	public static float fastRotate = 70f;
-	public static boolean isFastRotation = false;
-
-	public static float difficulty = 1f;
-	public static float levelIncrement = 15f;
-	public static float delayMult = 1f;
-	public static float delayMultInc = 0.01f;
-	public static float speed = 1f ;
-	public static float speedInc = 0.125f;
-	public static float currentTime = 0f;
-
-	*//** sides *//*
-	public static int sides = 6;
-	public static int minSides = 5;
-	public static int maxSides = 7;
-	public static boolean mustChangeSides = false;
-
-	*//**pulse*//*
-	public static float beatPulseMin = 1.0f;
-	public static float beatPulseMax = 1.2f;
-	public static float beatPulseDelay = 0.5f;
-	public static float beatPulse = 1.0f;
-
-	*//**wallpulse*//*
-	public static float pulseMin = 70;
-	public static float pulseMax = 90;
-	public static float pulseSpeed = 1.0f;
-	public static float pulseSpeedR = 0.6f;
-	public static float pulseDelayMax = 0;
-	public static float pulse = 75;
-	public static int pulseDir = 1;
-
-	*//**colors*//*
-	public static ArrayList<HColor> colors = new ArrayList<>();
-	//public static float menuColor = 0f;
-	public static float colorPulseMax = 3f;
-	public static float colorPulseInc = 1f;
-	public static int colorOffset = 0;
-	public static float colorSwitch = 1f;
-	public static HColor walls = new HColor(1, 1, 1, 1);
-
-	*//**gfx settings *//*
-	public static int layers = 6;
-	public static float depth = 1.6f;
-	public static float skew = 0f;
-	public static float minSkew = 0f;
-	public static float maxSkew = 1f;
-	public static float skewTime = 5f;
-	public static float wallSkewLeft = 0f;
-	public static float wallSkewRight = 0f;
-	public static float alphaMultiplier = 1f;
-	public static float alphaFalloff = 0f;
-
-	public static Timeline<Wall> wallTimeline = new Timeline<>();
-	public static Timeline<TimelineRunnable> eventTimeline = new Timeline<>();*/
-
-
+	public transient static Data data = new Data();
+	
 	public static void reset(){
-		//wallTimeline.reset();
-		//eventTimeline.reset();
-		//resetValues();
 		data = new Data();
 	}
-
-	/*private static void resetValues(){
-		rotationSpeed = 0.25f;
-		rotationSpeedMax = 0.5f;
-		rotationIncrement = 0.01f;
-		fastRotate = 70f;
-		isFastRotation = false;
-		
-		difficulty = 1f;
-		levelIncrement = 15f;
-		delayMult = 1f;
-		delayMultInc = 0.00f;
-		speed = 1f;
-		speedInc = 0f;
-		currentTime = 0f;
-		
-		*//** sides *//*
-		sides = 6;
-		minSides = 5;
-		maxSides = 7;
-		mustChangeSides = false;
-
-		*//**pulse*//*
-		beatPulseMin = 1.0f;
-		beatPulseMax = 1.2f;
-		beatPulseDelay = 0.5f;
-		beatPulse = 1.0f;
-
-		*//**wallpulse*//*
-		pulseMin = 70;
-		pulseMax = 90;
-		pulseSpeed = 1.0f;
-		pulseSpeedR = 0.6f;
-		pulseDelayMax = 0;
-		pulse = 75;
-		pulseDir = 1;
-
-		*//**colors*//*
-		colors.clear();
-		colorPulseMax = 3f;
-		colorPulseInc = 1f;
-		colorOffset = 0;
-		colorSwitch = 1f;
-		walls = new HColor(1, 1, 1, 1);
-		
-		*//**gfx settings *//*
-		layers = 6;
-		depth = 1.6f;
-		skew = 0f;
-		minSkew = 0f;
-		maxSkew = 1f;
-		skewTime = 5f;
-		wallSkewLeft = 0f;
-		wallSkewRight = 0f;
-		alphaMultiplier = 1f;
-		alphaFalloff = 0f;
-	}*/
-	
 	
 	public static class TextInfo {
 		public String text;
@@ -219,8 +99,12 @@ public abstract class CurrentMap {
 			this.duration = duration;
 		}
 	}
-
-	public static TextInfo currentText = null;
+	
+	public static void useRadians(boolean b) {
+		data.useRadians = b;
+	}
+	
+	public transient static TextInfo currentText = null;
 
 	public static void pushText(String text, float duration){
 		currentText = new TextInfo(text, duration);
@@ -395,6 +279,47 @@ public abstract class CurrentMap {
 	
 	public static void killPlayer() {
 		data.gameCompleted = true;
+	}
+	
+	public static void pushEvent(float time, String name, Object... data) {
+		Runnable runnable = null;
+		switch(name) {
+			case "kill_player":
+				runnable = CurrentMap::killPlayer;
+				break;
+			case "set_style":
+				//TODO
+				break;
+			case "push_text":
+				runnable = ()->pushText((String)data[0], (float)data[1]);
+				break;
+			default:
+				if(data.length == 0) throw new GdxRuntimeException("Wrong argument size!");
+				
+				String methodName = "set" + name.substring(0,1).toUpperCase() + name.substring(1);
+				
+				for (Method method : CurrentMap.class.getDeclaredMethods()) {
+					if(method.getName().equals(methodName)) {
+						method.setAccessible(true);
+						runnable = ()-> Utils.tryOr(()->method.invoke(null, data), null);
+						break;
+					}
+				}
+				break;
+		}
+		
+		if(runnable != null) {
+			final Runnable runnable1 = runnable;
+			
+			CurrentMap.data.eventTimeline.wait(time);
+			CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+				@Override
+				public void run() {
+					runnable1.run();
+				}
+			});
+		}
+		
 	}
 	
 }

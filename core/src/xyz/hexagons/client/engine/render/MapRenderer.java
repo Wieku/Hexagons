@@ -28,10 +28,10 @@ public class MapRenderer {
 		((ObjRender) renderer).setHeight(0);
 		renderer.begin(ObjRender.ShapeType.Filled);
 		renderBackground(renderer, delta, true, 0);
-
-
+		
+		float pulseSpeed = CurrentMap.data.pulse / CurrentMap.data.pulseMin;
 		for (int j = 1; j <= CurrentMap.data.layers; ++j) {
-			((ObjRender) renderer).setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew));
+			((ObjRender) renderer).setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew) * Math.abs(pulseSpeed));
 			renderPlayer(renderer, delta, true, j - 1, player);
 			renderWalls(renderer, delta, true, j - 1, walls);
 			renderCenter(renderer, delta, true, j - 1);

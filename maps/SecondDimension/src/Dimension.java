@@ -70,20 +70,8 @@ public class Dimension implements MapScript {
 
 	@Override
 	public void initEvents() {
-		CurrentMap.data.eventTimeline.wait(15f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.pushText("whoa!", 1.2f);
-			}
-		});
-		CurrentMap.data.eventTimeline.wait(45f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
-			@Override
-			public void run() {
-				CurrentMap.pushText("may the mayhem begin!", 1.3f);
-			}
-		});
+		CurrentMap.pushEvent(15f, "push_text", "whoa!", 1.2f);
+		CurrentMap.pushEvent(45f, "push_text", "may the mayhem begin!", 1.3f);
 	}
 
 	@Override
