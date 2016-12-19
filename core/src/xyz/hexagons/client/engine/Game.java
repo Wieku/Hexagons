@@ -67,13 +67,14 @@ public class Game implements Screen {
 
 	//LinkedList<Renderer> renderers = new LinkedList<>();
 
+	int retries = 0;
+	
 	int width, height;
 
 	float score = 0;
 	boolean scoreSent = false;
 
 	public static float scale = 1f;
-
 	private int inc = 1;
 
 	DecimalFormat timeFormat = new DecimalFormat("0.000");
@@ -196,6 +197,7 @@ public class Game implements Screen {
 	}
 
 	public void restart(){
+		++retries;
 		start(map.info.startTimes[MathUtils.random(0, map.info.startTimes.length - 1)]);
 	}
 
@@ -330,7 +332,7 @@ public class Game implements Screen {
 		}
 
 
-		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (retries>1?"\nRetried " + retries + " times":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
@@ -440,9 +442,11 @@ public class Game implements Screen {
 
 	}
 
-	float getSaturated(float mValue) { return Math.max(0.f, Math.min(1.f, mValue)); }
-	float getSmootherStep(float edge0, float edge1, float x)
-	{
+	float getSaturated(float mValue) {
+		return Math.max(0.f, Math.min(1.f, mValue));
+	}
+	
+	float getSmootherStep(float edge0, float edge1, float x) {
 		x = getSaturated((x - edge0)/(edge1 - edge0));
 		return x * x * x * (x * (x * 6 - 15) + 10);
 	}
