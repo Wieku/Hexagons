@@ -85,12 +85,12 @@ public class OpenALPlayer extends OpenALMusic {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
 		secondsPerBuffer = (float)(bufferSize - bufferOverhead)  / (bytesPerSample * channels * sampleRate);
-		try {
+		/*try {
 			VorbisFile file1 = new VorbisFile(file.file().getAbsolutePath());
 			length = file1.time_total(-1);
 		} catch (JOrbisException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	public void play () {
