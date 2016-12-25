@@ -17,6 +17,16 @@ retrolambda {
     javaVersion JavaVersion.VERSION_1_7
 }
 
+buildConfig {
+    appName = project.name
+    version = project.version
+
+    clsName = "BuildConfig"
+    packageName = "xyz.hexagons.client"
+
+    charset = "UTF-8"
+}
+
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 
