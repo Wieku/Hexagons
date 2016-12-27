@@ -59,4 +59,4 @@ done
 deployObject ${UPDATE_INFO}
 
 echo "Deploy update for branch ${VI_BRANCH}!"
-scp build/verinfo-${VI_BRANCH}.json ${VI_UPDATE_DEPLOY_INFO}:${VI_DEPLOY_BASE_PATH}verinfo-${VI_BRANCH}.json
+scp build/verinfo-${VI_BRANCH}.json ${VI_UPDATE_DEPLOY_INFO}:${VI_UPDATE_BASE_PATH}verinfo-${VI_BRANCH}.json
