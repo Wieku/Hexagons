@@ -44,3 +44,19 @@ ipfs add desktop/build/libs/desktop*
 
 echo "Deploy updateinfo to IPFS"
 ipfs add ${UPDATE_INFO}
+
+deployObject() {
+    OBJ_NAME=$1
+    OBJ_HASH=$(ipfs add -nq ${OBJ_NAME})
+    scp ${OBJ_NAME} ${VI_OBJ_DEPLOY_INFO}:${VI_OBJ_BASE_PATH}${OBJ_HASH}
+}
+
+echo "Deploy classpath dependencies to object store"
+for f in desktop/build/dependencies/*; do
+    deployObject ${f}
+done
+
+deployObject ${UPDATE_INFO}
+
+echo "Deploy update for branch ${VI_BRANCH}!"
+scp build/verinfo-${VI_BRANCH}.json ${VI_UPDATE_DEPLOY_INFO}:${VI_DEPLOY_BASE_PATH}verinfo-${VI_BRANCH}.json

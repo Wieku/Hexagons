@@ -59,6 +59,11 @@ eclipse {
     }
 }
 
+task copyDependencies(type: Copy) {
+    from configurations.runtime
+    into new File(buildDir, "dependencies")
+}
+
 task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
   doLast {
     def classpath = new XmlParser().parse(file(".classpath"))

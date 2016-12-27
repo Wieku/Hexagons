@@ -33,9 +33,6 @@ CREATE OR REPLACE FUNCTION update_scores()
   $$
   LANGUAGE 'plpgsql';
 
-
-
-
 DROP TRIGGER IF EXISTS test_trigger ON games;
 CREATE TRIGGER test_trigger
   AFTER INSERT
