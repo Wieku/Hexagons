@@ -1,8 +1,14 @@
-@(username: String)
+@(user: models.Profile)
 
-@usermain("Profile", username) {
-<div class="text-center">
-    <p class="text-big">Here be your profile</p>
+@usermain(user.name + " - Hexagons", user.name) {
+<div class="profile-root">
+    <div class="profile-line">
+        <div class="profile-name">@user.name</div>
+        <div class="profile-big">#@user.globalRank</div>
+    </div>
+    <div>played <span class="profile-big">@user.playCount</span> times</div>
+    <div><span class="profile-big">@{user.rankedScoreK}K</span> <span class="text-cyan">R</span>ank<span class="text-cyan">S</span>core</div>
+    <div>@user.totalScoreK K total score</div>
 </div>
 @playscalajs.html.selectScript("client")
 @playscalajs.html.launcher("client")

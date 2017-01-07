@@ -1,17 +1,19 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+        classpath "me.tatarka:gradle-retrolambda:3.3.1"
     }
 }
 
 apply plugin: "java"
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: "me.tatarka.retrolambda"
+
 
 sourceCompatibility = 1.8
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
 
 retrolambda {
     javaVersion JavaVersion.VERSION_1_7

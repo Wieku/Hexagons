@@ -4,6 +4,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 import com.google.common.io.Resources
+import play.api.Play.current
 
 object SqlUtil {
   def getQuery(query: String): String = {
@@ -14,5 +15,16 @@ object SqlUtil {
         e.printStackTrace()
         null
     }
+  }
+
+  def getIntForQuery(query: String, params: String*)(): Int = {
+    play.api.db.DB.withConnection(conn => {
+      val statement = conn.prepareStatement(query)
+      params.zipWithIndex.foreach {
+        case (p, i) => statement.setString(i + 1, p)
+      }
+      val rs = statement.executeQuery()
+      if(rs.next()) rs.getInt(1) else -1
+    })
   }
 }

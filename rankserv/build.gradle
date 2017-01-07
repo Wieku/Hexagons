@@ -4,14 +4,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.4"
+        classpath "me.tatarka:gradle-retrolambda:3.3.1"
     }
 }
 
 apply plugin: "java"
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "me.tatarka.retrolambda"
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -31,7 +31,7 @@ task run(dependsOn: classes, type: JavaExec) {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'xyz.hexagons.server.Launcher'
+        attributes "Main-Class": "xyz.hexagons.server.Launcher"
     }
 }
 

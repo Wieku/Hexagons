@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Main pages
 GET     /                           controllers.Application.index
 GET     /download                   controllers.Application.download
 GET     /maps                       controllers.Application.maps
