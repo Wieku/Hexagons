@@ -283,9 +283,13 @@ public abstract class CurrentMap {
 	
 	public static void pushEvent(float time, String name, Object... data) {
 		Runnable runnable = null;
+		
 		switch(name) {
 			case "kill_player":
 				runnable = CurrentMap::killPlayer;
+				break;
+			case "change_direction":
+				runnable = () -> CurrentMap.setRotationSpeed(-CurrentMap.data.rotationSpeed);
 				break;
 			case "set_style":
 				//TODO
