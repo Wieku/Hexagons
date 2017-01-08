@@ -161,6 +161,14 @@ project(":rankserv") {
     }
 }
 
+project(":launcher") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.google.code.gson:gson:2.7"
+    }
+}
+
 tasks.eclipse.doLast {
     delete ".project"
 }
