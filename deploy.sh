@@ -18,7 +18,15 @@ find desktop/build/dependencies -type f -exec ipfs add -nq {} \; | xargs printf 
 
 echo "Generate launcher hash for updateinfo"
 cat >> ${UPDATE_INFO} <<EOF
-    ], "launcher": "$(ipfs add -nq desktop/build/libs/desktop*)"
+    ], "program": "$(ipfs add -nq desktop/build/libs/desktop*)",
+EOF
+
+cat >> ${UPDATE_INFO} <<EOF
+    , "args": [],
+EOF
+
+cat >> ${UPDATE_INFO} <<EOF
+    , "branch": "${VI_BRANCH}"
 EOF
 
 cat >> ${UPDATE_INFO} <<EOF
