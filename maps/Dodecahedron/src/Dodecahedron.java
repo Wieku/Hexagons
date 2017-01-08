@@ -63,20 +63,28 @@ public class Dodecahedron implements MapScript {
 		CurrentMap.setMaxSkew(1f);
 		CurrentMap.setSkewTime(4f);
 
-		dirChangeTime = 2.666666f;
+		dirChangeTime = 46.1f;
 	}
 
 	@Override
 	public void initEvents() {
 		lyric("Are you ready?", 2f, 0.5f);
 		
-		for (int i=0; i< 52;i++)
-			lyric("EH", 0.4f + (i==0?0.5f:0f), 0.2f);
+		for (int i=0; i< 52;i++) {
+			lyric("EH", 0.4f + (i == 0 ? 0.5f : 0f), 0.2f);
+			CurrentMap.pushEvent(0f,"change_direction");
+		}
+		for(float i=15f;i>=0f; i-=1f) {
+			CurrentMap.pushEvent(0.09f,"rotationSpeed", 0.65f*(i/15f));
+		}
 		
-		lyric("Are you ready?", 1.5f, 0.5f);
+		lyric("Are you ready?", 0.15f, 0.5f);
+		CurrentMap.pushEvent(0f,"rotationSpeed", 0.65f+0.053f);
 		
-		for (int i=0; i< 52;i++)
-			lyric("EH", 0.4f + (i==0?0.5f:0f), 0.2f);
+		for (int i=0; i< 52;i++) {
+			lyric("EH", 0.4f + (i == 0 ? 0.5f : 0f), 0.2f);
+			CurrentMap.pushEvent(0f,"change_direction");
+		}
 
 		lyric("Adrenaline is pumping", 2f, 1.5f);
 		lyric("Adrenaline is pumping", 2f, 1.5f);
@@ -113,7 +121,7 @@ public class Dodecahedron implements MapScript {
 		CurrentMap.data.colors.add(new HColor(61f / 255, 0f / 255, 62f / 255, 1f).addPulse(68f/255, 0f/255, 69f/255, 0));
 		CurrentMap.data.colors.add(new HColor(195f / 255, 67f / 255, 152f / 255, 1f));
 
-		CurrentMap.data.walls = new HColor(243f/255, 148f/255, 183f/255, 1).setMain(true).addPulse(60f/255, 60f/255, 60f/255, 0f);
+		CurrentMap.data.walls = new HColor(223f/255, 148f/255, 183f/255, 1).setMain(true).addPulse(60f/255, 60f/255, 60f/255, 0f);
 		CurrentMap.setAlphaFalloff(0.1f);
 		CurrentMap.setColorPulseMax(1.8f);
 		CurrentMap.setColorPulseInc(0.047f);
