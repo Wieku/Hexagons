@@ -15,5 +15,6 @@ public class CliLauncher {
 	private void init() throws Exception {
 		System.out.println("Launch using CLI");
 		launcherLogic = new LauncherLogic(ui);
+		launcherLogic.launch();
 	}
 }

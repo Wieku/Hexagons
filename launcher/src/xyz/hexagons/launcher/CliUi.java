@@ -9,4 +9,9 @@ public class CliUi implements LauncherUi {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void reportStatus(String msg) {
+		System.out.println("STATUS > " + msg);
+	}
 }

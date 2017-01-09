@@ -1,9 +1,10 @@
 package xyz.hexagons.launcher;
 
 public interface LauncherUi {
-	public void tryRun(UnsafeRunnable runnable);
+	void tryRun(UnsafeRunnable runnable);
+	void reportStatus(String msg);
 
-	public interface UnsafeRunnable {
-		public void run() throws Exception;
+	interface UnsafeRunnable {
+		void run() throws Exception;
 	}
 }
