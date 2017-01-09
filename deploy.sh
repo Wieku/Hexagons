@@ -30,6 +30,10 @@ cat >> ${UPDATE_INFO} <<EOF
 EOF
 
 cat >> ${UPDATE_INFO} <<EOF
+    , "version": "${VI_VERSION}"
+EOF
+
+cat >> ${UPDATE_INFO} <<EOF
 }
 EOF
 
