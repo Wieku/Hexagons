@@ -6,8 +6,14 @@ import xyz.hexagons.launcher.LauncherUi;
 import xyz.hexagons.launcher.core.models.UpdateInfo;
 import xyz.hexagons.launcher.core.models.VersionInfo;
 import xyz.hexagons.launcher.util.HTTPUtil;
+import xyz.hexagons.launcher.util.ReflectionUtil;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -48,10 +54,39 @@ public class LauncherLogic {
 			try (Writer writer = new FileWriter(new File(data, "current.json"))) {
 				Gson gson = new Gson();
 				gson.toJson(update, writer);
+				current = update;
+				update();
 			}
-
-
 		}
+		start();
+	}
+
+	private void start() throws Exception {
+		ui.reportStatus("Starting hexagons!");
+		LinkedList<URL> urls = new LinkedList<>();
+		urls.add(new File(data, current.program).toURI().toURL());
+		Arrays.stream(current.classpath).forEach(j -> {
+			try {
+				urls.add(new File(data, j).toURI().toURL());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		URLClassLoader cl = new URLClassLoader(urls.toArray(new URL[urls.size()]), this.getClass().getClassLoader());
+		Class<?> launcher = cl.loadClass("xyz.hexagons.client.desktop.DesktopLauncher");
+		launcher.getMethod("main", ReflectionUtil.<String>getArrayClass()).invoke(null, (Object) current.args);
+	}
+
+	private void update() throws Exception {
+		HTTPUtil.getAsset(current.program, data, ui);
+		Arrays.stream(current.classpath).forEach(h -> {
+			try {
+				HTTPUtil.getAsset(h, data, ui);
+			} catch (Exception e ) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	private File getDataDirectory() throws LauchException {

@@ -14,4 +14,9 @@ public class CliUi implements LauncherUi {
 	public void reportStatus(String msg) {
 		System.out.println("STATUS > " + msg);
 	}
+
+	@Override
+	public void startGetAsset(String url) {
+		System.out.println("GET:" + url);
+	}
 }
