@@ -22,7 +22,7 @@ cat >> ${UPDATE_INFO} <<EOF
 EOF
 
 cat >> ${UPDATE_INFO} <<EOF
-    , "args": [],
+    , "args": []
 EOF
 
 cat >> ${UPDATE_INFO} <<EOF
