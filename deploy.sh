@@ -68,6 +68,7 @@ for f in desktop/build/dependencies/*; do
     deployObject ${f}
 done
 
+deployObject desktop/build/libs/desktop*
 deployObject ${UPDATE_INFO}
 
 echo "Deploy update for branch ${VI_BRANCH}!"
