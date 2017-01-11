@@ -9,13 +9,10 @@ import xyz.hexagons.launcher.util.HTTPUtil;
 import xyz.hexagons.launcher.util.ReflectionUtil;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Set;
-import java.util.StringJoiner;
 
 public class LauncherLogic {
 	private LauncherUi ui;

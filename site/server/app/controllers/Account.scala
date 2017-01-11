@@ -34,6 +34,10 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
     Redirect(conf.getString("hexite.rankservUrl") + "/auth/google/in/site")
   }
 
+  def loginSteam = Action { request =>
+    Redirect(conf.getString("hexite.rankservUrl") + "/auth/steam/in/site")
+  }
+
   def loginRankserv(token: String, next: String) = Action { request =>
     val uid = JWSObject.parse(token)
     if(uid.verify(new MACVerifier(conf.getIntList("hexite.rankservSecret").map(_.byteValue()).toArray))) {

@@ -6,61 +6,38 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
-import com.google.api.services.oauth2.model.Userinfoplus;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
 import org.eclipse.jetty.continuation.Continuation;
-import xyz.hexagons.server.Launcher;
+
 import xyz.hexagons.server.Settings;
 import xyz.hexagons.server.util.Config;
-import xyz.hexagons.server.util.SqlUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.UUID;
 
 public class GoogleAuthOut extends HttpServlet {
-    private static final String qUserByAuth = SqlUtil.getQuery("user/userByAuth");
-    private static final String qInsertAuthUser = SqlUtil.getQuery("user/insertAuth");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String fullState = req.getParameter("state");
-        UUID stateUuid = null;
 
         String googleUserId = getGoogleUserId(req.getParameter("code"));
+        if(googleUserId == null)
+        	throw new ServletException("Invlid request");
 
-        Account account = getAccount(googleUserId);
+		AccountUtils.Account account = AccountUtils.getAccount(googleUserId, AuthType.GOOGLE.type);
 
         if(fullState.startsWith("g/"))
             notifyGame(UUID.fromString(fullState.substring(2)), account);
 
-        JWSObject userToken = new JWSObject(new JWSHeader(JWSAlgorithm.HS256), new Payload(account.id));
-        try {
-            userToken.sign(new MACSigner(Settings.instance.signSecret));
-            String next = "/profile";
-            if(fullState.startsWith("g/"))
-                next = "/welcome";
-
-            if(account.name.matches("^u\\d+$")) {
-                resp.sendRedirect(Settings.instance.siteRedir + "/start/register/" + userToken.serialize() + next);
-            } else {
-                resp.sendRedirect(Settings.instance.siteRedir + "/login/rankserv/" + userToken.serialize() + next);
-            }
-            return;
-        } catch (JOSEException e) {
-            e.printStackTrace();
-        }
-        resp.sendRedirect(Settings.instance.siteRedir + "/error/rs/gauth/out/1");
+		if(!AccountUtils.loginRedirect(account, resp, fullState))
+        	resp.sendRedirect(Settings.instance.siteRedir + "/error/rs/googleAuth/out/1");
     }
 
-    private void notifyGame(UUID stateUuid, Account account) {
+    private void notifyGame(UUID stateUuid, AccountUtils.Account account) {
         try {
             if (GoogleAuthGame.tokenContinuations.containsKey(stateUuid)) {
                 Continuation c = GoogleAuthGame.tokenContinuations.get(stateUuid);
@@ -78,38 +55,6 @@ public class GoogleAuthOut extends HttpServlet {
         }
     }
 
-    private Account getAccount(String googleUserId) {
-        try {
-            return Launcher.withConnection(connection -> {
-                PreparedStatement statement = connection.prepareStatement(qUserByAuth);
-                statement.setInt(1, AuthType.GOOGLE.type);
-                statement.setString(2, googleUserId);
-                ResultSet rs = statement.executeQuery();
-                if(rs.next()) {
-                    Account account = new Account();
-                    account.name = rs.getString("nick");
-                    account.id = rs.getString("id");
-                    return account;
-                } else {
-                    PreparedStatement istatement = connection.prepareStatement(qInsertAuthUser);
-                    istatement.setInt(1, AuthType.GOOGLE.type);
-                    istatement.setString(2, googleUserId);
-                    ResultSet res = istatement.executeQuery();
-                    if(res.next()) {
-                        Account account = new Account();
-                        account.name = "u" + res.getString("user_id");
-                        account.id = res.getString("user_id");
-                        return account;
-                    }
-                }
-                return null;
-            });
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private String getGoogleUserId(String code) {
         try {
             GoogleTokenResponse tokenResponse = new GoogleAuthorizationCodeTokenRequest(new NetHttpTransport(), new JacksonFactory(),
@@ -125,10 +70,4 @@ public class GoogleAuthOut extends HttpServlet {
         }
         return null;
     }
-
-    private static class Account {
-        String name;
-        String id;
-    }
-
 }

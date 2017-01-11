@@ -5,11 +5,14 @@ buildscript {
     }
     dependencies {
         classpath "me.tatarka:gradle-retrolambda:3.3.1"
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.4"
     }
 }
 
 apply plugin: "java"
 apply plugin: "me.tatarka.retrolambda"
+apply plugin: "com.github.johnrengelman.shadow"
+
 
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -31,4 +34,8 @@ jar {
     manifest {
         attributes "Main-Class": "xyz.hexagons.launcher.Main"
     }
+}
+
+shadowJar {
+    baseName = "HexagonsLauncher"
 }

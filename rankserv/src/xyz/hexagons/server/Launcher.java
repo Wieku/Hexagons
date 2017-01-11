@@ -109,6 +109,9 @@ public class Launcher {
             ctx.addServlet(GoogleAuthOut.class,     "/auth/google/out");
             ctx.addServlet(GooglePoll.class,        "/auth/google/poll");
 
+			ctx.addServlet(SteamAuthSite.class,    "/auth/steam/in/site");
+			ctx.addServlet(SteamAuthOut.class,    "/auth/steam/out");
+
             server.start();
             server.join();
 
