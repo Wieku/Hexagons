@@ -1,1 +1,1 @@
-SELECT SUM(score) as totalScore FROM games WHERE nick=?;
+SELECT SUM(score) as totalScore FROM games WHERE user_id=?;

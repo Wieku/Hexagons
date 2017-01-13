@@ -22,6 +22,7 @@ public class GetNick extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+		System.out.println("GetNick");
         String token = req.getParameter("token");
         if(token == null) {
             resp.setStatus(500);
@@ -35,7 +36,7 @@ public class GetNick extends HttpServlet {
                 return;
             }
 
-            Account account = new Gson().fromJson(t.getPayload().toString(), Account.class);
+            AccountUtils.SessionAccount account = new Gson().fromJson(t.getPayload().toString(), AccountUtils.SessionAccount.class);
 
             Launcher.withConnection(connection -> {
                 PreparedStatement statement = connection.prepareStatement(qUserByAuth);
@@ -49,12 +50,8 @@ public class GetNick extends HttpServlet {
             });
         } catch (ParseException | SQLException | IOException e) {
             e.printStackTrace();
-            resp.setStatus(500);
+			System.out.println("GetNick Err");
+			resp.setStatus(500);
         }
-    }
-
-    private static class Account implements Serializable {
-        public String account;
-        public int id;
     }
 }

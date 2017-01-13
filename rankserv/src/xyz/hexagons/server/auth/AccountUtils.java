@@ -8,6 +8,7 @@ import xyz.hexagons.server.util.SqlUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -66,6 +67,12 @@ public class AccountUtils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	// NOTE: Used for JWT tokens!
+	public static class SessionAccount {
+		public String account;
+		public int id;
 	}
 
 	static class Account {

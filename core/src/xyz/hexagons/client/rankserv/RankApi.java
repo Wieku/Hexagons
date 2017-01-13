@@ -47,7 +47,7 @@ public class RankApi {
         if(Instance.currentAccount == null) return null;
 
         HttpClient httpclient = HttpClients.createDefault();
-        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v0/rank?token=" + Instance.currentAccount.authToken());
+        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v1/rank?token=" + Instance.currentAccount.authToken());
 
         try {
             HttpResponse response = httpclient.execute(req);
@@ -68,10 +68,10 @@ public class RankApi {
 
     private String getLeadersUri(Map map, int count) {
         if(Instance.currentAccount != null) {
-            return Settings.instance.ranking.server + "/v0/leaders?uuid="
-                    + map.info.uuid + "&count=" + String.valueOf(count) + "&nick=" + Instance.currentAccount.nick();
+            return Settings.instance.ranking.server + "/v1/leaders?uuid="
+                    + map.info.uuid + "&count=" + String.valueOf(count) + "&token=" + Instance.currentAccount.authToken().toString();
         } else {
-            return Settings.instance.ranking.server + "/v0/leaders?uuid="
+            return Settings.instance.ranking.server + "/v1/leaders?uuid="
                     + map.info.uuid + "&count=" + String.valueOf(count);
         }
     }

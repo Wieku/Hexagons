@@ -1,8 +1,12 @@
 package xyz.hexagons.server.rank;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.nimbusds.jose.JWSObject;
 import xyz.hexagons.server.Launcher;
+import xyz.hexagons.server.auth.AccountUtils;
+import xyz.hexagons.server.auth.RuntimeSecrets;
 import xyz.hexagons.server.util.SqlUtil;
 
 import javax.servlet.ServletException;
@@ -28,8 +32,20 @@ public class MapLeaders extends HttpServlet {
             System.out.println("Get score report");
 
             String mapId = req.getParameter("uuid");
-            String nick = req.getParameter("nick");
             long count = Long.valueOf(req.getParameter("count"));
+
+			String token = req.getParameter("token");
+			if(token == null) {
+				resp.setStatus(500);
+				return;
+			}
+			JWSObject t = JWSObject.parse(token);
+			if(!RuntimeSecrets.check(t)) {
+				resp.setStatus(500);
+				return;
+			}
+
+			AccountUtils.SessionAccount account = new Gson().fromJson(t.getPayload().toString(), AccountUtils.SessionAccount.class);
 
             JsonObject sres = Launcher.withConnection(connection -> {
                 JsonObject result = new JsonObject();
@@ -52,7 +68,7 @@ public class MapLeaders extends HttpServlet {
 
                 {
                     PreparedStatement statement = connection.prepareStatement(qPlayerBest);
-                    statement.setString(1, nick);
+                    statement.setLong(1, account.id);
                     statement.setString(2, mapId);
                     ResultSet rs = statement.executeQuery();
                     if(rs.next()) {
@@ -71,7 +87,7 @@ public class MapLeaders extends HttpServlet {
 
                 {
                     PreparedStatement statement = connection.prepareStatement(qPlayerPlayCount);
-                    statement.setString(1, nick);
+                    statement.setLong(1, account.id);
                     ResultSet rs = statement.executeQuery();
                     if(rs.next()) {
                         result.addProperty("ownPlayCount", rs.getLong("playCount"));
@@ -81,7 +97,7 @@ public class MapLeaders extends HttpServlet {
                 {
                     PreparedStatement statement = connection.prepareStatement(qPlayerRank);
                     statement.setString(1, mapId);
-                    statement.setString(2, nick);
+                    statement.setLong(2, account.id);
                     statement.setString(3, mapId);
                     ResultSet rs = statement.executeQuery();
 
@@ -93,7 +109,7 @@ public class MapLeaders extends HttpServlet {
                 return result;
             });
 
-            sres.addProperty("state", "OK");
+			sres.addProperty("state", "OK");
             resp.getWriter().print(sres.toString());
         } catch (Exception e) {
             e.printStackTrace();

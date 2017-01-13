@@ -254,10 +254,10 @@ public class Game implements Screen {
 						URL url = new URL(Settings.instance.ranking.server);
 
 						HttpClient httpclient = HttpClients.createDefault();
-						HttpPost httppost = new HttpPost(Settings.instance.ranking.server + "/v0/game");
+						HttpPost httppost = new HttpPost(Settings.instance.ranking.server + "/v1/game");
 
 						List<NameValuePair> params = new ArrayList<>(3);
-						params.add(new BasicNameValuePair("nick", Settings.instance.ranking.nickname));
+						params.add(new BasicNameValuePair("token", Instance.currentAccount.authToken().toString()));
 						params.add(new BasicNameValuePair("score", String.valueOf((long) score)));
 						params.add(new BasicNameValuePair("mapid", map.info.uuid));
 						httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

@@ -31,11 +31,11 @@ class Account @Inject() (db: Database, conf: Configuration) extends Controller {
   }
 
   def loginGoogle = Action { request =>
-    Redirect(conf.getString("hexite.rankservUrl") + "/auth/google/in/site")
+    Redirect(conf.getString("hexite.rankservUrl") + "/v1/auth/google/in/site")
   }
 
   def loginSteam = Action { request =>
-    Redirect(conf.getString("hexite.rankservUrl") + "/auth/steam/in/site")
+    Redirect(conf.getString("hexite.rankservUrl") + "/v1/auth/steam/in/site")
   }
 
   def loginRankserv(token: String, next: String) = Action { request =>

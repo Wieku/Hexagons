@@ -1,1 +1,1 @@
-INSERT INTO games (map_id, score, nick, at) VALUES (?, ?, ?, ?)
+INSERT INTO games (map_id, score, user_id, at) VALUES (?, ?, ?, ?)

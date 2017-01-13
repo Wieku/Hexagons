@@ -18,10 +18,10 @@ case class Profile(id: Int, name: String) {
     if(initiated) return
     initiated = true
 
-    _globalRank = SqlUtil.getIntForQuery(Profile.qPlayerGlobalRank, name)
-    _playCount = SqlUtil.getIntForQuery(Profile.qPlayerPlayCount, name)
-    _rankedScore = SqlUtil.getIntForQuery(Profile.qPlayerRankedScore, name)
-    _totalScore = SqlUtil.getIntForQuery(Profile.qPlayerOverallScore, name)
+    _globalRank = SqlUtil.getIntForQueryI(Profile.qPlayerGlobalRank, id)
+    _playCount = SqlUtil.getIntForQueryI(Profile.qPlayerPlayCount, id)
+    _rankedScore = SqlUtil.getIntForQueryI(Profile.qPlayerRankedScore, id)
+    _totalScore = SqlUtil.getIntForQueryI(Profile.qPlayerOverallScore, id)
   }
 
   def globalRank: Int = {

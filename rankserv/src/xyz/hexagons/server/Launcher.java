@@ -8,6 +8,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.postgresql.util.PSQLException;
 import xyz.hexagons.server.auth.*;
 import xyz.hexagons.server.rank.*;
 import xyz.hexagons.server.util.SqlUtil;
@@ -47,9 +48,14 @@ public class Launcher {
                 return null;
             });
 
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        }
+			if(e instanceof PSQLException) {
+				System.err.println(((PSQLException) e).getServerErrorMessage());
+			}
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     public static <R> R withConnection(SqlFunction<Connection, R> f) throws SQLException, IOException {

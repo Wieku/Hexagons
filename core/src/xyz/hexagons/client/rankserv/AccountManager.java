@@ -25,7 +25,7 @@ public abstract class AccountManager {
     public final void loginSaved() {
         if(Instance.currentAccount == null && Settings.instance.ranking.authToken != null) {
             Instance.executor.execute(() -> {
-                Pair<AccountResponse, String> acc = REST.getJWS(Settings.instance.ranking.server + "/v0/nick?token=" + Settings.instance.ranking.authToken, AccountResponse.class);
+                Pair<AccountResponse, String> acc = REST.getJWS(Settings.instance.ranking.server + "/v1/nick?token=" + Settings.instance.ranking.authToken, AccountResponse.class);
                 Instance.eventBus.post((EventUpdateNick) () -> acc.getValue0().account);
                 Settings.instance.ranking.authToken = acc.getValue1();
                 SettingsManager.saveSettings();

@@ -34,9 +34,9 @@ public class PlayerRank extends HttpServlet {
 
             Account account = new Gson().fromJson(t.getPayload().toString(), Account.class);
 
-            resp.getOutputStream().print("{\"rankedScore\":" + SqlUtil.getIntForQuery(qPlayerRankedScore, account.account) + "," +
-                    "\"globalRank\":" + SqlUtil.getIntForQuery(qPlayerGlobalRank, account.account) + "," +
-                    "\"overallScore\":" + SqlUtil.getIntForQuery(qPlayerOverallScore, account.account) + "}");
+            resp.getOutputStream().print("{\"rankedScore\":" + SqlUtil.getIntForQuery(qPlayerRankedScore, account.id) + "," +
+                    "\"globalRank\":" + SqlUtil.getIntForQuery(qPlayerGlobalRank, account.id) + "," +
+                    "\"overallScore\":" + SqlUtil.getIntForQuery(qPlayerOverallScore, account.id) + "}");
 
         } catch (ParseException | IOException e) {
             e.printStackTrace();

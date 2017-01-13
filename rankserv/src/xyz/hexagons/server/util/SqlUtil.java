@@ -38,4 +38,24 @@ public class SqlUtil {
         }
         return 0;
     }
+
+	public static int getIntForQuery(String query, int... params) {
+		try {
+			return Launcher.withConnection(connection -> {
+				PreparedStatement statement = connection.prepareStatement(query);
+				for (int i = 0; i < params.length; i++) {
+					statement.setInt(i + 1, params[i]);
+				}
+
+				ResultSet rs = statement.executeQuery();
+				if(rs.next()) {
+					return rs.getInt(1);
+				}
+				return 0;
+			});
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 }
