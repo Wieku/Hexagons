@@ -1,4 +1,4 @@
-package xyz.hexagons.server.rank;
+package xyz.hexagons.server;
 
 import com.google.gson.JsonObject;
 import xyz.hexagons.server.util.Config;

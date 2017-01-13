@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 public abstract class AccountManager {
     public abstract Account loginGoogle();
+	public abstract Account loginSteam();
 
     public abstract class AuthInfo {
         public abstract String toString();

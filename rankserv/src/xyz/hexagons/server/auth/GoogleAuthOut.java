@@ -39,16 +39,16 @@ public class GoogleAuthOut extends HttpServlet {
 
     private void notifyGame(UUID stateUuid, AccountUtils.Account account) {
         try {
-            if (GoogleAuthGame.tokenContinuations.containsKey(stateUuid)) {
-                Continuation c = GoogleAuthGame.tokenContinuations.get(stateUuid);
-                GoogleAuthGame.tokenContinuations.remove(stateUuid);
+            if (AuthToken.tokenContinuations.containsKey(stateUuid)) {
+                Continuation c = AuthToken.tokenContinuations.get(stateUuid);
+                AuthToken.tokenContinuations.remove(stateUuid);
 
                 System.out.println("{\"account\":\"" + account.name + "\", id: " + account.id + "}");
                 c.getServletResponse().getWriter().print(RuntimeSecrets.signSession("{\"account\":\"" + account.name + "\", id: " + account.id + "}"));
                 c.complete();
-            } else if (GoogleAuthGame.tokenChallenges.containsKey(stateUuid)) {
-                GoogleAuthGame.tokenChallenges.remove(stateUuid);
-                GoogleAuthGame.tokenChallenges.put(stateUuid, account.name, 16000L);
+            } else if (AuthToken.tokenChallenges.containsKey(stateUuid)) {
+                AuthToken.tokenChallenges.remove(stateUuid);
+                AuthToken.tokenChallenges.put(stateUuid, account.name, 16000L);
             }
         } catch (Exception e) {
             e.printStackTrace();

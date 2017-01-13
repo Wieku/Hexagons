@@ -153,6 +153,9 @@ public class MainMenu implements Screen {
 				if(keycode == Keys.L) {
 					Instance.currentAccount = Instance.accountManager.loginGoogle();
 				}
+				if(keycode == Keys.K) {
+					Instance.currentAccount = Instance.accountManager.loginSteam();
+				}
 
 				if(keycode == Keys.ESCAPE)
 					escclick = true;

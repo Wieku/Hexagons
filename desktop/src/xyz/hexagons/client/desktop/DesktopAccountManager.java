@@ -27,14 +27,14 @@ public class DesktopAccountManager extends AccountManager {
     @Override
     public AccountManager.Account loginGoogle() {
         if(Desktop.isDesktopSupported()) {
-            Challenge c = REST.get(Settings.instance.ranking.server + "/auth/google/challenge", Challenge.class);
+            Challenge c = REST.get(Settings.instance.ranking.server + "/v1/auth/challenge", Challenge.class);
             if(c != null && c.challenge != null) {
                 try {
-                    Desktop.getDesktop().browse(new URI(Settings.instance.ranking.server + "/auth/google/in?challenge=" + c.challenge));
+                    Desktop.getDesktop().browse(new URI(Settings.instance.ranking.server + "/v1/auth/google/in?challenge=" + c.challenge));
                 } catch (IOException | URISyntaxException e) {
                     e.printStackTrace();
                 }
-                Pair<Account, String> acc = REST.getJWS(Settings.instance.ranking.server + "/auth/google/poll?challenge=" + c.challenge, Account.class);
+                Pair<Account, String> acc = REST.getJWS(Settings.instance.ranking.server + "/v1/auth/poll?challenge=" + c.challenge, Account.class);
                 System.out.println("ACCOUNT: " + (acc == null ? "null" : acc.getValue0().account));
                 if(acc != null) {
                     AccountManager.Account account = onLogin(acc.getValue0(), acc.getValue1());
@@ -51,7 +51,12 @@ public class DesktopAccountManager extends AccountManager {
         return null;
     }
 
-    private AccountManager.Account onLogin(Account account, String t) {
+	@Override
+	public AccountManager.Account loginSteam() {
+		return null;
+	}
+
+	private AccountManager.Account onLogin(Account account, String t) {
         Holder<String> token = new Holder<>(t);
 
         if(account.account.matches("^u\\d+$")) {
@@ -59,7 +64,7 @@ public class DesktopAccountManager extends AccountManager {
 
             f.value = Instance.executor.scheduleWithFixedDelay(() -> {
                 if(f.value != null) {
-                    Pair<Account, String> newAcc = REST.getJWS(Settings.instance.ranking.server + "/v0/nick?token=" + token.value, Account.class);
+                    Pair<Account, String> newAcc = REST.getJWS(Settings.instance.ranking.server + "/v1/nick?token=" + token.value, Account.class);
                     if(newAcc != null && !newAcc.getValue0().account.matches("^u\\d+$")) {
                         f.value.cancel(false);
                         f.value = null;

@@ -10,18 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-public class GooglePoll extends HttpServlet {
+public class AuthPoll extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UUID challenge = UUID.fromString(req.getParameter("challenge"));
-        if(GoogleAuthGame.tokenChallenges.containsKey(challenge)) {
-            String token = GoogleAuthGame.tokenChallenges.get(challenge);
-            GoogleAuthGame.tokenChallenges.remove(challenge);
+        if(AuthToken.tokenChallenges.containsKey(challenge)) {
+            String token = AuthToken.tokenChallenges.get(challenge);
+            AuthToken.tokenChallenges.remove(challenge);
 
             if(token == null) {
                 Continuation continuation = ContinuationSupport.getContinuation(req);
                 continuation.suspend(resp);
-                GoogleAuthGame.tokenContinuations.put(challenge, continuation, 120000L);
+                AuthToken.tokenContinuations.put(challenge, continuation, 120000L);
             } else {
                 System.out.println("{\"account\":\"" + token +"\"}");
                 resp.getWriter().print("{\"account\":\"" + token +"\"}");
