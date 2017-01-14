@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Holder;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,17 +36,18 @@ public class MapLeaders extends HttpServlet {
             long count = Long.valueOf(req.getParameter("count"));
 
 			String token = req.getParameter("token");
-			if(token == null) {
-				resp.setStatus(500);
-				return;
-			}
-			JWSObject t = JWSObject.parse(token);
-			if(!RuntimeSecrets.check(t)) {
-				resp.setStatus(500);
-				return;
+            Holder<AccountUtils.SessionAccount> account = new Holder<>();
+
+			if (token != null) {
+                JWSObject t = JWSObject.parse(token);
+                if(!RuntimeSecrets.check(t)) {
+                    resp.setStatus(500);
+                    return;
+                }
+
+                account.value = new Gson().fromJson(t.getPayload().toString(), AccountUtils.SessionAccount.class);
 			}
 
-			AccountUtils.SessionAccount account = new Gson().fromJson(t.getPayload().toString(), AccountUtils.SessionAccount.class);
 
             JsonObject sres = Launcher.withConnection(connection -> {
                 JsonObject result = new JsonObject();
@@ -66,9 +68,9 @@ public class MapLeaders extends HttpServlet {
                     result.add("list", res);
                 }
 
-                {
+                if (account.value != null) {
                     PreparedStatement statement = connection.prepareStatement(qPlayerBest);
-                    statement.setLong(1, account.id);
+                    statement.setLong(1, account.value.id);
                     statement.setString(2, mapId);
                     ResultSet rs = statement.executeQuery();
                     if(rs.next()) {
@@ -85,19 +87,19 @@ public class MapLeaders extends HttpServlet {
                     }
                 }
 
-                {
+                if (account.value != null) {
                     PreparedStatement statement = connection.prepareStatement(qPlayerPlayCount);
-                    statement.setLong(1, account.id);
+                    statement.setLong(1, account.value.id);
                     ResultSet rs = statement.executeQuery();
                     if(rs.next()) {
                         result.addProperty("ownPlayCount", rs.getLong("playCount"));
                     }
                 }
 
-                {
+                if (account.value != null) {
                     PreparedStatement statement = connection.prepareStatement(qPlayerRank);
                     statement.setString(1, mapId);
-                    statement.setLong(2, account.id);
+                    statement.setLong(2, account.value.id);
                     statement.setString(3, mapId);
                     ResultSet rs = statement.executeQuery();
 

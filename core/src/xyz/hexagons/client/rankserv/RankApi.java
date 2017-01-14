@@ -67,7 +67,7 @@ public class RankApi {
     }
 
     private String getLeadersUri(Map map, int count) {
-        if(Instance.currentAccount != null) {
+        if (Instance.currentAccount != null) {
             return Settings.instance.ranking.server + "/v1/leaders?uuid="
                     + map.info.uuid + "&count=" + String.valueOf(count) + "&token=" + Instance.currentAccount.authToken().toString();
         } else {

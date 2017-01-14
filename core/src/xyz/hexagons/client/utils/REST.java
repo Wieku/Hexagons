@@ -45,13 +45,16 @@ public class REST {
             HttpResponse response = httpclient.execute(tokenReq);
             HttpEntity entity = response.getEntity();
 
-            if (entity != null) {
+            if (response.getStatusLine().getStatusCode() == 200 && entity != null) {
                 InputStream in = entity.getContent();
                 JWSObject o = JWSObject.parse(IOUtils.toString(in, "UTF-8"));
                 T t = new Gson().fromJson(o.getPayload().toString(), c);
                 in.close();
                 return new Pair<>(t, o.serialize());
+            } else if (entity != null) {
+                entity.getContent().close();
             }
+
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
