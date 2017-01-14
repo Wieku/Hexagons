@@ -32,7 +32,7 @@ public class GuiUi implements LauncherUi {
 
 	@Override
 	public void startGetAsset(String url) {
-		System.out.println("Get " + url);
+		System.out.println("Getting " + url);
 	}
 
 	@Override

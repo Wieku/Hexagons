@@ -27,6 +27,9 @@ public class LauncherLogic {
 		if(currentFile.exists()) {
 			Gson gson = new Gson();
 			current = gson.fromJson(new JsonReader(new FileReader(currentFile)), VersionInfo.class);
+			if(current == null) {
+				current = VersionInfo.defaultInfo;
+			}
 		} else {
 			current = VersionInfo.defaultInfo;
 		}
@@ -83,12 +86,12 @@ public class LauncherLogic {
 		ui.shortText("Getting game");
 		IntHolder n = new IntHolder();
 
-		HTTPUtil.getAsset(current.program.obj, data, ui);
+		HTTPUtil.getAsset(current.program.obj, current.program.sha, data, ui);
 		Arrays.stream(current.classpath).forEach(h -> {
 			n.value++;
-			ui.shortText("Get asset " + n.value + "/" + current.classpath.length);
+			ui.shortText("Getting asset " + n.value + "/" + current.classpath.length);
 			try {
-				HTTPUtil.getAsset(h.obj, data, ui);
+				HTTPUtil.getAsset(h.obj, h.sha, data, ui);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
