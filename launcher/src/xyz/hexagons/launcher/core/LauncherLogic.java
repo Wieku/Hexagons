@@ -41,11 +41,13 @@ public class LauncherLogic {
 	}
 
 	public void launch() throws Exception {
+		ui.shortText("Check Update");
 		UpdateInfo updateInfo = HTTPUtil.getJson(Settings.updateBase + "/verinfo-" + current.branch + ".json", UpdateInfo.class);
 		ui.reportStatus("LV: " + String.valueOf(current.version));
 		ui.reportStatus("RV: " + String.valueOf(updateInfo.version));
 		if(!String.valueOf(current.version).equals(updateInfo.version)) {
 			ui.reportStatus("Update Required!");
+			ui.shortText("Update Required!");
 			Settings.objectCdnBase = updateInfo.updateBaseUrl;
 			VersionInfo update = HTTPUtil.getJson(Settings.objectCdnBase + "/" + updateInfo.updateId, VersionInfo.class);
 			try (Writer writer = new FileWriter(new File(data, "current.json"))) {
@@ -60,11 +62,13 @@ public class LauncherLogic {
 
 	private void start() throws Exception {
 		ui.reportStatus("Starting hexagons!");
+		ui.shortText("Starting hexagons!");
+		ui.hideWindows();
 		LinkedList<URL> urls = new LinkedList<>();
-		urls.add(new File(data, current.program).toURI().toURL());
+		urls.add(new File(data, current.program.obj).toURI().toURL());
 		Arrays.stream(current.classpath).forEach(j -> {
 			try {
-				urls.add(new File(data, j).toURI().toURL());
+				urls.add(new File(data, j.obj).toURI().toURL());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -76,11 +80,16 @@ public class LauncherLogic {
 	}
 
 	private void update() throws Exception {
-		HTTPUtil.getAsset(current.program, data, ui);
+		ui.shortText("Getting game");
+		IntHolder n = new IntHolder();
+
+		HTTPUtil.getAsset(current.program.obj, data, ui);
 		Arrays.stream(current.classpath).forEach(h -> {
+			n.value++;
+			ui.shortText("Get asset " + n.value + "/" + current.classpath.length);
 			try {
-				HTTPUtil.getAsset(h, data, ui);
-			} catch (Exception e ) {
+				HTTPUtil.getAsset(h.obj, data, ui);
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		});
@@ -98,5 +107,9 @@ public class LauncherLogic {
 		}
 
 		return dataDir;
+	}
+
+	class IntHolder {
+		int value = 0;
 	}
 }

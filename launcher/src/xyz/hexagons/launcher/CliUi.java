@@ -19,4 +19,14 @@ public class CliUi implements LauncherUi {
 	public void startGetAsset(String url) {
 		System.out.println("GET:" + url);
 	}
+
+	@Override
+	public void shortText(String msg) {
+
+	}
+
+	@Override
+	public void hideWindows() {
+
+	}
 }

@@ -14,11 +14,11 @@ cat > ${UPDATE_INFO} <<EOF
 EOF
 
 echo "Generate classpath hashes for updateinfo"
-find desktop/build/dependencies -type f -exec ipfs add -nq {} \; | xargs printf "\"%s\"," | sed "s/.$//g" >> ${UPDATE_INFO}
+find desktop/build/dependencies -type f -exec sha256sum {} \; -exec ipfs add -nq {} \; | xargs -n3 echo | awk '{print $1 " " $3}' | xargs -n2 printf "{\"sha\": \"%s\", \"obj\": \"%s\"}," | sed "s/.$//g" >> ${UPDATE_INFO}
 
 echo "Generate launcher hash for updateinfo"
 cat >> ${UPDATE_INFO} <<EOF
-    ], "program": "$(ipfs add -nq desktop/build/libs/desktop*)"
+    ], "program": {"sha": "$(sha256sum desktop/build/libs/desktop* | awk '{print $1}')", "obj":"$(ipfs add -nq desktop/build/libs/desktop*)"}
 EOF
 
 cat >> ${UPDATE_INFO} <<EOF
