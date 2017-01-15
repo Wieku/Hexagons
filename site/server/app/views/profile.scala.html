@@ -6,9 +6,21 @@
         <div class="profile-name">@user.name</div>
         <div class="profile-big">#@user.globalRank</div>
     </div>
-    <div>played <span class="profile-big">@user.playCount</span> times</div>
-    <div><span class="profile-big">@{user.rankedScoreK}K</span> <span class="text-cyan">R</span>ank<span class="text-cyan">S</span>core</div>
-    <div>@user.totalScoreK K total score</div>
+    <div class="profile-flex">
+        <div class="profile-flex-sub">
+            <div>played <span class="profile-big">@user.playCount</span> times</div>
+            <div><span class="profile-big">@{user.rankedScoreK}K</span> <span class="text-cyan">R</span>ank<span class="text-cyan">S</span>core</div>
+            <div>@user.totalScoreK K total score</div>
+        </div>
+        <div class="profile-freq-maps profile-flex-sub">
+            <div class="profile-freq-maps-head">Most played maps:</div>
+            <table class="profile-freq-maps-root">
+            @for(map <- user.freqMaps) {
+                <tr><td><div class="profile-freq-map-name">@map.name</div></td><td><span class="text-cyan">x</span>@map.playCount</td></tr>
+            }
+            </table>
+        </div>
+    </div>
 </div>
 @playscalajs.html.selectScript("client")
 @playscalajs.html.launcher("client")
