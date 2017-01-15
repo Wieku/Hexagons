@@ -30,12 +30,29 @@ class Application @Inject() (db: Database, conf: Configuration) extends Controll
     }
   }
 
-  def profile = Action { request =>
+  def ownProfile = Action { request =>
     request.session.data.get("uid") match {
-      case Some(_ :String) => Ok(views.html.profile(new Profile(request.session.data("uid").toInt, request.session.data("name"))))
+      case Some(_ :String) => Redirect("/profile/" + request.session.data("uid"))
       case _ => Redirect("/login")
     }
   }
 
-
+  def profile(id: String) = Action { request =>
+    request.session.data.get("uid") match {
+      case Some(_ :String) => {
+        val profile = new Profile(id.toInt, request.session.data("name"))
+        if(profile.exists)
+          Ok(views.html.profile(profile))
+        else
+          NotFound
+      }
+      case _ => {
+        val profile = new Profile(id.toInt)
+        if(profile.exists)
+          Ok(views.html.profile(profile))
+        else
+          NotFound
+      }
+    }
+  }
 }

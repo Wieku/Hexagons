@@ -9,7 +9,8 @@ GET     /maps                       controllers.Application.maps
 GET     /start/register/:token/*n   controllers.Account.register(token: String, n: String)
 POST    /start/register             controllers.Account.registerPost
 GET     /welcome                    controllers.Application.welcome
-GET     /profile                    controllers.Application.profile
+GET     /profile                    controllers.Application.ownProfile
+GET     /profile/:id                controllers.Application.profile(id: String)
 
 GET     /logout                     controllers.Account.logout
 GET     /login                      controllers.Account.login

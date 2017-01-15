@@ -8,9 +8,13 @@
             </div>
             <div class="user-menu">
                 <a href="/"><div><div>Home</div></div></a>
-                <a href="/profile"><div><div>Profile</div></div></a>
-                <a href="/logout"><div><div>Logout</div></div></a>
-                <div class="user-username"><div>@username</div></div>
+                @if(username != null) {
+                    <a href="/profile"><div><div>Profile</div></div></a>
+                    <a href="/logout"><div><div>Logout</div></div></a>
+                    <div class="user-username"><div>@username</div></div>
+                } else {
+                    <a href="/login"><div><div>Login</div></div></a>
+                }
             </div>
         </div>
         <div class="user-main">

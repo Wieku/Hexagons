@@ -38,4 +38,15 @@ object SqlUtil {
       if(rs.next()) rs.getInt(1) else -1
     })
   }
+
+  def getStringForQueryI(query: String, params: Int*)(): String = {
+    play.api.db.DB.withConnection(conn => {
+      val statement = conn.prepareStatement(query)
+      params.zipWithIndex.foreach {
+        case (p, i) => statement.setInt(i + 1, p)
+      }
+      val rs = statement.executeQuery()
+      if(rs.next()) rs.getString(1) else null
+    })
+  }
 }
