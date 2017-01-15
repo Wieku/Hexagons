@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users( id SERIAL,
                                   UNIQUE (nick));
 
 CREATE TABLE IF NOT EXISTS games( id SERIAL,
-                                  map_id varchar(36) NOT NULL,
+                                  map_id UUID NOT NULL,
                                   score BIGINT NOT NULL,
                                   user_id INTEGER,
                                   at BIGINT NOT NULL,
@@ -18,6 +18,10 @@ CREATE TABLE IF NOT EXISTS user_auth( user_id INTEGER,
                                       type INTEGER,
                                       data VARCHAR(64),
                                       FOREIGN KEY(user_id) REFERENCES users(id));
+
+CREATE TABLE IF NOT EXISTS maps( id SERIAL,
+                                 uuid UUID,
+                                 name VARCHAR(128));
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS top_scores AS
                                       SELECT user_id, map_id, MAX(score) AS sc FROM games GROUP BY map_id, user_id;
