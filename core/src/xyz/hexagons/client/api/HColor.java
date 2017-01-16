@@ -21,7 +21,7 @@ public class HColor {
 
 	int inc = 1;
 
-	public HColor (float r, float g, float b, float a){
+	public HColor (float r, float g, float b, float a) {
 		this.r = fr = r;
 		this.g = fg = g;
 		this.b = fb = b;
