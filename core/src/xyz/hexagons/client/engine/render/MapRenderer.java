@@ -14,12 +14,8 @@ import xyz.hexagons.client.engine.Player;
 import java.util.List;
 
 public class MapRenderer {
-
-	private Color shadow = new Color();
-
 	private Vector2 tmp = new Vector2();
 	private Vector2 tmp2 = new Vector2();
-
 
 	public void renderObjects(ShapeRenderer renderer, float delta, Camera camera, /*Style style,*/ Player player, List<Wall> walls) {
 
@@ -94,7 +90,7 @@ public class MapRenderer {
 
 	public void renderCenter(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
-		shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
+		CurrentMap.data.shadow.update();
 		float pulseSpeed =  CurrentMap.data.pulseMin / CurrentMap.data.pulse;
 		for (float i = 0; i < CurrentMap.data.sides; ++i) {
 
@@ -105,7 +101,7 @@ public class MapRenderer {
 				} else
 					renderer.setColor(Color.WHITE);
 			else
-				renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+				renderer.setColor(CurrentMap.data.shadow.r, CurrentMap.data.shadow.g, CurrentMap.data.shadow.b, (CurrentMap.data.shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 
 
 			tmp.set(0, Instance.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.data.sides * -360f);
@@ -125,13 +121,13 @@ public class MapRenderer {
 	}
 
 
-	public void renderWalls(ShapeRenderer renderer, float delta, boolean shadows, int shadLev, List<Wall> walls){
+	public void renderWalls(ShapeRenderer renderer, float delta, boolean shadows, int shadLev, List<Wall> walls) {
 
 		if(!shadows)
 			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 		else {
-			shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
-			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+			CurrentMap.data.shadow.update();
+			renderer.setColor(CurrentMap.data.shadow.r, CurrentMap.data.shadow.g, CurrentMap.data.shadow.b, (CurrentMap.data.shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 		}
 
 		for(Wall wall : walls) {
@@ -151,8 +147,8 @@ public class MapRenderer {
 		if(!shadows)
 			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
 		else {
-			shadow.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
-			renderer.setColor(shadow.r, shadow.g, shadow.b, (shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+			CurrentMap.data.shadow.update();
+			renderer.setColor(CurrentMap.data.shadow.r, CurrentMap.data.shadow.g, CurrentMap.data.shadow.b, (CurrentMap.data.shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
 		}
 
 		renderer.triangle(player.tmp.x, player.tmp.y, player.tmp2.x, player.tmp2.y, player.tmp3.x, player.tmp3.y);

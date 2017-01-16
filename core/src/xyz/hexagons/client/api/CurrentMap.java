@@ -1,5 +1,6 @@
 package xyz.hexagons.client.api;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StringBuilder;
 import xyz.hexagons.client.map.timeline.Timeline;
@@ -62,7 +63,13 @@ public abstract class CurrentMap {
 		public int colorOffset = 0;
 		public float colorSwitch = 1f;
 		public HColor walls = new HColor(1, 1, 1, 1);
-		
+		public DynamicColor shadow = new DynamicColor() {
+			@Override
+			public void update() {
+				this.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a).lerp(Color.BLACK, 0.4f);
+			}
+		};
+
 		/**gfx settings */
 		public int layers = 6;
 		public float depth = 1.6f;
