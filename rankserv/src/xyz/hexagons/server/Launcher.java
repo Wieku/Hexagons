@@ -117,8 +117,10 @@ public class Launcher {
             ctx.addServlet(GoogleAuthSite.class,    "/v1/auth/google/in/site");
             ctx.addServlet(GoogleAuthOut.class,     "/auth/google/out");
 
+            ctx.addServlet(SteamAuthGame.class,     "/v1/auth/steam/in");
 			ctx.addServlet(SteamAuthSite.class,     "/v1/auth/steam/in/site");
 			ctx.addServlet(SteamAuthOut.class,      "/auth/steam/out");
+
 
             server.start();
             server.join();

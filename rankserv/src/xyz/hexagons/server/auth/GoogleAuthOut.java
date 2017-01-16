@@ -31,28 +31,10 @@ public class GoogleAuthOut extends HttpServlet {
 		AccountUtils.Account account = AccountUtils.getAccount(googleUserId, AuthType.GOOGLE.type);
 
         if(fullState.startsWith("g/"))
-            notifyGame(UUID.fromString(fullState.substring(2)), account);
+            AccountUtils.notifyGame(UUID.fromString(fullState.substring(2)), account);
 
 		if(!AccountUtils.loginRedirect(account, resp, fullState))
         	resp.sendRedirect(Settings.instance.siteRedir + "/error/rs/googleAuth/out/1");
-    }
-
-    private void notifyGame(UUID stateUuid, AccountUtils.Account account) {
-        try {
-            if (AuthToken.tokenContinuations.containsKey(stateUuid)) {
-                Continuation c = AuthToken.tokenContinuations.get(stateUuid);
-                AuthToken.tokenContinuations.remove(stateUuid);
-
-                System.out.println("{\"account\":\"" + account.name + "\", id: " + account.id + "}");
-                c.getServletResponse().getWriter().print(RuntimeSecrets.signSession("{\"account\":\"" + account.name + "\", id: " + account.id + "}"));
-                c.complete();
-            } else if (AuthToken.tokenChallenges.containsKey(stateUuid)) {
-                AuthToken.tokenChallenges.remove(stateUuid);
-                AuthToken.tokenChallenges.put(stateUuid, account.name, 16000L);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private String getGoogleUserId(String code) {

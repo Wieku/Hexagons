@@ -35,8 +35,8 @@ public class SteamAuthOut extends HttpServlet {
 		String steamId = oiIdentity.substring(STEAM_ID_BASE.length());
 		AccountUtils.Account account = AccountUtils.getAccount(steamId, AuthType.STEAM.type);
 
-		//if(fullState.startsWith("g/"))
-			//notifyGame(UUID.fromString(fullState.substring(2)), account);
+		if(fullState.startsWith("g/"))
+			AccountUtils.notifyGame(UUID.fromString(fullState.substring(2)), account);
 
 		if(!AccountUtils.loginRedirect(account, resp, fullState))
 			resp.sendRedirect(Settings.instance.siteRedir + "/error/rs/steamAuth/out/1");

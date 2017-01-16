@@ -34,18 +34,7 @@ public class DesktopAccountManager extends AccountManager {
                 } catch (IOException | URISyntaxException e) {
                     e.printStackTrace();
                 }
-                Pair<Account, String> acc = REST.getJWS(Settings.instance.ranking.server + "/v1/auth/poll?challenge=" + c.challenge, Account.class);
-                System.out.println("ACCOUNT: " + (acc == null ? "null" : acc.getValue0().account));
-                if(acc != null) {
-                    AccountManager.Account account = onLogin(acc.getValue0(), acc.getValue1());
-                    Instance.eventBus.post(new EventLogin() {
-                        @Override
-                        public AccountManager.Account getAccount() {
-                            return account;
-                        }
-                    });
-                    return account;
-                } else return null;
+                return pollAccount(c);
             }
         }
         return null;
@@ -53,8 +42,35 @@ public class DesktopAccountManager extends AccountManager {
 
 	@Override
 	public AccountManager.Account loginSteam() {
+        if(Desktop.isDesktopSupported()) {
+            Challenge c = REST.get(Settings.instance.ranking.server + "/v1/auth/challenge", Challenge.class);
+            if(c != null && c.challenge != null) {
+                try {
+                    Desktop.getDesktop().browse(new URI(Settings.instance.ranking.server + "/v1/auth/steam/in?challenge=" + c.challenge));
+                } catch (IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                return pollAccount(c);
+            }
+        }
 		return null;
 	}
+
+	private AccountManager.Account pollAccount(Challenge c) {
+        Pair<Account, String> acc = REST.getJWS(Settings.instance.ranking.server + "/v1/auth/poll?challenge=" + c.challenge, Account.class);
+        System.out.println("ACCOUNT: " + (acc == null ? "null" : acc.getValue0().account));
+        if(acc != null) {
+            AccountManager.Account account = onLogin(acc.getValue0(), acc.getValue1());
+            Instance.eventBus.post(new EventLogin() {
+                @Override
+                public AccountManager.Account getAccount() {
+                    return account;
+                }
+            });
+            return account;
+        }
+        return null;
+    }
 
 	private AccountManager.Account onLogin(Account account, String t) {
         Holder<String> token = new Holder<>(t);

@@ -2,6 +2,7 @@ package xyz.hexagons.server.auth;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import org.eclipse.jetty.continuation.Continuation;
 import xyz.hexagons.server.Launcher;
 import xyz.hexagons.server.Settings;
 import xyz.hexagons.server.util.SqlUtil;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class AccountUtils {
 	private static final String qUserByAuth = SqlUtil.getQuery("user/userByAuth");
@@ -35,6 +37,24 @@ public class AccountUtils {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	static void notifyGame(UUID stateUuid, AccountUtils.Account account) {
+		try {
+			if (AuthToken.tokenContinuations.containsKey(stateUuid)) {
+				Continuation c = AuthToken.tokenContinuations.get(stateUuid);
+				AuthToken.tokenContinuations.remove(stateUuid);
+
+				System.out.println("{\"account\":\"" + account.name + "\", id: " + account.id + "}");
+				c.getServletResponse().getWriter().print(RuntimeSecrets.signSession("{\"account\":\"" + account.name + "\", id: " + account.id + "}"));
+				c.complete();
+			} else if (AuthToken.tokenChallenges.containsKey(stateUuid)) {
+				AuthToken.tokenChallenges.remove(stateUuid);
+				AuthToken.tokenChallenges.put(stateUuid, account.name, 16000L);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	static AccountUtils.Account getAccount(String userId, int accountType) {
