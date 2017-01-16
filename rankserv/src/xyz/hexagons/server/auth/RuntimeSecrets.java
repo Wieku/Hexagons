@@ -3,6 +3,7 @@ package xyz.hexagons.server.auth;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import xyz.hexagons.server.Settings;
 
 import java.security.SecureRandom;
 
@@ -11,18 +12,15 @@ public class RuntimeSecrets {
     public static final MACVerifier sessionVerifier;
 
     static {
-        SecureRandom random = new SecureRandom();
-        byte[] key = new byte[32];
-        random.nextBytes(key);
         MACSigner signer = null;
         MACVerifier verifier = null;
         try {
-            signer = new MACSigner(key);
+            signer = new MACSigner(Settings.instance.signSecret);
         } catch (KeyLengthException e) {
             e.printStackTrace();
         }
         try {
-            verifier = new MACVerifier(key);
+            verifier = new MACVerifier(Settings.instance.signSecret);
         } catch (JOSEException e) {
             e.printStackTrace();
         }

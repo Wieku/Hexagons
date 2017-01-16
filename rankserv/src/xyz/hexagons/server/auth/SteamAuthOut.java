@@ -27,7 +27,6 @@ public class SteamAuthOut extends HttpServlet {
 			throw new ServletException("Invalid request");
 
 		String fullState = req.getParameter("state");
-		UUID stateUuid = null;
 
 		String oiIdentity = req.getParameter("openid.identity");
 		if(!oiIdentity.startsWith(STEAM_ID_BASE))
