@@ -2,7 +2,6 @@ package xyz.hexagons.client.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.utils.PathUtil;
 import xyz.hexagons.client.utils.Utils;
@@ -14,7 +13,7 @@ public class SoundManager {
 	static HashMap<String, Sound> sounds = new HashMap<>();
 
 	public static void registerSound(String name, String path, boolean isInternal) {
-		Sound sound = Utils.tryOr(() -> Gdx.audio.newSound(PathUtil.getFDFileFile(path)), null);
+		Sound sound = Utils.tryOr(() -> Gdx.audio.newSound(PathUtil.getFileHandle(path)), null);
 		if(sound != null) {
 			sounds.put(name, sound);//, isInternal ? FileType.Internal : FileType.Absolute)));
 		}

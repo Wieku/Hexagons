@@ -48,9 +48,7 @@ public class AndroidLauncher extends AndroidApplication {
 				try {
 					byte[] buf = new byte[4 << 10];
 					int read;
-					System.out.println("D " + in.available());
 					while ((read = in.read(buf)) > 0) {
-						System.out.println("C " + read);
 						out.write(buf, 0, read);
 					}
 					out.flush();

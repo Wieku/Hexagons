@@ -12,7 +12,7 @@ public class PathUtil {
         return (Gdx.app.getType() == Application.ApplicationType.Android ? "" : "assets/") + f;
     }
 
-    public static FileHandle getFDFileFile(String f) {
+    public static FileHandle getFileHandle(String f) {
         if(Gdx.app.getType() != Application.ApplicationType.Android)
             return Gdx.files.internal(f);
 
