@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import xyz.hexagons.client.utils.GUIHelper;
+import xyz.hexagons.client.utils.PathUtil;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -40,7 +41,7 @@ public class PlayerRank extends Stack {
 		lTable = new Table();
 		rTable = GUIHelper.getTable(new Color(0,0,0,0.4f));
 		
-		Texture tex = new Texture(Gdx.files.internal("assets/hexlogo.png"), true);
+		Texture tex = new Texture(Gdx.files.internal(PathUtil.getPathForFile("hexlogo.png")), true);
 		tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 		image = new Image(tex);
 		//image.scaleBy(48f/image.getWidth());

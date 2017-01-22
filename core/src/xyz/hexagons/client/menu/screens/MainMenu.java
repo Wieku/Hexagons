@@ -44,6 +44,7 @@ import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.utils.Glider;
+import xyz.hexagons.client.utils.PathUtil;
 
 import java.util.ArrayList;
 
@@ -229,7 +230,7 @@ public class MainMenu implements Screen {
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		stage.addActor(copyright);
 
-		Texture tex = new Texture(Gdx.files.internal("assets/hexlogobig.png"), true);
+		Texture tex = new Texture(Gdx.files.internal(PathUtil.getPathForFile("hexlogobig.png")), true);
 		tex.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 		beatIHigh = new Image(tex);
 		beatIHigh.setScaling(Scaling.fit);

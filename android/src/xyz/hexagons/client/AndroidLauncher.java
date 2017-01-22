@@ -40,7 +40,12 @@ public class AndroidLauncher extends AndroidApplication {
 
 		//Instance.setForegroundFps = fps -> fps0 = fps;
 
+		Instance.accountManager = new AndroidAccountManager();
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+		Instance.setForegroundFps = fps -> {};
+
 		config.numSamples = Settings.instance.graphics.msaa;
 		config.hideStatusBar = true;
 		config.useWakelock = true;

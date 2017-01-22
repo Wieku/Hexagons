@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import xyz.hexagons.client.utils.PathUtil;
 
 public class BlurEffect {
 	
@@ -34,7 +35,7 @@ public class BlurEffect {
 			"	gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" +
 			"}";
 
-	final String FRAG = Gdx.files.internal("assets/shader/blur.fsh").readString();
+	final String FRAG = Gdx.files.internal(PathUtil.getPathForFile("shader/blur.fsh")).readString();
 
 	public int width = 1024;
 	public int height = 768;
@@ -50,7 +51,7 @@ public class BlurEffect {
 	ShaderProgram program;
 
 	public BlurEffect(int width, int height, boolean depth) {
-		program = new ShaderProgram(VERT, Gdx.files.internal("assets/shader/blur.fsh").readString());
+		program = new ShaderProgram(VERT, FRAG);
 		if (!program.isCompiled()) {
 			System.err.println(program.getLog());
 			System.exit(0);
