@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Instance {
     private static AnimationManager animationManager = new AnimationManager();
@@ -32,6 +33,7 @@ public class Instance {
     public static AccountManager.Account currentAccount = null;
     public static IAudioPlayerFactory audioPlayerFactory;
     public static EventBus eventBus = new EventBus();
+    public static Function<String, File> cacheFile; //Android only for now
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

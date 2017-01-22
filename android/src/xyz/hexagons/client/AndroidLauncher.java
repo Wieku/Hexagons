@@ -10,8 +10,7 @@ import com.google.gson.GsonBuilder;
 import xyz.hexagons.client.Hexagons;
 import xyz.hexagons.client.menu.settings.Settings;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 
 public class AndroidLauncher extends AndroidApplication {
 	int fps0;
@@ -39,6 +38,32 @@ public class AndroidLauncher extends AndroidApplication {
 		}
 
 		//Instance.setForegroundFps = fps -> fps0 = fps;
+
+		Instance.cacheFile = asset -> {
+			try {
+				final File cacheFile = new File(getContext().getCacheDir(), asset);
+				cacheFile.getParentFile().mkdirs();
+				OutputStream out = new FileOutputStream(cacheFile);
+				InputStream in = getContext().getAssets().open(asset);
+				try {
+					byte[] buf = new byte[4 << 10];
+					int read;
+					System.out.println("D " + in.available());
+					while ((read = in.read(buf)) > 0) {
+						System.out.println("C " + read);
+						out.write(buf, 0, read);
+					}
+					out.flush();
+				} finally {
+					out.close();
+					in.close();
+				}
+				return cacheFile;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		};
 
 		Instance.accountManager = new AndroidAccountManager();
 

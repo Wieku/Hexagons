@@ -1,6 +1,7 @@
 android {
     buildToolsVersion "23.0.2"
     compileSdkVersion 23
+
     sourceSets {
         main {
             manifest.srcFile "AndroidManifest.xml"
@@ -14,21 +15,20 @@ android {
 
         instrumentTest.setRoot("tests")
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     packagingOptions {
         exclude "META-INF/robovm/ios/robovm.xml"
     }
+
     defaultConfig {
         applicationId "xyz.hexagons.client"
         minSdkVersion 8
         targetSdkVersion 23
-    }
-
-    aaptOptions {
-        noCompress "ogg"
     }
 
     //https://github.com/evant/android-retrolambda-lombok
