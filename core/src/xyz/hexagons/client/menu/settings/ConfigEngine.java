@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class ConfigEngine {
@@ -36,8 +37,7 @@ public class ConfigEngine {
 				}
 
 				sub.add(el);
-				//Arrays.sort(sub, 0, sub.size(), (e1, e2) -> e1.getOrder().compareTo(e2.getOrder()));
-				//TODO: Fix not using j8 methods
+				Collections.sort(sub, (e1,e2)->e1.getOrder().compareTo(e2.getOrder()));
 			}
 		}
 

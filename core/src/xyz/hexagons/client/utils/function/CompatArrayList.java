@@ -1,9 +1,7 @@
 package xyz.hexagons.client.utils.function;
 
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Objects;
+import java.util.*;
 
 public class CompatArrayList<E> extends ArrayList<E> {
     public void forEachComp(Consumer<? super E> action) {

@@ -5,6 +5,8 @@ import xyz.hexagons.client.audio.AudioPlayer;
 
 public class AndroidAudioPlayer implements AudioPlayer {
 
+    private boolean isPaused = false;
+
     public AndroidAudioPlayer(FileHandle fileHandle) {
 
     }
@@ -46,7 +48,7 @@ public class AndroidAudioPlayer implements AudioPlayer {
 
     @Override
     public void play(float time) {
-
+        isPaused = false;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class AndroidAudioPlayer implements AudioPlayer {
 
     @Override
     public void pause() {
-
+        isPaused = true;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class AndroidAudioPlayer implements AudioPlayer {
 
     @Override
     public boolean isPaused() {
-        return false;
+        return isPaused;
     }
 
     @Override

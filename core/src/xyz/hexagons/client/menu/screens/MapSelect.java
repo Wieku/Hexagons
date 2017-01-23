@@ -46,6 +46,7 @@ import xyz.hexagons.client.utils.function.CompatArrayList;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Sebastian Krajewski on 04.04.15.
@@ -88,8 +89,7 @@ public class MapSelect implements Screen {
 	
 	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
-		//maps.sort((e1, e2)->e1.info.name.compareTo(e2.info.name));
-		//TODO: Fix not using j8 methods
+		Collections.sort(maps, (e1, e2)->e1.info.name.compareTo(e2.info.name));
 		instance = this;
 		shapeRenderer = new ObjRender();
 
