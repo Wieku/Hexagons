@@ -12,6 +12,7 @@ import me.wieku.animation.animations.Animation;
 import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.SoundManager;
+import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.menu.screens.MapSelect;
@@ -101,6 +102,7 @@ public class Hexagons extends Game {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+
 				it.remove();
 			}
 		}
@@ -129,8 +131,11 @@ public class Hexagons extends Game {
 	@Override
 	public void dispose () {
 		super.dispose();
-		if(Instance.maps != null)
-			Instance.maps.forEach(m-> MapLoader.closeJar(m.file));
+		if(Instance.maps != null) {
+			for (Map map : Instance.maps) {
+				MapLoader.closeJar(map.file);
+			}
+		}
 
 		SettingsManager.saveSettings();
 	}

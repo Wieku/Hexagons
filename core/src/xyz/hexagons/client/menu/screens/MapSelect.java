@@ -134,8 +134,6 @@ public class MapSelect implements Screen {
 
 				}
 
-
-
 				if(keycode == Keys.ESCAPE || keycode == Keys.BACK){
 					SoundManager.playSound("beep");
 					Instance.game.setScreen(MainMenu.instance);
@@ -422,7 +420,9 @@ public class MapSelect implements Screen {
 						tb1.add(GUIHelper.text("No scores available", Color.WHITE, 14));
 						scoreTable.add(tb1).height(leaderboard.getHeight());
 					} else {
-						lb.list.forEach(e -> addScore(tnumber++, e.nick, e.score));
+						for (RankApi.Leader e : lb.list) {
+							addScore(tnumber++, e.nick, e.score);
+						}
 						addMyScore(lb.position, lb.ownBest, lb.mapPlayers);
 					}
 				});

@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -23,16 +25,11 @@ public class RankApi {
     private RankApi() {}
 
     public LeaderBoard getScoreForMap(Map map, int count) {
-        HttpClient httpclient = HttpClients.createDefault();
-        HttpGet req = new HttpGet(getLeadersUri(map, count));
-
         try {
-            HttpResponse response = httpclient.execute(req);
-            HttpEntity entity = response.getEntity();
+            HttpURLConnection conn = (HttpURLConnection) new URL(getLeadersUri(map, count)).openConnection();
+            InputStream in = conn.getInputStream();
 
-            if (entity != null) {
-                InputStream in = entity.getContent();
-
+            if (conn.getResponseCode() == 200) {
                 LeaderBoard lb = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), LeaderBoard.class);
                 in.close();
                 return lb;
@@ -46,20 +43,15 @@ public class RankApi {
     public PlayerRankInfo getPlayerRankInfo() {
         if(Instance.currentAccount == null) return null;
 
-        HttpClient httpclient = HttpClients.createDefault();
-        HttpGet req = new HttpGet(Settings.instance.ranking.server + "/v1/rank?token=" + Instance.currentAccount.authToken());
-
         try {
-            HttpResponse response = httpclient.execute(req);
-            HttpEntity entity = response.getEntity();
+            HttpURLConnection conn = (HttpURLConnection) new URL(Settings.instance.ranking.server + "/v1/rank?token=" + Instance.currentAccount.authToken()).openConnection();
+            InputStream in = conn.getInputStream();
 
-            if (entity != null) {
-                InputStream in = entity.getContent();
-
+            if (conn.getResponseCode() == 200) {
                 PlayerRankInfo info = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), PlayerRankInfo.class);
-                in.close();
                 return info;
             }
+            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
