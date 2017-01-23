@@ -134,7 +134,7 @@ public class MapSelect implements Screen {
 
 
 
-				if(keycode == Keys.ESCAPE){
+				if(keycode == Keys.ESCAPE || keycode == Keys.BACK){
 					SoundManager.playSound("beep");
 					Instance.game.setScreen(MainMenu.instance);
 				}

@@ -49,6 +49,7 @@ public class Hexagons extends Game {
 	public void create () {
 		FontManager.init();
 		Animation.addAccessor(Actor.class, new ActorAccessor());
+		Gdx.input.setCatchBackKey(true);
 
 		SoundManager.registerSound("death", PathUtil.getPathForFile("sound/death.ogg"), true);
 		SoundManager.registerSound("start", PathUtil.getPathForFile("sound/go.ogg"), true);

@@ -241,7 +241,7 @@ public class Game implements Screen {
 				restart();
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.ESCAPE) && !escClick){
+			if((Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) && !escClick){
 				//audioPlayer.dispose();
 				Instance.game.setScreen(MapSelect.getInstance());
 			}
@@ -279,14 +279,14 @@ public class Game implements Screen {
 			}
 
 		} else {
-			if(Gdx.input.isKeyPressed(Keys.ESCAPE)){
+			if(Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
 				player.dead = true;
 				escClick = true;
 				onDie();
 			}
 		}
 
-		if (!Gdx.input.isKeyPressed(Keys.ESCAPE)){
+		if (!(Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK))){
 			escClick = false;
 		}
 		updateRotation(delta);

@@ -10,12 +10,12 @@ import xyz.hexagons.client.rankserv.AccountManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Instance {
     private static AnimationManager animationManager = new AnimationManager();
@@ -34,6 +34,7 @@ public class Instance {
     public static IAudioPlayerFactory audioPlayerFactory;
     public static EventBus eventBus = new EventBus();
     public static Function<String, File> cacheFile; //Android only for now
+    public static Function<File, ClassLoader> classLoaderSupplier;
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

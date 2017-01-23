@@ -158,7 +158,7 @@ public class MainMenu implements Screen {
 					Instance.currentAccount = Instance.accountManager.loginSteam();
 				}
 
-				if(keycode == Keys.ESCAPE)
+				if(keycode == Keys.ESCAPE || keycode == Keys.BACK)
 					escclick = true;
 				
 				
@@ -168,7 +168,7 @@ public class MainMenu implements Screen {
 
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
-				if(keycode == Keys.ESCAPE){
+				if(keycode == Keys.ESCAPE || keycode == Keys.BACK){
 					if(escclick == true) {
 						Gdx.app.exit();
 					}

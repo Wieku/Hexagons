@@ -91,11 +91,8 @@ public class MapLoader {
 					}
 				}
 
-				ClassLoader loader;
-				try {
-					loader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()}, MapLoader.class.getClassLoader());
-				} catch (MalformedURLException e1) {
-					e1.printStackTrace();
+				ClassLoader loader = Instance.classLoaderSupplier.apply(file);
+				if(loader == null) {
 					closeJar(jar);
 					continue;
 				}

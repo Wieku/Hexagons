@@ -1,0 +1,14 @@
+{
+  "className":"SynapseActivation",
+  "audioFileName":"neuroRythm.ogg",
+  "name":"Synapse Activation",
+  "author":"Magik6k",
+  "description":"?",
+  "songName":"Neuro Rythm",
+  "songAuthor":"MachinimaSound.com",
+  "tags":"wut",
+  "pack":"Dunno",
+  "startTimes":[0, 16, 37, 81],
+  "previewTime": 16,
+  "uuid": "10105240-66e9-49a5-a062-89de5ec7f572"
+}

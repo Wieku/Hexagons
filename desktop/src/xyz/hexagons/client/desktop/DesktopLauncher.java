@@ -13,6 +13,9 @@ import xyz.hexagons.client.menu.settings.Settings;
 
 import java.io.File;
 import java.io.FileReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class DesktopLauncher {
 	static LwjglApplicationConfiguration config;
@@ -38,6 +41,14 @@ public class DesktopLauncher {
 
 		Instance.storageRoot = new File(".");
 		Instance.accountManager = new DesktopAccountManager();
+		Instance.classLoaderSupplier = file -> {
+			try {
+				return URLClassLoader.newInstance(new URL[]{file.toURI().toURL()}, DesktopLauncher.class.getClassLoader());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			return null;
+		};
 
 		config = new LwjglApplicationConfiguration();
 
