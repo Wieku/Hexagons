@@ -169,8 +169,6 @@ public class MapSelect implements Screen {
 						}
 
 						return;
-					} else {
-						System.out.println("oiuaoeui");
 					}
 				}
 			}

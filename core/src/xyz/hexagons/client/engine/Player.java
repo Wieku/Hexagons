@@ -153,14 +153,32 @@ public class Player {
 
 	}
 
+	private boolean isLeftTouched() {
+		final int half = Gdx.graphics.getWidth()/2;
+		for (int i = 0; i < 4; i++) {
+			if(Gdx.input.isTouched(i) && Gdx.input.getX(i) <= half)
+				return true;
+		}
+		return false;
+	}
+
+	private boolean isRightTouched() {
+		final int half = Gdx.graphics.getWidth()/2;
+		for (int i = 0; i < 4; i++) {
+			if(Gdx.input.isTouched(i) && Gdx.input.getX(i) >= half)
+				return true;
+		}
+		return false;
+	}
+
 	private boolean isLeftPressed() {
 		return Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT) || (Gdx.app.getType() == ApplicationType.Desktop && Gdx.input.isButtonPressed(Buttons.LEFT))
-				|| (Gdx.app.getType() == ApplicationType.Android && Gdx.input.getX() <= Gdx.graphics.getWidth()/2 && Gdx.input.isTouched());
+				|| (Gdx.app.getType() == ApplicationType.Android && isLeftTouched());
 	}
 
 	private boolean isRightPressed() {
 		return Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT) || (Gdx.app.getType() == ApplicationType.Desktop && Gdx.input.isButtonPressed(Buttons.RIGHT))
-				|| (Gdx.app.getType() == ApplicationType.Android && Gdx.input.getX() >= Gdx.graphics.getWidth()/2 && Gdx.input.isTouched());
+				|| (Gdx.app.getType() == ApplicationType.Android && isRightTouched());
 	}
 
 	public int getIndex(){
