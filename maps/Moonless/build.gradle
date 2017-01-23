@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "me.tatarka:gradle-retrolambda:3.3.1"
+    }
+}
+
 apply plugin: 'java'
+apply plugin: "me.tatarka.retrolambda"
 
 sourceSets {
     main {

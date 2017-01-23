@@ -138,7 +138,9 @@ public class Acceleradiant implements MapScript {
 			}
 		}
 
-		CurrentMap.data.colors.forEach(e->e.setHueInc(e.getHueInc() + hueIStep));
+		for (HColor color : CurrentMap.data.colors) {
+			color.setHueInc(color.getHueInc() + hueIStep);
+		}
 		CurrentMap.data.walls.setHueInc(CurrentMap.data.walls.getHueInc() + hueIStep);
 
 		if(CurrentMap.data.walls.getHueInc() > hueIMax) hueIStep *= -1;
