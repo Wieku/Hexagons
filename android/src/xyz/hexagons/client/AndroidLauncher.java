@@ -12,6 +12,8 @@ import com.google.gson.GsonBuilder;
 import dalvik.system.DexClassLoader;
 import xyz.hexagons.client.Hexagons;
 import xyz.hexagons.client.menu.settings.Settings;
+import xyz.hexagons.client.utils.function.Consumer;
+import xyz.hexagons.client.utils.function.Function;
 
 import java.io.*;
 
@@ -26,7 +28,20 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Instance.storageRoot = getExternalFilesDir(null);
+		String state = Environment.getExternalStorageState();
+		if(Environment.MEDIA_MOUNTED.equals(state)) {
+			File baseDirFile = getExternalFilesDir(null);
+			if(baseDirFile == null) {
+				Instance.storageRoot = getFilesDir();
+				System.err.println("getExternalFilesDir returns null, falling back to internal storage!");
+			} else {
+				Instance.storageRoot = baseDirFile;
+			}
+		} else {
+			Instance.storageRoot = getFilesDir();
+			System.err.println("Ext storage not mounted, falling back to internal storage!");
+		}
+
 		if(!Instance.storageRoot.mkdirs()) {
 			System.err.println("Error creating hexagons directory!");
 		}
@@ -42,28 +57,31 @@ public class AndroidLauncher extends AndroidApplication {
 			e.printStackTrace();
 		}
 
-		Instance.cacheFile = asset -> {
-			try {
-				final File cacheFile = new File(getContext().getCacheDir(), asset);
-				cacheFile.getParentFile().mkdirs();
-				OutputStream out = new FileOutputStream(cacheFile);
-				InputStream in = getContext().getAssets().open(asset);
+		Instance.cacheFile = new Function<String, File>() {
+			@Override
+			public File apply(String asset) {
 				try {
-					byte[] buf = new byte[4 << 10];
-					int read;
-					while ((read = in.read(buf)) > 0) {
-						out.write(buf, 0, read);
+					final File cacheFile = new File(AndroidLauncher.this.getContext().getCacheDir(), asset);
+					cacheFile.getParentFile().mkdirs();
+					OutputStream out = new FileOutputStream(cacheFile);
+					InputStream in = AndroidLauncher.this.getContext().getAssets().open(asset);
+					try {
+						byte[] buf = new byte[4 << 10];
+						int read;
+						while ((read = in.read(buf)) > 0) {
+							out.write(buf, 0, read);
+						}
+						out.flush();
+					} finally {
+						out.close();
+						in.close();
 					}
-					out.flush();
-				} finally {
-					out.close();
-					in.close();
+					return cacheFile;
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				return cacheFile;
-			} catch (IOException e) {
-				e.printStackTrace();
+				return null;
 			}
-			return null;
 		};
 
 		Instance.accountManager = new AndroidAccountManager();
@@ -75,7 +93,11 @@ public class AndroidLauncher extends AndroidApplication {
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
-		Instance.setForegroundFps = fps -> {};
+		Instance.setForegroundFps = new Consumer<Integer>() {
+			@Override
+			public void accept(Integer fps) {
+			}
+		};
 
 		config.numSamples = Settings.instance.graphics.msaa;
 		config.hideStatusBar = true;

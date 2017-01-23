@@ -1,3 +1,5 @@
+apply plugin: "me.tatarka.retrolambda"
+
 android {
     buildToolsVersion "23.0.2"
     compileSdkVersion 23

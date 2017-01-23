@@ -7,15 +7,14 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 import xyz.hexagons.client.audio.AudioPlayer.IAudioPlayerFactory;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.rankserv.AccountManager;
+import xyz.hexagons.client.utils.function.Consumer;
+import xyz.hexagons.client.utils.function.Function;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Instance {
     private static AnimationManager animationManager = new AnimationManager();

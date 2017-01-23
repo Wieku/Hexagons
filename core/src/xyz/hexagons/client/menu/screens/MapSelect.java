@@ -42,6 +42,7 @@ import xyz.hexagons.client.rankserv.EventUpdateNick;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
 import xyz.hexagons.client.utils.GUIHelper;
+import xyz.hexagons.client.utils.function.CompatArrayList;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class MapSelect implements Screen {
 
 	private MapRenderer mapRenderer = new MapRenderer();
 
-	public ArrayList<MenuMap> mapButtons = new ArrayList<>();
+	public CompatArrayList<MenuMap> mapButtons = new CompatArrayList<>();
 	public CScrollPane scrollPane;
 
 	public static int mapIndex = 0;
@@ -87,7 +88,8 @@ public class MapSelect implements Screen {
 	
 	public MapSelect(ArrayList<Map> maps){
 		this.maps = maps;
-		maps.sort((e1, e2)->e1.info.name.compareTo(e2.info.name));
+		//maps.sort((e1, e2)->e1.info.name.compareTo(e2.info.name));
+		//TODO: Fix not using j8 methods
 		instance = this;
 		shapeRenderer = new ObjRender();
 
@@ -112,7 +114,7 @@ public class MapSelect implements Screen {
 						MenuMap ms = mapButtons.get(mapIndex);
 						//scrollPane.scrollTo(0, ms.getY()+(scrollPane.getHeight()/2-ms.getHeight()/2)*(mapIndex==0?1:-1), ms.getWidth(), ms.getHeight());
 						scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
-						mapButtons.forEach(MenuMap::update);
+						mapButtons.forEachComp(MenuMap::update);
 						
 						try {
 							Method method = scrollPane.getClass().getDeclaredMethod("resetFade");
@@ -147,7 +149,7 @@ public class MapSelect implements Screen {
 			@Override
 			public void tap(InputEvent event, float x, float y, int count, int button) {
 				for(MenuMap m : mapButtons) {
-					if(m.isOver()) {
+					if(m.isPressed()) {
 
 						System.out.println(m.map.info.name);
 						if(mapButtons.indexOf(m) != mapIndex) {
@@ -159,7 +161,7 @@ public class MapSelect implements Screen {
 							
 							MenuMap ms = mapButtons.get(mapIndex);
 							scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
-							mapButtons.forEach(MenuMap::update);
+							mapButtons.forEachComp(MenuMap::update);
 							
 						} else {
 							SoundManager.playSound("beep");
@@ -169,8 +171,9 @@ public class MapSelect implements Screen {
 						}
 
 						return;
+					} else {
+						System.out.println("oiuaoeui");
 					}
-
 				}
 			}
 		});
@@ -323,7 +326,7 @@ public class MapSelect implements Screen {
 		scrollPane.setBounds(stage.getWidth()-Math.max(468, stage.getWidth()/3), 100, Math.max(468, stage.getWidth()/3), stage.getHeight()-200);
 		scrollPane.layout();
 		
-		mapButtons.forEach(e->{e.setX(0);e.update();});
+		mapButtons.forEachComp(e->{e.setX(0);e.update();});
 		
 		MenuMap ms = mapButtons.get(mapIndex);
 		scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
@@ -352,7 +355,7 @@ public class MapSelect implements Screen {
 		if(!mapButtons.isEmpty()){
 			for(int i=0; i<mapButtons.size();i++) mapButtons.get(i).check(i==mapIndex);
 		}
-		mapButtons.forEach(MenuMap::update);
+		mapButtons.forEachComp(MenuMap::update);
 
 		//scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
 		//scrollPane.layout();

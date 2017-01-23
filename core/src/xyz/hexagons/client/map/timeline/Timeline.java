@@ -21,7 +21,7 @@ public class Timeline <T extends TimelineObject> {
 		}
 	}
 
-	PriorityQueue<QueueObject> queue = new PriorityQueue<>((o1, o2) -> {
+	PriorityQueue<QueueObject> queue = new PriorityQueue<>(11, (o1, o2) -> {
 		return o1.time.compareTo(o2.time);
 	});
 
