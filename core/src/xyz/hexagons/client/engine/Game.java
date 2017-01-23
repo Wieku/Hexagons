@@ -237,7 +237,7 @@ public class Game implements Screen {
 				MenuPlaylist.pause();
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.SPACE)){
+			if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isTouched()){
 				restart();
 			}
 
