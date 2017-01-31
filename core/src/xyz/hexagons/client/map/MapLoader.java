@@ -67,7 +67,7 @@ public class MapLoader {
 					Gson gson = new GsonBuilder().create();
 					m = gson.fromJson(new InputStreamReader(jar.getInputStream(jar.getEntry("map.json"))), MapJson.class);
 				} catch (IOException e) {
-					System.err.println("File map.json in mod " + file.getName() + " has wrong syntax!");
+					System.err.println("File map.json in map " + file.getName() + " has wrong syntax!");
 					e.printStackTrace();
 					closeJar(jar);
 					continue;
@@ -89,43 +89,16 @@ public class MapLoader {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				}
-
-				ClassLoader loader = Instance.classLoaderSupplier.apply(file);
-				if(loader == null) {
+				} else {
+					System.err.println("File main.lua in map " + file.getName() + " doesn't exist!");
 					closeJar(jar);
 					continue;
 				}
 
-				Class<?> toLoad;
-				try {
-					toLoad = loader.loadClass(m.className);
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-					closeJar(jar);
-					continue;
-				}
+				String sh1 = Utils.getFileHash(file);
+				File data = new File(DATA_PATH + sh1 + ".hxd");
 
-				List<Class<?>> interfaces = Arrays.asList(toLoad.getInterfaces());
-				//System.err.println("fghjty " + interfaces);
-				if (!interfaces.contains(MapScript.class)) {
-					System.err.println("Script of " + m.name + "(" + file.getName() + ") Doesn't implement 'MapScript' interface!");
-					closeJar(jar);
-					continue;
-				}
-
-				try {
-					String sh1 = Utils.getFileHash(file);
-					File data = new File(DATA_PATH + sh1 + ".hxd");
-					//if(!data.exists()) data.createNewFile();
-					maps.add(new Map((MapScript) toLoad.newInstance(), m, jar, data));
-
-				} catch (Exception e1) {
-					System.err.println("Script of " + m.name + "(" + file.getName() + ") couldn't contain custom constructor!");
-					e1.printStackTrace();
-					closeJar(jar);
-					continue;
-				}
+				maps.add(new Map((MapScript) new LuaMap(), m, jar, data));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 

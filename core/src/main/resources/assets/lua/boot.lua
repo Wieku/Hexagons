@@ -123,6 +123,13 @@ function prepareEnv(name)
                 end
             end,
             traceback = debug.traceback
+        },
+        game = {
+            newPatternQueue = game.newPatternQueue,
+            randomParam = game.randomParam
+        },
+        standardPattern = {
+            alternatingBarrage = standardPattern.alternatingBarrage
         }
     }
 
