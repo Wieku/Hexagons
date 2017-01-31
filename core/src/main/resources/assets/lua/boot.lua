@@ -1,5 +1,40 @@
 print "Running Lua bootstrap code"
 
+local gameutil = {}
+local patternQueue = {}
+
+function patternQueue:shuffle()
+    for i = #self, 2, -1 do
+        local r = game.random(i - 1) + 1
+        self[i], self[r] = self[r], self[i]
+    end
+end
+
+function patternQueue:addNext()
+    if self.at >= #self then
+        self.at = 0
+    end
+    self.at = self.at + 1
+    self[self.at]()
+end
+
+function gameutil.newPatternQueue(queue)
+    local unpacked = {at = 0}
+    local n = 1
+    for _, v in ipairs(queue) do
+        for i = 1, v.weight do
+            unpacked[n] = v.pattern
+            n = n + 1
+        end
+    end
+
+    if #unpacked < 1 then
+        error("Pattern queue must contain at least 1 element with weight > 0!")
+    end
+
+    return setmetatable(unpacked, {__index = patternQueue})
+end
+
 function prepareEnv(name)
     local env = {
         assert = assert,
@@ -77,8 +112,8 @@ function prepareEnv(name)
             pi = math.pi,
             pow = math.pow,
             rad = math.rad,
-            random = math.random,
-            randomseed = math.randomseed,
+            random = game.random, --TODO: Check compat
+            --randomseed = math.randomseed,
             sin = math.sin,
             sinh = math.sinh,
             sqrt = math.sqrt,
@@ -125,11 +160,17 @@ function prepareEnv(name)
             traceback = debug.traceback
         },
         game = {
-            newPatternQueue = game.newPatternQueue,
-            randomParam = game.randomParam
+            newPatternQueue = gameutil.newPatternQueue,
+            randomParam = game.randomParam,
+            random = game.random,
+            getHalfSides = game.getHalfSides
         },
         standardPattern = {
-            alternatingBarrage = standardPattern.alternatingBarrage
+            alternatingBarrage = standardPattern.alternatingBarrage,
+            mirrorSpiral = standardPattern.mirrorSpiral,
+            barrageSpiral = standardPattern.barrageSpiral,
+            inverseBarrage = standardPattern.inverseBarrage,
+            tunnel = standardPattern.tunnel
         }
     }
 

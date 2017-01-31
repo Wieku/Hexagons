@@ -73,19 +73,17 @@ public class MapLoader {
 					continue;
 				}
 
+				LuaTable callbacks = null;
 				if (jar.getEntry("main.lua") != null) {
 					try {
 						InputStreamReader r = new InputStreamReader(jar.getInputStream(jar.getEntry("main.lua")));
 
 						Varargs pe = Instance.luaGlobals.get("prepareEnv").invoke(LuaString.valueOf(m.name));
 
-						LuaTable callbacks = pe.checktable(2);
+						callbacks = pe.checktable(2);
 
 						LuaValue chunk = Instance.luaGlobals.load(r, "=Map/" + file.getName() + "/main.lua", pe.checktable(1));
 						chunk.call();
-
-						callbacks.get("init").call();
-
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -98,7 +96,7 @@ public class MapLoader {
 				String sh1 = Utils.getFileHash(file);
 				File data = new File(DATA_PATH + sh1 + ".hxd");
 
-				maps.add(new Map((MapScript) new LuaMap(), m, jar, data));
+				maps.add(new Map(new LuaMap(callbacks), m, jar, data));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 

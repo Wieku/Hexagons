@@ -1,7 +1,6 @@
 package xyz.hexagons.client.engine;
 
 import com.badlogic.gdx.Gdx;
-import org.luaj.vm2.LuaNumber;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
@@ -12,9 +11,12 @@ import xyz.hexagons.client.api.Patterns;
 import xyz.hexagons.client.utils.PathUtil;
 import xyz.hexagons.client.utils.function.Function;
 
+import java.util.Random;
 import java.util.function.Supplier;
 
 public class LuaInit {
+    static Random random = new Random(); //TODO: CENTRAL SEED
+
     public static void init() {
         Instance.luaGlobals.set("game", getGame());
         Instance.luaGlobals.set("standardPattern", getStandardPatterns());
@@ -26,22 +28,33 @@ public class LuaInit {
     private static LuaValue getGame() {
         LuaTable game = new LuaTable();
 
-        game.set("newPatternQueue", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue arg) {
-                return null;
-            }
-        });
-
         game.set("randomParam", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue arg1, LuaValue arg2) {
+                final int start = arg1.checkint();
+                final int end = arg2.checkint();
+
                 return new ZeroArgFunction() {
                     @Override
                     public LuaValue call() {
-                        return LuaValue.valueOf(9); //TODO: NO, ITS NOT RNG.. YET
+                        return LuaValue.valueOf(start + random.nextInt(end - start + 1));
                     }
                 };
+            }
+        });
+
+        game.set("random", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+                final int bound = arg.checkint();
+                return LuaValue.valueOf(random.nextInt(bound));
+            }
+        });
+
+        game.set("getHalfSides", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                return LuaValue.valueOf(Patterns.getHalfSides());
             }
         });
         return game;
@@ -51,6 +64,11 @@ public class LuaInit {
         LuaTable standardPatterns = new LuaTable();
 
         standardPatterns.set("alternatingBarrage", getStandardPatternGenerator(new AlternatingBarrageGenerator()));
+        standardPatterns.set("mirrorSpiral", getStandardPatternGenerator(new MirrorSpiralGenerator()));
+        standardPatterns.set("barrageSpiral", getStandardPatternGenerator(new BarrageSpiralGenerator()));
+        standardPatterns.set("inverseBarrage", getStandardPatternGenerator(new InverseBarrageGenerator()));
+        standardPatterns.set("tunnel", getStandardPatternGenerator(new TunnelGenerator()));
+
         return standardPatterns;
     }
 
@@ -69,6 +87,18 @@ public class LuaInit {
         };
     }
 
+    private static LuaValue wrapLuaParam(final LuaValue lv) {
+        if(lv.isfunction()) {
+            return lv;
+        }
+        return new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                return lv;
+            }
+        };
+    }
+
     private interface PatternGenerator extends Function<LuaValue, Supplier<LuaValue>> {}
 
     private static class AlternatingBarrageGenerator implements PatternGenerator {
@@ -79,13 +109,96 @@ public class LuaInit {
                 throw new RuntimeException("Arg to pattern constructor must be a table!");
             }
 
-            final int times = arg.get("times").optint(1); //TODO: Should be func, wrap into that, call on get
-            final int step = arg.get("step").optint(1);
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue step = wrapLuaParam(arg.get("step"));
 
             return new Supplier<LuaValue>() {
                 @Override
                 public LuaValue get() {
-                    Patterns.pAltBarrage(times, step);
+                    Patterns.pAltBarrage(times.call().optint(1), step.call().optint(1));
+                    return null;
+                }
+            };
+        }
+    }
+
+    private static class MirrorSpiralGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue extra = wrapLuaParam(arg.get("extra"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pMirrorSpiral(times.call().optint(1), extra.call().optint(1));
+                    return null;
+                }
+            };
+        }
+    }
+
+    private static class BarrageSpiralGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue delayMult = wrapLuaParam(arg.get("delayMult"));
+            final LuaValue step = wrapLuaParam(arg.get("step"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pBarrageSpiral(times.call().optint(1), (float) delayMult.call().optdouble(1), step.call().optint(1));
+                    return null;
+                }
+            };
+        }
+    }
+
+    private static class InverseBarrageGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pInverseBarrage(times.call().optint(1));
+                    return null;
+                }
+            };
+        }
+    }
+
+    private static class TunnelGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pTunnel(times.call().optint(1));
                     return null;
                 }
             };

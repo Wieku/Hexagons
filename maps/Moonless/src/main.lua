@@ -8,11 +8,11 @@ local patternQueue = game.newPatternQueue{
 
 function init()
     patternQueue:shuffle()
-    map.loadProperties("properties.hocon")
+    --map.loadProperties("properties.hocon")
 end
 
 function initColors()
-    map.loadProperties("colors.hocon")
+    --map.loadProperties("colors.hocon")
 end
 
 function nextPattern()

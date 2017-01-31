@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public abstract class Patterns {
 
-	static Random random = new Random();
+	static Random random = new Random(); //TODO: CENTRAL SEED
 	static public int random (int start, int end) {
 		return start + random.nextInt(end - start + 1);
 	}
