@@ -81,8 +81,8 @@ public class Fairydust implements MapScript {
 
 	@Override
 	public void initColors(){
-		CurrentMap.gameProperties.colors.add(new HColor(255f / 255, 128f/255, 1, 60f/255).addPulse(253f/255, 0, 253f/255, 60f/255));
-		CurrentMap.gameProperties.colors.add(new HColor(253f / 255, 0, 253f / 255, 60f/255).addPulse(255f/255, 128f/255, 255f/255, 60f/255));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(255f / 255, 128f/255, 1, 60f/255).addPulse(253f/255, 0, 253f/255, 60f/255));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(253f / 255, 0, 253f / 255, 60f/255).addPulse(255f/255, 128f/255, 255f/255, 60f/255));
 		CurrentMap.gameProperties.walls = new HColor(1,1,1,1).setMain(true);
 		CurrentMap.setColorPulseMax(2f);
 		CurrentMap.setColorPulseMin(2f);

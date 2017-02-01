@@ -138,7 +138,7 @@ public class Acceleradiant implements MapScript {
 			}
 		}
 
-		for (HColor color : CurrentMap.gameProperties.colors) {
+		for (HColor color : CurrentMap.gameProperties.backgroundColors) {
 			color.setHueInc(color.getHueInc() + hueIStep);
 		}
 		CurrentMap.gameProperties.walls.setHueInc(CurrentMap.gameProperties.walls.getHueInc() + hueIStep);
@@ -150,8 +150,8 @@ public class Acceleradiant implements MapScript {
 
 	@Override
 	public void initColors() {
-		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addPulse(45f / 255, 25f / 255, 1f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(8.7f));
-		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addPulse(1f / 255, 25f / 255, 45f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(9.5f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(0, 0, 0, 1f).addPulse(45f / 255, 25f / 255, 1f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(8.7f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(0, 0, 0, 1f).addPulse(1f / 255, 25f / 255, 45f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(9.5f));
 
 		CurrentMap.gameProperties.walls = new HColor(1, 155f/255, 155f/255, 230f/255).addPulse(50f/255, -75f/255, 125f/255, 0).addHue(new Hue(0, 360, 0.5f, false, false)).setMain(true);
 		CurrentMap.setColorPulseMax(1.5f);

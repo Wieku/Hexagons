@@ -8,5 +8,5 @@ color {
 
   pulseMax: 1.5
   pulseIncrement: 0.025
-  colorSwitch: 1
+  switch: 1
 }

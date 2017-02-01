@@ -70,8 +70,8 @@ public class Pointless implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(2.7f).addHue(new Hue(0, 360, 0.7f, false, false)));
-		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(3.5f).addHue(new Hue(0, 360, 0.7f, false, false))/*.addHueOffset(5.0f)*/);
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(2.7f).addHue(new Hue(0, 360, 0.7f, false, false)));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(3.5f).addHue(new Hue(0, 360, 0.7f, false, false))/*.addHueOffset(5.0f)*/);
 
 		CurrentMap.gameProperties.walls = new HColor(1f, 0, 0, 1f).addPulse(-80f/255, 75f/255, 65f/255, 0f).addHue(new Hue(0, 360, 0.7f, false, false)).setMain(true);
 		CurrentMap.setColorPulseMax(1.5f);

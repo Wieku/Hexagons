@@ -76,8 +76,8 @@ public class Dimension implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.gameProperties.colors.add(new HColor(190f/255, 190f/255, 190f/255, 1).addPulse(15f/255, 15f/255, 15f/255, 0).addHue(new Hue(200, 340, 1, true, false)).addHueOffset(4.7f));
-		CurrentMap.gameProperties.colors.add(new HColor(235/255f, 235/255f, 235/255f, 1));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(190f/255, 190f/255, 190f/255, 1).addPulse(15f/255, 15f/255, 15f/255, 0).addHue(new Hue(200, 340, 1, true, false)).addHueOffset(4.7f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(235/255f, 235/255f, 235/255f, 1));
 		CurrentMap.gameProperties.walls = new HColor(0, 0, 0, 1).addHue(new Hue(200, 340, 1, true, false)).setMain(true);
 		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);

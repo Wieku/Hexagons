@@ -71,13 +71,13 @@ public class DragonMayhem implements MapScript {
 		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
-				CurrentMap.gameProperties.colors.clear();
-				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.clear();
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(225f/255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(195f / 255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(195f / 255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(225f/255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(1f, 0f, 0f, 1f));
 			}
 		});
 		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
@@ -90,13 +90,13 @@ public class DragonMayhem implements MapScript {
 		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
-				CurrentMap.gameProperties.colors.clear();
-				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
-				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
-				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
-				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.clear();
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(1f, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(225f/255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(195f / 255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(195f / 255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(225f/255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(1f, 0f, 0f, 1f));
 				CurrentMap.gameProperties.walls = new HColor(1f, 0f, 0f, 1f).addPulse(0f, 1f, 1f, 0f);
 				CurrentMap.setColorPulseInc(0.541f);
 			}
@@ -111,8 +111,8 @@ public class DragonMayhem implements MapScript {
 
 	@Override
 	public void initColors(){
-		CurrentMap.gameProperties.colors.add(new HColor(255f / 255, 0, 0, 1f).addHue(new Hue(0, 25, 0.345f, true, false)));
-		CurrentMap.gameProperties.colors.add(new HColor(180f / 255, 0, 0, 1f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(255f / 255, 0, 0, 1f).addHue(new Hue(0, 25, 0.345f, true, false)));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(180f / 255, 0, 0, 1f));
 		CurrentMap.gameProperties.walls = new HColor(1,1,1,1);
 		CurrentMap.setColorPulseMax(2.5f);
 		CurrentMap.setColorPulseInc(0.345f);

@@ -70,8 +70,8 @@ public class Apeirogon implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.gameProperties.colors.add(new HColor(90f / 255, 90f / 255, 90f / 255, 1f).addPulse(75f/255, 15f/255, 15f/255, 0));
-		CurrentMap.gameProperties.colors.add(new HColor(60f / 255, 60f / 255, 60f / 255, 1f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(90f / 255, 90f / 255, 90f / 255, 1f).addPulse(75f/255, 15f/255, 15f/255, 0));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(60f / 255, 60f / 255, 60f / 255, 1f));
 
 		CurrentMap.gameProperties.walls = new HColor(253f/255, 253f/255, 253f/255, 1);
 		CurrentMap.setColorPulseMax(1.8f);

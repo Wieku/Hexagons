@@ -300,8 +300,8 @@ public class MainMenu implements Screen {
 			motdAnimation.start(Instance.getAnimationManager());
 			first = true;
 			if(Instance.maps.isEmpty()) {
-				CurrentMap.gameProperties.colors.add(new HColor(36f/255, 36f/255, 36f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
-				CurrentMap.gameProperties.colors.add(new HColor(20f / 255, 20f / 255, 20f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(36f/255, 36f/255, 36f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(20f / 255, 20f / 255, 20f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
 			}
 		}
 

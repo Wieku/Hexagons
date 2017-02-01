@@ -46,13 +46,13 @@ public class MapRenderer {
 	private float delta1;
 	public void renderBackground(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
-		for(HColor o: CurrentMap.gameProperties.colors) o.update(delta);
+		for(HColor o: CurrentMap.gameProperties.backgroundColors) o.update(delta);
 
 		if((delta1 += delta) >= CurrentMap.gameProperties.colorSwitch){
 
 			++CurrentMap.gameProperties.colorOffset;
 
-			if(CurrentMap.gameProperties.colorOffset == CurrentMap.gameProperties.colors.size()){
+			if(CurrentMap.gameProperties.colorOffset == CurrentMap.gameProperties.backgroundColors.size()){
 				CurrentMap.gameProperties.colorOffset = 0;
 			}
 
@@ -62,8 +62,8 @@ public class MapRenderer {
 		if(shadows)
 			for(float i = 0; i < CurrentMap.gameProperties.sides; ++i) {
 
-				if(CurrentMap.gameProperties.colors.size() > 0){
-					HColor col = CurrentMap.gameProperties.colors.get(((int)i + CurrentMap.gameProperties.colorOffset) % CurrentMap.gameProperties.colors.size());
+				if(CurrentMap.gameProperties.backgroundColors.size() > 0){
+					HColor col = CurrentMap.gameProperties.backgroundColors.get(((int)i + CurrentMap.gameProperties.colorOffset) % CurrentMap.gameProperties.backgroundColors.size());
 					if(i+1==CurrentMap.gameProperties.sides && CurrentMap.gameProperties.sides % 2 == 1)
 						renderer.setColor(col.r / 1.4f, col.g / 1.4f, col.b / 1.4f, col.a);
 					else
@@ -95,8 +95,8 @@ public class MapRenderer {
 		for (float i = 0; i < CurrentMap.gameProperties.sides; ++i) {
 
 			if(!shadows)
-				if(CurrentMap.gameProperties.colors.size() > 0){
-					HColor col = CurrentMap.gameProperties.colors.get(CurrentMap.gameProperties.colorOffset);
+				if(CurrentMap.gameProperties.backgroundColors.size() > 0){
+					HColor col = CurrentMap.gameProperties.backgroundColors.get(CurrentMap.gameProperties.colorOffset);
 					renderer.setColor(col.r, col.g, col.b, col.a);
 				} else
 					renderer.setColor(Color.WHITE);

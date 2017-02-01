@@ -117,8 +117,8 @@ public class Dodecahedron implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.gameProperties.colors.add(new HColor(61f / 255, 0f / 255, 62f / 255, 1f).addPulse(68f/255, 0f/255, 69f/255, 0));
-		CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 67f / 255, 152f / 255, 1f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(61f / 255, 0f / 255, 62f / 255, 1f).addPulse(68f/255, 0f/255, 69f/255, 0));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(195f / 255, 67f / 255, 152f / 255, 1f));
 
 		CurrentMap.gameProperties.walls = new HColor(223f/255, 148f/255, 183f/255, 1).setMain(true).addPulse(60f/255, 60f/255, 60f/255, 0f);
 		CurrentMap.setAlphaFalloff(0.1f);

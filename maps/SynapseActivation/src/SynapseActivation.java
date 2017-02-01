@@ -61,7 +61,7 @@ public class SynapseActivation implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.gameProperties.colors.add(new HColor(160f/255, 160f/255, 160f/255, 1));//.addPulse(75f/255, 15f/255, 15f/255, 0));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(160f/255, 160f/255, 160f/255, 1));//.addPulse(75f/255, 15f/255, 15f/255, 0));
 		//CurrentMap.gameProperties.colors.add(new HColor(60f / 255, 60f / 255, 60f / 255, 1f));
 		CurrentMap.gameProperties.shadow = new DynamicColor.StaticDynamicColor(0x02eafaff);
 

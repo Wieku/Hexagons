@@ -71,12 +71,12 @@ public class Pi implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 74f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(25f));
-		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(50f));
-		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 115f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(75f));
-		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 190f / 255, 98f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(100f));
-		CurrentMap.gameProperties.colors.add(new HColor(250f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(125f));
-		CurrentMap.gameProperties.colors.add(new HColor(163f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(150f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(190f / 255, 74f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(25f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(190f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(50f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(190f / 255, 115f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(75f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(190f / 255, 190f / 255, 98f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(100f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(250f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(125f));
+		CurrentMap.gameProperties.backgroundColors.add(new HColor(163f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(150f));
 
 
 		CurrentMap.gameProperties.walls = new HColor(0, 0, 0, 225/255f).addPulse(99/255f, 30/255f, 165/255f, 0f).setMain(true);
