@@ -33,7 +33,7 @@ public class SkewCamera extends PerspectiveCamera {
 
 	public void update(float delta){
 
-		pulseInc = (pulseInc<0?-1:1) * Math.abs(CurrentMap.data.colorPulseInc);
+		pulseInc = (pulseInc<0?-1:1) * Math.abs(CurrentMap.gameProperties.colorPulseInc);
 
 		if(Settings.instance.graphics.fixedratio) {
 			viewportWidth = 4;
@@ -43,16 +43,16 @@ public class SkewCamera extends PerspectiveCamera {
 			viewportHeight = Gdx.graphics.getHeight();
 		}
 		delta0+=delta * 60 * 2.5f * pulseInc;
-		if(delta0 < -CurrentMap.data.colorPulseMax /2){
-			delta0 = -CurrentMap.data.colorPulseMax /2;
+		if(delta0 < -CurrentMap.gameProperties.colorPulseMax /2){
+			delta0 = -CurrentMap.gameProperties.colorPulseMax /2;
 			pulseInc *= -1f;
 		}
-		if(delta0 > CurrentMap.data.colorPulseMax /2){
-			delta0 = CurrentMap.data.colorPulseMax /2;
+		if(delta0 > CurrentMap.gameProperties.colorPulseMax /2){
+			delta0 = CurrentMap.gameProperties.colorPulseMax /2;
 			pulseInc *= -1f;
 		}
 
-		//float percent = (delta0 / (CurrentMap.data.colorPulseMax*(  (dr< 0 && pulseInc<0) || (dr>0 && pulseInc>0) ?50:60)));
+		//float percent = (delta0 / (CurrentMap.gameProperties.colorPulseMax*(  (dr< 0 && pulseInc<0) || (dr>0 && pulseInc>0) ?50:60)));
 
 		if(currentRumbleTime <= rumbleTime) {
 			currentRumblePower = rumblePower * ((rumbleTime - currentRumbleTime) / rumbleTime);
@@ -66,7 +66,7 @@ public class SkewCamera extends PerspectiveCamera {
 			rumbleZ = 0;
 		}
 
-		skew += (delta0 / (CurrentMap.data.colorPulseMax * (((dr< 0 && delta0<0) || (dr>0 && delta0>0)) ?45f:60f)) );
+		skew += (delta0 / (CurrentMap.gameProperties.colorPulseMax * (((dr< 0 && delta0<0) || (dr>0 && delta0>0)) ?45f:60f)) );
 
 		if (skew >= 1) {
 			skew = 1;
@@ -79,11 +79,11 @@ public class SkewCamera extends PerspectiveCamera {
 		}
 
 		//System.out.println(skew);
-		position.set(0, 1200f, 0).rotate(Vector3.X, MathUtils.clamp(50f * CurrentMap.data.skew, 0.00001f, 50f)).rotate(Vector3.Y, currentRotation).add(rumbleX, 0, rumbleZ);
+		position.set(0, 1200f, 0).rotate(Vector3.X, MathUtils.clamp(50f * CurrentMap.gameProperties.skew, 0.00001f, 50f)).rotate(Vector3.Y, currentRotation).add(rumbleX, 0, rumbleZ);
 
 		lookAt(rumbleX, 0, rumbleZ);
 
-		up.set(0, (CurrentMap.data.skew >= 0 ? 1 : -1), 0);
+		up.set(0, (CurrentMap.gameProperties.skew >= 0 ? 1 : -1), 0);
 
 		update();
 	}

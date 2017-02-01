@@ -3,7 +3,6 @@ import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.MapScript;
 import static xyz.hexagons.client.api.MapUtils.shuffle;
 import xyz.hexagons.client.api.Patterns;
-import xyz.hexagons.client.map.timeline.TimelineRunnable;
 
 /**
  * @author Sebastian Krajewski on 29.03.15.
@@ -82,9 +81,9 @@ public class Fairydust implements MapScript {
 
 	@Override
 	public void initColors(){
-		CurrentMap.data.colors.add(new HColor(255f / 255, 128f/255, 1, 60f/255).addPulse(253f/255, 0, 253f/255, 60f/255));
-		CurrentMap.data.colors.add(new HColor(253f / 255, 0, 253f / 255, 60f/255).addPulse(255f/255, 128f/255, 255f/255, 60f/255));
-		CurrentMap.data.walls = new HColor(1,1,1,1).setMain(true);
+		CurrentMap.gameProperties.colors.add(new HColor(255f / 255, 128f/255, 1, 60f/255).addPulse(253f/255, 0, 253f/255, 60f/255));
+		CurrentMap.gameProperties.colors.add(new HColor(253f / 255, 0, 253f / 255, 60f/255).addPulse(255f/255, 128f/255, 255f/255, 60f/255));
+		CurrentMap.gameProperties.walls = new HColor(1,1,1,1).setMain(true);
 		CurrentMap.setColorPulseMax(2f);
 		CurrentMap.setColorPulseMin(2f);
 		CurrentMap.setColorPulseInc(0.03f);

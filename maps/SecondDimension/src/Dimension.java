@@ -2,7 +2,6 @@ import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.api.Patterns;
-import xyz.hexagons.client.map.timeline.TimelineRunnable;
 import xyz.hexagons.client.map.Hue;
 
 import static xyz.hexagons.client.api.MapUtils.shuffle;
@@ -77,9 +76,9 @@ public class Dimension implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.data.colors.add(new HColor(190f/255, 190f/255, 190f/255, 1).addPulse(15f/255, 15f/255, 15f/255, 0).addHue(new Hue(200, 340, 1, true, false)).addHueOffset(4.7f));
-		CurrentMap.data.colors.add(new HColor(235/255f, 235/255f, 235/255f, 1));
-		CurrentMap.data.walls = new HColor(0, 0, 0, 1).addHue(new Hue(200, 340, 1, true, false)).setMain(true);
+		CurrentMap.gameProperties.colors.add(new HColor(190f/255, 190f/255, 190f/255, 1).addPulse(15f/255, 15f/255, 15f/255, 0).addHue(new Hue(200, 340, 1, true, false)).addHueOffset(4.7f));
+		CurrentMap.gameProperties.colors.add(new HColor(235/255f, 235/255f, 235/255f, 1));
+		CurrentMap.gameProperties.walls = new HColor(0, 0, 0, 1).addHue(new Hue(200, 340, 1, true, false)).setMain(true);
 		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setColorSwitch(1f);

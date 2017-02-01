@@ -17,7 +17,7 @@ public class MapRenderer {
 	private Vector2 tmp = new Vector2();
 	private Vector2 tmp2 = new Vector2();
 
-	public void renderObjects(ShapeRenderer renderer, float delta, Camera camera, /*Style style,*/ Player player, List<Wall> walls) {
+	public void renderObjects(ShapeRenderer renderer, float delta, Camera camera, Player player, List<Wall> walls) {
 
 		renderer.setProjectionMatrix(camera.combined);
 		renderer.identity();
@@ -25,9 +25,9 @@ public class MapRenderer {
 		renderer.begin(ObjRender.ShapeType.Filled);
 		renderBackground(renderer, delta, true, 0);
 		
-		float pulseSpeed = CurrentMap.data.pulse / CurrentMap.data.pulseMin;
-		for (int j = 1; j <= CurrentMap.data.layers; ++j) {
-			((ObjRender) renderer).setHeight(-j * CurrentMap.data.depth * 1.4f * Math.abs(CurrentMap.data.skew / CurrentMap.data.maxSkew) * Math.abs(pulseSpeed));
+		float pulseSpeed = CurrentMap.gameProperties.pulse / CurrentMap.gameProperties.pulseMin;
+		for (int j = 1; j <= CurrentMap.gameProperties.layers; ++j) {
+			((ObjRender) renderer).setHeight(-j * CurrentMap.gameProperties.depth * 1.4f * Math.abs(CurrentMap.gameProperties.skew / CurrentMap.gameProperties.maxSkew) * Math.abs(pulseSpeed));
 			renderPlayer(renderer, delta, true, j - 1, player);
 			renderWalls(renderer, delta, true, j - 1, walls);
 			renderCenter(renderer, delta, true, j - 1);
@@ -46,25 +46,25 @@ public class MapRenderer {
 	private float delta1;
 	public void renderBackground(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
-		for(HColor o: CurrentMap.data.colors) o.update(delta);
+		for(HColor o: CurrentMap.gameProperties.colors) o.update(delta);
 
-		if((delta1 += delta) >= CurrentMap.data.colorSwitch){
+		if((delta1 += delta) >= CurrentMap.gameProperties.colorSwitch){
 
-			++CurrentMap.data.colorOffset;
+			++CurrentMap.gameProperties.colorOffset;
 
-			if(CurrentMap.data.colorOffset == CurrentMap.data.colors.size()){
-				CurrentMap.data.colorOffset = 0;
+			if(CurrentMap.gameProperties.colorOffset == CurrentMap.gameProperties.colors.size()){
+				CurrentMap.gameProperties.colorOffset = 0;
 			}
 
 			delta1 = 0;
 		}
 
 		if(shadows)
-			for(float i = 0; i < CurrentMap.data.sides; ++i) {
+			for(float i = 0; i < CurrentMap.gameProperties.sides; ++i) {
 
-				if(CurrentMap.data.colors.size() > 0){
-					HColor col = CurrentMap.data.colors.get(((int)i + CurrentMap.data.colorOffset) % CurrentMap.data.colors.size());
-					if(i+1==CurrentMap.data.sides && CurrentMap.data.sides % 2 == 1)
+				if(CurrentMap.gameProperties.colors.size() > 0){
+					HColor col = CurrentMap.gameProperties.colors.get(((int)i + CurrentMap.gameProperties.colorOffset) % CurrentMap.gameProperties.colors.size());
+					if(i+1==CurrentMap.gameProperties.sides && CurrentMap.gameProperties.sides % 2 == 1)
 						renderer.setColor(col.r / 1.4f, col.g / 1.4f, col.b / 1.4f, col.a);
 					else
 						renderer.setColor(col.r, col.g, col.b, col.a);
@@ -72,14 +72,14 @@ public class MapRenderer {
 					renderer.setColor(0, 0, 0, 1);
 				}
 
-				tmp.set(0, Instance.diagonal * 2).rotate(i / CurrentMap.data.sides * -360f);
-				tmp2.set(0, Instance.diagonal * 2).rotate((i + 1) / CurrentMap.data.sides * -360f);
+				tmp.set(0, Instance.diagonal * 2).rotate(i / CurrentMap.gameProperties.sides * -360f);
+				tmp2.set(0, Instance.diagonal * 2).rotate((i + 1) / CurrentMap.gameProperties.sides * -360f);
 
 				renderer.triangle(0, 0, tmp.x, tmp.y, tmp2.x, tmp2.y);
 
 				
 				if(shadLev==-10) {
-					renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 1);
+					renderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, 1);
 					renderer.line(0,0, tmp.x, tmp.y);
 				}
 				
@@ -90,27 +90,27 @@ public class MapRenderer {
 
 	public void renderCenter(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
-		CurrentMap.data.shadow.update();
-		float pulseSpeed =  CurrentMap.data.pulseMin / CurrentMap.data.pulse;
-		for (float i = 0; i < CurrentMap.data.sides; ++i) {
+		CurrentMap.gameProperties.shadow.update();
+		float pulseSpeed =  CurrentMap.gameProperties.pulseMin / CurrentMap.gameProperties.pulse;
+		for (float i = 0; i < CurrentMap.gameProperties.sides; ++i) {
 
 			if(!shadows)
-				if(CurrentMap.data.colors.size() > 0){
-					HColor col = CurrentMap.data.colors.get(CurrentMap.data.colorOffset);
+				if(CurrentMap.gameProperties.colors.size() > 0){
+					HColor col = CurrentMap.gameProperties.colors.get(CurrentMap.gameProperties.colorOffset);
 					renderer.setColor(col.r, col.g, col.b, col.a);
 				} else
 					renderer.setColor(Color.WHITE);
 			else
-				renderer.setColor(CurrentMap.data.shadow.r, CurrentMap.data.shadow.g, CurrentMap.data.shadow.b, (CurrentMap.data.shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+				renderer.setColor(CurrentMap.gameProperties.shadow.r, CurrentMap.gameProperties.shadow.g, CurrentMap.gameProperties.shadow.b, (CurrentMap.gameProperties.shadow.a/CurrentMap.gameProperties.alphaMultiplier)-shadLev*CurrentMap.gameProperties.alphaFalloff);
 
 
-			tmp.set(0, Instance.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.data.sides * -360f);
-			tmp2.set(tmp).rotate(-360f/CurrentMap.data.sides);
-			tmp2.set(0, Instance.diagonal * 0.048f * Game.scale).rotate((i + 1) / CurrentMap.data.sides * -360f);
+			tmp.set(0, Instance.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.gameProperties.sides * -360f);
+			tmp2.set(tmp).rotate(-360f/CurrentMap.gameProperties.sides);
+			tmp2.set(0, Instance.diagonal * 0.048f * Game.scale).rotate((i + 1) / CurrentMap.gameProperties.sides * -360f);
 
 			if(!shadows){
 				renderer.triangle(0, 0, tmp.x, tmp.y, tmp2.x, tmp2.y);
-				renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+				renderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
 			}
 
 			renderer.circle(tmp.x, tmp.y, 3 * pulseSpeed);
@@ -124,10 +124,10 @@ public class MapRenderer {
 	public void renderWalls(ShapeRenderer renderer, float delta, boolean shadows, int shadLev, List<Wall> walls) {
 
 		if(!shadows)
-			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+			renderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
 		else {
-			CurrentMap.data.shadow.update();
-			renderer.setColor(CurrentMap.data.shadow.r, CurrentMap.data.shadow.g, CurrentMap.data.shadow.b, (CurrentMap.data.shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+			CurrentMap.gameProperties.shadow.update();
+			renderer.setColor(CurrentMap.gameProperties.shadow.r, CurrentMap.gameProperties.shadow.g, CurrentMap.gameProperties.shadow.b, (CurrentMap.gameProperties.shadow.a/CurrentMap.gameProperties.alphaMultiplier)-shadLev*CurrentMap.gameProperties.alphaFalloff);
 		}
 
 		for(Wall wall : walls) {
@@ -145,10 +145,10 @@ public class MapRenderer {
 
 	public void renderPlayer(ShapeRenderer renderer, float delta, boolean shadows, int shadLev, Player player) {
 		if(!shadows)
-			renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+			renderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
 		else {
-			CurrentMap.data.shadow.update();
-			renderer.setColor(CurrentMap.data.shadow.r, CurrentMap.data.shadow.g, CurrentMap.data.shadow.b, (CurrentMap.data.shadow.a/CurrentMap.data.alphaMultiplier)-shadLev*CurrentMap.data.alphaFalloff);
+			CurrentMap.gameProperties.shadow.update();
+			renderer.setColor(CurrentMap.gameProperties.shadow.r, CurrentMap.gameProperties.shadow.g, CurrentMap.gameProperties.shadow.b, (CurrentMap.gameProperties.shadow.a/CurrentMap.gameProperties.alphaMultiplier)-shadLev*CurrentMap.gameProperties.alphaFalloff);
 		}
 
 		renderer.triangle(player.tmp.x, player.tmp.y, player.tmp2.x, player.tmp2.y, player.tmp3.x, player.tmp3.y);

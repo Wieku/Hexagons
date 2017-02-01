@@ -18,11 +18,26 @@ public class LuaInit {
     static Random random = new Random(); //TODO: CENTRAL SEED
 
     public static void init() {
+        Instance.luaGlobals.set("map", getMap());
         Instance.luaGlobals.set("game", getGame());
         Instance.luaGlobals.set("standardPattern", getStandardPatterns());
 
         LuaValue chunk = Instance.luaGlobals.load(Gdx.files.internal(PathUtil.getPathForFile("lua/boot.lua")).readString("UTF-8"), "boot.lua");
         chunk.call();
+    }
+
+    private static LuaValue getMap() {
+        LuaTable map = new LuaTable();
+
+        map.set("loadProperties", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue arg) {
+
+                return null;
+            }
+        });
+
+        return map;
     }
 
     private static LuaValue getGame() {

@@ -81,18 +81,18 @@ public class HColor {
 
 		if(pulse){
 
-			delta0 += delta * 60 * CurrentMap.data.colorPulseInc;
+			delta0 += delta * 60 * CurrentMap.gameProperties.colorPulseInc;
 
-			if(delta0 < CurrentMap.data.colorPulseMin){
-				delta0 = CurrentMap.data.colorPulseMin;
-				CurrentMap.data.colorPulseInc *= -1f;
+			if(delta0 < CurrentMap.gameProperties.colorPulseMin){
+				delta0 = CurrentMap.gameProperties.colorPulseMin;
+				CurrentMap.gameProperties.colorPulseInc *= -1f;
 			}
-			if(delta0 > CurrentMap.data.colorPulseMax){
-				delta0 = CurrentMap.data.colorPulseMax;
-				CurrentMap.data.colorPulseInc *= -1f;
+			if(delta0 > CurrentMap.gameProperties.colorPulseMax){
+				delta0 = CurrentMap.gameProperties.colorPulseMax;
+				CurrentMap.gameProperties.colorPulseInc *= -1f;
 			}
 
-			percent = delta0 / CurrentMap.data.colorPulseMax;
+			percent = delta0 / CurrentMap.gameProperties.colorPulseMax;
 		}
 
 		if(dynamic) {

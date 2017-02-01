@@ -61,11 +61,11 @@ public class SynapseActivation implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.data.colors.add(new HColor(160f/255, 160f/255, 160f/255, 1));//.addPulse(75f/255, 15f/255, 15f/255, 0));
-		//CurrentMap.data.colors.add(new HColor(60f / 255, 60f / 255, 60f / 255, 1f));
-		CurrentMap.data.shadow = new DynamicColor.StaticDynamicColor(0x02eafaff);
+		CurrentMap.gameProperties.colors.add(new HColor(160f/255, 160f/255, 160f/255, 1));//.addPulse(75f/255, 15f/255, 15f/255, 0));
+		//CurrentMap.gameProperties.colors.add(new HColor(60f / 255, 60f / 255, 60f / 255, 1f));
+		CurrentMap.gameProperties.shadow = new DynamicColor.StaticDynamicColor(0x02eafaff);
 
-		CurrentMap.data.walls = new HColor(39f / 255, 39f / 255, 39f / 255, 1f);
+		CurrentMap.gameProperties.walls = new HColor(39f / 255, 39f / 255, 39f / 255, 1f);
 
 		CurrentMap.setColorPulseMax(1.8f);
 		CurrentMap.setColorPulseInc(0.027f);
@@ -92,8 +92,8 @@ public class SynapseActivation implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.data.isFastRotation) {
-				CurrentMap.setRotationSpeed(CurrentMap.data.rotationSpeed * -1.0f);
+			if (!CurrentMap.gameProperties.isFastRotation) {
+				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 300f/60;
 			}
 		}

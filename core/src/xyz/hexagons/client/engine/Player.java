@@ -132,7 +132,7 @@ public class Player {
 		lCh.set(0, 0.01f).rotate(rot-90).add(fCh);
 		rCh.set(0, 0.01f).rotate(rot+90).add(fCh);
 
-		for(Wall wall : CurrentMap.data.wallTimeline.getObjects()){
+		for(Wall wall : CurrentMap.gameProperties.wallTimeline.getObjects()){
 
 			if(Settings.instance.gameplay.invincibility) continue;
 

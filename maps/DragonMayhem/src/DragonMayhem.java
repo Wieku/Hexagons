@@ -67,41 +67,41 @@ public class DragonMayhem implements MapScript {
 
 	@Override
 	public void initEvents() {
-		CurrentMap.data.eventTimeline.wait(65.4f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(65.4f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
-				CurrentMap.data.colors.clear();
-				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(225f/255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(225f/255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.clear();
+				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f));
 			}
 		});
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("Try this now!", 150f / 60);
 			}
 		});
-		CurrentMap.data.eventTimeline.wait(85f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(85f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
-				CurrentMap.data.colors.clear();
-				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
-				CurrentMap.data.colors.add(new HColor(225f/255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(195f / 255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
-				CurrentMap.data.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
-				CurrentMap.data.colors.add(new HColor(225f/255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
-				CurrentMap.data.colors.add(new HColor(1f, 0f, 0f, 1f));
-				CurrentMap.data.walls = new HColor(1f, 0f, 0f, 1f).addPulse(0f, 1f, 1f, 0f);
+				CurrentMap.gameProperties.colors.clear();
+				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
+				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
+				CurrentMap.gameProperties.colors.add(new HColor(195f / 255, 0f, 0f, 1f));
+				CurrentMap.gameProperties.colors.add(new HColor(225f/255, 0f, 0f, 1f).addHue(new Hue(0, 100, 0.541f, true, false)));
+				CurrentMap.gameProperties.colors.add(new HColor(1f, 0f, 0f, 1f));
+				CurrentMap.gameProperties.walls = new HColor(1f, 0f, 0f, 1f).addPulse(0f, 1f, 1f, 0f);
 				CurrentMap.setColorPulseInc(0.541f);
 			}
 		});
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("How you can do this? Impossible!", 150f / 60);
@@ -111,9 +111,9 @@ public class DragonMayhem implements MapScript {
 
 	@Override
 	public void initColors(){
-		CurrentMap.data.colors.add(new HColor(255f / 255, 0, 0, 1f).addHue(new Hue(0, 25, 0.345f, true, false)));
-		CurrentMap.data.colors.add(new HColor(180f / 255, 0, 0, 1f));
-		CurrentMap.data.walls = new HColor(1,1,1,1);
+		CurrentMap.gameProperties.colors.add(new HColor(255f / 255, 0, 0, 1f).addHue(new Hue(0, 25, 0.345f, true, false)));
+		CurrentMap.gameProperties.colors.add(new HColor(180f / 255, 0, 0, 1f));
+		CurrentMap.gameProperties.walls = new HColor(1,1,1,1);
 		CurrentMap.setColorPulseMax(2.5f);
 		CurrentMap.setColorPulseInc(0.345f);
 		CurrentMap.setColorSwitch(1f);

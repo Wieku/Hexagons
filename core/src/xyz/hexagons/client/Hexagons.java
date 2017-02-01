@@ -111,7 +111,7 @@ public class Hexagons extends Game {
 			if(getScreen() instanceof MapSelect)
 				color.set(Color.WHITE);
 			else
-				color.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 1);
+				color.set(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, 1);
 			fps.getStyle().fontColor = color;
 			fps.setText((int)(fpsCounter.getFPS()) + "FPS\n" + delayFormat.format(1000f/fpsCounter.getFPS())+"ms");
 			fps.pack();

@@ -73,10 +73,10 @@ public class FlatteringShape implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.data.colors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(2.7f).addHue(new Hue(0, 160, 0.7f, true, false)));
-		CurrentMap.data.colors.add(new HColor(45f / 255, 60f / 255, 45f / 255, 1f).addPulse(25f/255, 25f/255, 25f/255, 0f).addDynamicDarkness(2.5f)/*.addHueOffset(5.0f)*/);
+		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addDynamicDarkness(2.7f).addHue(new Hue(0, 160, 0.7f, true, false)));
+		CurrentMap.gameProperties.colors.add(new HColor(45f / 255, 60f / 255, 45f / 255, 1f).addPulse(25f/255, 25f/255, 25f/255, 0f).addDynamicDarkness(2.5f)/*.addHueOffset(5.0f)*/);
 
-		CurrentMap.data.walls = new HColor(1f, 0, 0, 1f).addPulse(0, 50f/255, 0f, 0f).addHue(new Hue(0, 160, 0.7f, true, false)).setMain(true);
+		CurrentMap.gameProperties.walls = new HColor(1f, 0, 0, 1f).addPulse(0, 50f/255, 0f, 0f).addHue(new Hue(0, 160, 0.7f, true, false)).setMain(true);
 		CurrentMap.setColorPulseMax(1.2f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setColorSwitch(1f);

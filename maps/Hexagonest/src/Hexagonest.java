@@ -68,36 +68,36 @@ public class Hexagonest implements MapScript {
 
 	@Override
 	public void initEvents() {
-		CurrentMap.data.eventTimeline.wait(10f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(10f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("LINE", 1.2f);
 			}
 		});
-		CurrentMap.data.eventTimeline.wait(10f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(10f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("TRIANGLE", 1.2f);
 			}
 		});
-		CurrentMap.data.eventTimeline.wait(10f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(10f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("SQUARE", 1.2f);
 			}
 		});
-		CurrentMap.data.eventTimeline.wait(15f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(15f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("PENTAGON", 1.2f);
 			}
 		});
-		CurrentMap.data.eventTimeline.wait(15f);
-		CurrentMap.data.eventTimeline.submit(new TimelineRunnable() {
+		CurrentMap.gameProperties.eventTimeline.wait(15f);
+		CurrentMap.gameProperties.eventTimeline.submit(new TimelineRunnable() {
 			@Override
 			public void run() {
 				CurrentMap.pushText("HEXAGON", 1.2f);
@@ -109,10 +109,10 @@ public class Hexagonest implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.data.colors.add(new HColor(96f/255, 96f/255, 96f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
-		CurrentMap.data.colors.add(new HColor(128f / 255, 128f / 255, 128f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
+		CurrentMap.gameProperties.colors.add(new HColor(96f/255, 96f/255, 96f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
+		CurrentMap.gameProperties.colors.add(new HColor(128f / 255, 128f / 255, 128f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
 
-		CurrentMap.data.walls = new HColor(1,1,1,1);
+		CurrentMap.gameProperties.walls = new HColor(1,1,1,1);
 		CurrentMap.setColorPulseMax(1.8f);
 		CurrentMap.setColorPulseInc(0.027f);
 		CurrentMap.setColorSwitch(1f);
@@ -138,8 +138,8 @@ public class Hexagonest implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.data.isFastRotation) {
-				CurrentMap.setRotationSpeed(CurrentMap.data.rotationSpeed * -1.0f);
+			if (!CurrentMap.gameProperties.isFastRotation) {
+				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 7f;
 			}
 		}
@@ -154,9 +154,9 @@ public class Hexagonest implements MapScript {
 		Patterns.THICKNESS = myThickness;
 
 		for (int i = 0; i < mTimes; ++i) {
-			CurrentMap.data.wallTimeline.submit(new Wall(startSide + 1, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.data.wallTimeline.submit(new Wall(startSide + 2, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.data.wallTimeline.submit(new Wall(startSide + 3, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 1, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 2, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 3, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
 		}
 
 		Patterns.THICKNESS = oldThickness;
@@ -179,9 +179,9 @@ public class Hexagonest implements MapScript {
 			Patterns.THICKNESS = myThickness;
 
 		for (int i = 0; i < mTimes; ++i) {
-			CurrentMap.data.wallTimeline.submit(new Wall(startSide + 1, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.data.wallTimeline.submit(new Wall(startSide + 3, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.data.wallTimeline.submit(new Wall(startSide + 5, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 1, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 3, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 5, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
 		}
 
 		Patterns.t_wait(delay);

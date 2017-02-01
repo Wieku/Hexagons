@@ -9,11 +9,11 @@ import static xyz.hexagons.client.api.MapUtils.shuffle;
 public class Acceleradiant implements MapScript {
 
 	public void wallSAcc(int mSide, float mAdj, float mAcc, float mMinSpd, float mMaxSpd){
-		Patterns.wallAcc(mSide, Patterns.THICKNESS, mAdj, mAcc * (CurrentMap.data.difficulty), mMinSpd, mMaxSpd);
+		Patterns.wallAcc(mSide, Patterns.THICKNESS, mAdj, mAcc * (CurrentMap.gameProperties.difficulty), mMinSpd, mMaxSpd);
 	}
 
 	public void pACBarrage() {
-		int currentSides = CurrentMap.data.sides;
+		int currentSides = CurrentMap.gameProperties.sides;
 		float delay = Patterns.getPerfectDelayDM(Patterns.THICKNESS) * 3.7f;
 		int startSide = Patterns.random(0, 10);
 		for (int i = 0; i <= currentSides - 2; i++) {
@@ -25,7 +25,7 @@ public class Acceleradiant implements MapScript {
 
 
 	public void pACBarrageMulti(){
-		int currentSides = CurrentMap.data.sides;
+		int currentSides = CurrentMap.gameProperties.sides;
 		float delay = Patterns.getPerfectDelayDM(Patterns.THICKNESS) * 3.7f;
 		int startSide = Patterns.random(0, 10);
 		for (int i = 0; i <= currentSides - 2; i++) {
@@ -39,9 +39,9 @@ public class Acceleradiant implements MapScript {
 	}
 
 	public void pACBarrageMultiAltDir() {
-		int currentSides = CurrentMap.data.sides;
+		int currentSides = CurrentMap.gameProperties.sides;
 		float delay = Patterns.getPerfectDelayDM(Patterns.THICKNESS) * 4;
-		float mdiff = 1 + Math.abs(1 - CurrentMap.data.difficulty);
+		float mdiff = 1 + Math.abs(1 - CurrentMap.gameProperties.difficulty);
 		int startSide = Patterns.random(0, 10);
 		int loopDir = Patterns.getRandomDir();
 		for (int i = 0; i <= currentSides + Patterns.getHalfSides(); i++) {
@@ -132,28 +132,28 @@ public class Acceleradiant implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.data.isFastRotation) {
-				CurrentMap.setRotationSpeed(CurrentMap.data.rotationSpeed * -1.0f);
+			if (!CurrentMap.gameProperties.isFastRotation) {
+				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 400f / 60;
 			}
 		}
 
-		for (HColor color : CurrentMap.data.colors) {
+		for (HColor color : CurrentMap.gameProperties.colors) {
 			color.setHueInc(color.getHueInc() + hueIStep);
 		}
-		CurrentMap.data.walls.setHueInc(CurrentMap.data.walls.getHueInc() + hueIStep);
+		CurrentMap.gameProperties.walls.setHueInc(CurrentMap.gameProperties.walls.getHueInc() + hueIStep);
 
-		if(CurrentMap.data.walls.getHueInc() > hueIMax) hueIStep *= -1;
-		if(CurrentMap.data.walls.getHueInc() < hueIMin) hueIStep *= -1;
+		if(CurrentMap.gameProperties.walls.getHueInc() > hueIMax) hueIStep *= -1;
+		if(CurrentMap.gameProperties.walls.getHueInc() < hueIMin) hueIStep *= -1;
 
 	}
 
 	@Override
 	public void initColors() {
-		CurrentMap.data.colors.add(new HColor(0, 0, 0, 1f).addPulse(45f / 255, 25f / 255, 1f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(8.7f));
-		CurrentMap.data.colors.add(new HColor(0, 0, 0, 1f).addPulse(1f / 255, 25f / 255, 45f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(9.5f));
+		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addPulse(45f / 255, 25f / 255, 1f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(8.7f));
+		CurrentMap.gameProperties.colors.add(new HColor(0, 0, 0, 1f).addPulse(1f / 255, 25f / 255, 45f / 255, 0f).addHue(new Hue(0, 360, 0.5f, false, false)).addDynamicDarkness(9.5f));
 
-		CurrentMap.data.walls = new HColor(1, 155f/255, 155f/255, 230f/255).addPulse(50f/255, -75f/255, 125f/255, 0).addHue(new Hue(0, 360, 0.5f, false, false)).setMain(true);
+		CurrentMap.gameProperties.walls = new HColor(1, 155f/255, 155f/255, 230f/255).addPulse(50f/255, -75f/255, 125f/255, 0).addHue(new Hue(0, 360, 0.5f, false, false)).setMain(true);
 		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setAlphaMultiplier(5.9f);

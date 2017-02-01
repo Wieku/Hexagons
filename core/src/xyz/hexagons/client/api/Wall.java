@@ -31,8 +31,8 @@ public class Wall extends TimelineObject {
 	Polygon polygon = new Polygon();
 
 	public Wall(int side, float thickness, SpeedData speedData, SpeedData curveData) {
-		angle1 = side / (float) CurrentMap.data.sides * 360f;
-		angle2 = (side+1) / (float) CurrentMap.data.sides * 360f;
+		angle1 = side / (float) CurrentMap.gameProperties.sides * 360f;
+		angle2 = (side+1) / (float) CurrentMap.gameProperties.sides * 360f;
 
 		this.thickness = thickness;
 		this.speed = speedData;
@@ -47,7 +47,7 @@ public class Wall extends TimelineObject {
 	@Override
 	public void update(float delta){
 
-		pulseSpeed = CurrentMap.data.pulse / CurrentMap.data.pulseMin;
+		pulseSpeed = CurrentMap.gameProperties.pulse / CurrentMap.gameProperties.pulseMin;
 
 		if(!visible){
 			position = Instance.diagonal;
@@ -70,9 +70,9 @@ public class Wall extends TimelineObject {
 
 		tmp.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle1);
 		temp[0] = tmp.x; temp[1] = tmp.y;
-		tmp.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewLeft) * pulseSpeed)).rotate(-angle1);
+		tmp.set(0, Math.max(gsc, (position + thickness + CurrentMap.gameProperties.wallSkewLeft) * pulseSpeed)).rotate(-angle1);
 		temp[2] = tmp.x; temp[3] = tmp.y;
-		tmp.set(0, Math.max(gsc, (position + thickness + CurrentMap.data.wallSkewRight) * pulseSpeed)).rotate(-angle2);
+		tmp.set(0, Math.max(gsc, (position + thickness + CurrentMap.gameProperties.wallSkewRight) * pulseSpeed)).rotate(-angle2);
 		temp[4] = tmp.x; temp[5] = tmp.y;
 		tmp.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle2);
 		temp[6] = tmp.x; temp[7] = tmp.y;

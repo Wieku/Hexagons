@@ -12,12 +12,12 @@ import static xyz.hexagons.client.api.MapUtils.shuffle;
 public class Pi implements MapScript {
 
 	public void addPattern(int mKey) {
-		if (mKey == 0)  {Patterns.cWallEx(Patterns.random(0, CurrentMap.data.sides), Patterns.random(1, 2)); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.5f);}
+		if (mKey == 0)  {Patterns.cWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), Patterns.random(1, 2)); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.5f);}
 		else if (mKey == 1) Patterns.pMirrorSpiralDouble(Patterns.random(1, 2), 4);
-		else if (mKey == 2) {Patterns.rWallEx(Patterns.random(0, CurrentMap.data.sides), Patterns.random(1, 2)); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.8f);}
+		else if (mKey == 2) {Patterns.rWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), Patterns.random(1, 2)); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.8f);}
 		else if (mKey == 3) Patterns.pMirrorWallStrip(1, 2);
-		else if (mKey == 4) {Patterns.rWallEx(Patterns.random(0, CurrentMap.data.sides), 1); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.3f);}
-		else if (mKey == 5) {Patterns.cWallEx(Patterns.random(0, CurrentMap.data.sides), 7); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.7f);}
+		else if (mKey == 4) {Patterns.rWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), 1); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.3f);}
+		else if (mKey == 5) {Patterns.cWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), 7); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.7f);}
 
 	}
 
@@ -71,15 +71,15 @@ public class Pi implements MapScript {
 	@Override
 	public void initColors(){
 		//colors
-		CurrentMap.data.colors.add(new HColor(190f / 255, 74f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(25f));
-		CurrentMap.data.colors.add(new HColor(190f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(50f));
-		CurrentMap.data.colors.add(new HColor(190f / 255, 115f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(75f));
-		CurrentMap.data.colors.add(new HColor(190f / 255, 190f / 255, 98f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(100f));
-		CurrentMap.data.colors.add(new HColor(250f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(125f));
-		CurrentMap.data.colors.add(new HColor(163f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(150f));
+		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 74f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(25f));
+		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(50f));
+		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 115f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(75f));
+		CurrentMap.gameProperties.colors.add(new HColor(190f / 255, 190f / 255, 98f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(100f));
+		CurrentMap.gameProperties.colors.add(new HColor(250f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(125f));
+		CurrentMap.gameProperties.colors.add(new HColor(163f / 255, 190f / 255, 190f / 255, 1f).addHue(new Hue(0, 255, 1f, false, false)).addHueOffset(4.2f).addHueShift(150f));
 
 
-		CurrentMap.data.walls = new HColor(0, 0, 0, 225/255f).addPulse(99/255f, 30/255f, 165/255f, 0f).setMain(true);
+		CurrentMap.gameProperties.walls = new HColor(0, 0, 0, 225/255f).addPulse(99/255f, 30/255f, 165/255f, 0f).setMain(true);
 		CurrentMap.setColorPulseMax(1.5f);
 		CurrentMap.setColorPulseInc(0.025f);
 		CurrentMap.setColorSwitch(1f);
@@ -105,8 +105,8 @@ public class Pi implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.data.isFastRotation) {
-				CurrentMap.setRotationSpeed(CurrentMap.data.rotationSpeed * -1.0f);
+			if (!CurrentMap.gameProperties.isFastRotation) {
+				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 100f/60;
 			}
 		}

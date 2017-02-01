@@ -138,7 +138,7 @@ public class Game implements Screen {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		mapRenderer.renderObjects(renderer, delta, camera, player, CurrentMap.data.wallTimeline.getObjects());
+		mapRenderer.renderObjects(renderer, delta, camera, player, CurrentMap.gameProperties.wallTimeline.getObjects());
 
 		message.setPosition((stage.getWidth() - message.getWidth()) / 2, (stage.getHeight() - message.getHeight()) * 2.5f / 3);
 		stage.getCamera().position.set(camera.rumbleX + stage.getWidth() / 2, camera.rumbleZ + stage.getHeight() / 2, 0);
@@ -171,7 +171,7 @@ public class Game implements Screen {
 		delta0 = delta1 = delta5 = delta4 = delta3 = 0;
 		scoreSent = false;
 
-		CurrentMap.data.currentTime = 0f;
+		CurrentMap.gameProperties.currentTime = 0f;
 		CurrentMap.reset();
 		score = 0;
 		player.reset();
@@ -192,7 +192,7 @@ public class Game implements Screen {
 			Instance.game.fps.setVisible(false);
 		}
 
-		//CurrentMap.data.eventTimeline.update(startTime);
+		//CurrentMap.gameProperties.eventTimeline.update(startTime);
 		SoundManager.playSound("start");
 	}
 
@@ -217,10 +217,10 @@ public class Game implements Screen {
 
 	private void updateGame(float delta) {
 
-		if(CurrentMap.data.gameCompleted) player.dead = true;
+		if(CurrentMap.gameProperties.gameCompleted) player.dead = true;
 		
-		if(!player.dead && CurrentMap.data.wallTimeline.isFirstRemoved())
-			score += delta * (CurrentMap.data.difficulty * CurrentMap.data.speed * (((int)CurrentMap.data.currentTime) * 5 + 300));
+		if(!player.dead && CurrentMap.gameProperties.wallTimeline.isFirstRemoved())
+			score += delta * (CurrentMap.gameProperties.difficulty * CurrentMap.gameProperties.speed * (((int)CurrentMap.gameProperties.currentTime) * 5 + 300));
 
 
 		updateTimeline(delta);
@@ -300,8 +300,8 @@ public class Game implements Screen {
 			updateSkew(1f / 60);
 
 			if (!player.dead) {
-				CurrentMap.data.walls.update(1f/60);
-				tmpColor.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+				CurrentMap.gameProperties.walls.update(1f/60);
+				tmpColor.set(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
 
 				time.getStyle().fontColor = tmpColor;
 				message.getStyle().fontColor = tmpColor;
@@ -332,7 +332,7 @@ public class Game implements Screen {
 		}
 
 
-		time.setText("Time: " + timeFormat.format(CurrentMap.data.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (retries>1?"\nRetried " + retries + " times":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		time.setText("Time: " + timeFormat.format(CurrentMap.gameProperties.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (retries>1?"\nRetried " + retries + " times":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
 		points.setText(String.format("%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
@@ -347,49 +347,49 @@ public class Game implements Screen {
 	float delta2;
 	public void updateSkew(float delta) {
 		
-		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.data.skewTime ? -1 : inc));
+		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.gameProperties.skewTime ? -1 : inc));
 		delta2 += delta * inc;
-		delta2 = Math.min(CurrentMap.data.skewTime, Math.max(delta2, 0));
-		float percent = delta2 / CurrentMap.data.skewTime;
-		CurrentMap.data.skew = CurrentMap.data.minSkew + (CurrentMap.data.maxSkew - CurrentMap.data.minSkew) * percent;
+		delta2 = Math.min(CurrentMap.gameProperties.skewTime, Math.max(delta2, 0));
+		float percent = delta2 / CurrentMap.gameProperties.skewTime;
+		CurrentMap.gameProperties.skew = CurrentMap.gameProperties.minSkew + (CurrentMap.gameProperties.maxSkew - CurrentMap.gameProperties.minSkew) * percent;
 	}
 
 	float delta3;
 	public void updateTimeline(float delta) {
 
 		if(!player.dead){
-			CurrentMap.data.wallTimeline.update(delta);
-			CurrentMap.data.eventTimeline.update(delta);
-			CurrentMap.data.currentTime += delta;
+			CurrentMap.gameProperties.wallTimeline.update(delta);
+			CurrentMap.gameProperties.eventTimeline.update(delta);
+			CurrentMap.gameProperties.currentTime += delta;
 		}
 
-		if(!player.dead && (delta3 +=delta) >= CurrentMap.data.levelIncrement){
+		if(!player.dead && (delta3 +=delta) >= CurrentMap.gameProperties.levelIncrement){
 
-			fastRotate = CurrentMap.data.fastRotate;
+			fastRotate = CurrentMap.gameProperties.fastRotate;
 
 			SoundManager.playSound("levelup");
 
-			CurrentMap.data.isFastRotation = true;
-			CurrentMap.data.rotationSpeed += (CurrentMap.data.rotationSpeed > 0 ? CurrentMap.data.rotationIncrement: -CurrentMap.data.rotationIncrement );
-			CurrentMap.data.rotationSpeed *= -1;
-			CurrentMap.data.rotationSpeed = Math.min(CurrentMap.data.rotationSpeedMax, Math.max(-CurrentMap.data.rotationSpeedMax, CurrentMap.data.rotationSpeed));
+			CurrentMap.gameProperties.isFastRotation = true;
+			CurrentMap.gameProperties.rotationSpeed += (CurrentMap.gameProperties.rotationSpeed > 0 ? CurrentMap.gameProperties.rotationIncrement: -CurrentMap.gameProperties.rotationIncrement );
+			CurrentMap.gameProperties.rotationSpeed *= -1;
+			CurrentMap.gameProperties.rotationSpeed = Math.min(CurrentMap.gameProperties.rotationSpeedMax, Math.max(-CurrentMap.gameProperties.rotationSpeedMax, CurrentMap.gameProperties.rotationSpeed));
 
-			CurrentMap.data.mustChangeSides = true;
+			CurrentMap.gameProperties.mustChangeSides = true;
 
-			CurrentMap.data.speed += CurrentMap.data.speedInc;
-			CurrentMap.data.delayMult += CurrentMap.data.delayMultInc;
+			CurrentMap.gameProperties.speed += CurrentMap.gameProperties.speedInc;
+			CurrentMap.gameProperties.delayMult += CurrentMap.gameProperties.delayMultInc;
 			delta3 = 0;
 		}
 
-		next.setValue(delta3 / CurrentMap.data.levelIncrement);
+		next.setValue(delta3 / CurrentMap.gameProperties.levelIncrement);
 
-		if (CurrentMap.data.wallTimeline.isEmpty() && CurrentMap.data.mustChangeSides) {
-			CurrentMap.data.sides = MathUtils.random(CurrentMap.data.minSides, CurrentMap.data.maxSides);
+		if (CurrentMap.gameProperties.wallTimeline.isEmpty() && CurrentMap.gameProperties.mustChangeSides) {
+			CurrentMap.gameProperties.sides = MathUtils.random(CurrentMap.gameProperties.minSides, CurrentMap.gameProperties.maxSides);
 			SoundManager.playSound("beep");
-			CurrentMap.data.mustChangeSides = false;
+			CurrentMap.gameProperties.mustChangeSides = false;
 		}
 
-		if (CurrentMap.data.wallTimeline.isAllSpawned() && !CurrentMap.data.mustChangeSides) {
+		if (CurrentMap.gameProperties.wallTimeline.isAllSpawned() && !CurrentMap.gameProperties.mustChangeSides) {
 			map.script.nextPattern();
 		}
 
@@ -398,15 +398,15 @@ public class Game implements Screen {
 	public void updateRotation(float delta) {
 
 		if(player.dead) {
-			if(CurrentMap.data.rotationSpeed < 0) {
-				CurrentMap.data.rotationSpeed = Math.min(-0.02f, CurrentMap.data.rotationSpeed + 0.002f * 60 * delta);
-			} else if(CurrentMap.data.rotationSpeed > 0) {
-				CurrentMap.data.rotationSpeed = Math.max(0.02f, CurrentMap.data.rotationSpeed - 0.002f * 60 * delta);
+			if(CurrentMap.gameProperties.rotationSpeed < 0) {
+				CurrentMap.gameProperties.rotationSpeed = Math.min(-0.02f, CurrentMap.gameProperties.rotationSpeed + 0.002f * 60 * delta);
+			} else if(CurrentMap.gameProperties.rotationSpeed > 0) {
+				CurrentMap.gameProperties.rotationSpeed = Math.max(0.02f, CurrentMap.gameProperties.rotationSpeed - 0.002f * 60 * delta);
 			}
 		}
-		camera.rotate(CurrentMap.data.rotationSpeed * (CurrentMap.data.useRadians?MathUtils.radiansToDegrees*10:360) * delta + (CurrentMap.data.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.data.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
+		camera.rotate(CurrentMap.gameProperties.rotationSpeed * (CurrentMap.gameProperties.useRadians?MathUtils.radiansToDegrees*10:360) * delta + (CurrentMap.gameProperties.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.gameProperties.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
 		fastRotate = Math.max(0, fastRotate - 60f * delta);
-		if(fastRotate == 0) CurrentMap.data.isFastRotation = false;
+		if(fastRotate == 0) CurrentMap.gameProperties.isFastRotation = false;
 	}
 
 	float delta4;
@@ -416,24 +416,24 @@ public class Game implements Screen {
 		if(player.dead) return;
 
 		if(delta4 <= 0){
-			CurrentMap.data.beatPulse = CurrentMap.data.beatPulseMax;
-			delta4 = CurrentMap.data.beatPulseDelay;
+			CurrentMap.gameProperties.beatPulse = CurrentMap.gameProperties.beatPulseMax;
+			delta4 = CurrentMap.gameProperties.beatPulseDelay;
 		}
 
 		delta4 -= delta;
 
-		if(CurrentMap.data.beatPulse > CurrentMap.data.beatPulseMin) scale = CurrentMap.data.beatPulse -= 1.2f * delta;
+		if(CurrentMap.gameProperties.beatPulse > CurrentMap.gameProperties.beatPulseMin) scale = CurrentMap.gameProperties.beatPulse -= 1.2f * delta;
 
 		if(delta5 <= 0 && delta6 <= 0){
 
-			if((CurrentMap.data.pulseDir < 0 && CurrentMap.data.pulse <= CurrentMap.data.pulseMin) || (CurrentMap.data.pulseDir > 0 && CurrentMap.data.pulse >= CurrentMap.data.pulseMax)){
-				CurrentMap.data.pulse = CurrentMap.data.pulseDir > 0 ? CurrentMap.data.pulseMax : CurrentMap.data.pulseMin;
-				CurrentMap.data.pulseDir *= -1;
-				delta6 = CurrentMap.data.pulseDelayHalfMax;
-				if(CurrentMap.data.pulseDir < 0) delta5 = CurrentMap.data.pulseDelayMax;
+			if((CurrentMap.gameProperties.pulseDir < 0 && CurrentMap.gameProperties.pulse <= CurrentMap.gameProperties.pulseMin) || (CurrentMap.gameProperties.pulseDir > 0 && CurrentMap.gameProperties.pulse >= CurrentMap.gameProperties.pulseMax)){
+				CurrentMap.gameProperties.pulse = CurrentMap.gameProperties.pulseDir > 0 ? CurrentMap.gameProperties.pulseMax : CurrentMap.gameProperties.pulseMin;
+				CurrentMap.gameProperties.pulseDir *= -1;
+				delta6 = CurrentMap.gameProperties.pulseDelayHalfMax;
+				if(CurrentMap.gameProperties.pulseDir < 0) delta5 = CurrentMap.gameProperties.pulseDelayMax;
 			}
 
-			CurrentMap.data.pulse += (CurrentMap.data.pulseDir > 0 ? CurrentMap.data.pulseSpeed : -CurrentMap.data.pulseSpeedR) * 60f * delta;
+			CurrentMap.gameProperties.pulse += (CurrentMap.gameProperties.pulseDir > 0 ? CurrentMap.gameProperties.pulseSpeed : -CurrentMap.gameProperties.pulseSpeedR) * 60f * delta;
 
 		}
 
