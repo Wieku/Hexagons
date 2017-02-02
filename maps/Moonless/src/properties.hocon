@@ -14,9 +14,11 @@ difficulty {
   speedIncrement: 0.125
 }
 
-pulse {
-  beatDelay: 0.25
+beatPulse {
+  delay: 0.25
+}
 
+pulse {
   min: 75
   max: 91
   speed: 1.2

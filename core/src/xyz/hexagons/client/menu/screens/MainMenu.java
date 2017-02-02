@@ -41,10 +41,7 @@ import xyz.hexagons.client.rankserv.EventLogin;
 import xyz.hexagons.client.rankserv.MotdApi;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
-import xyz.hexagons.client.utils.FpsCounter;
-import xyz.hexagons.client.utils.GUIHelper;
-import xyz.hexagons.client.utils.Glider;
-import xyz.hexagons.client.utils.PathUtil;
+import xyz.hexagons.client.utils.*;
 
 import java.util.ArrayList;
 
@@ -306,9 +303,14 @@ public class MainMenu implements Screen {
 		}
 
 		if(!Instance.maps.isEmpty()){
-			CurrentMap.reset();
-			MenuPlaylist.getCurrent().script.initColors();
-			MenuPlaylist.getCurrent().script.onInit();
+			try {
+				CurrentMap.reset();
+				MenuPlaylist.getCurrent().script.initColors();
+				MenuPlaylist.getCurrent().script.onInit();
+			} catch (Exception e) {
+				System.err.println("MAP INIT FAILED:");
+				e.printStackTrace();
+			}
 		}
 
 		MenuPlaylist.setLooping(false);

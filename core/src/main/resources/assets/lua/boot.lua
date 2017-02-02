@@ -35,7 +35,13 @@ function gameutil.newPatternQueue(queue)
     return setmetatable(unpacked, {__index = patternQueue})
 end
 
-function prepareEnv(name)
+function prepareEnv(name, mapZipFile)
+    local function mapCall(f)
+        return function(...)
+            return f(mapZipFile, ...)
+        end
+    end
+
     local env = {
         assert = assert,
         error = error,
@@ -161,9 +167,13 @@ function prepareEnv(name)
         },
         game = {
             newPatternQueue = gameutil.newPatternQueue,
+
             randomParam = game.randomParam,
             random = game.random,
-            getHalfSides = game.getHalfSides
+            getHalfSides = game.getHalfSides,
+
+            loadProperties = mapCall(game.loadProperties),
+            setProperty = game.setProperty
         },
         standardPattern = {
             alternatingBarrage = standardPattern.alternatingBarrage,

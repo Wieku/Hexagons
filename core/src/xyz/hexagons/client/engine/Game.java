@@ -173,6 +173,7 @@ public class Game implements Screen {
 
 		CurrentMap.gameProperties.currentTime = 0f;
 		CurrentMap.reset();
+
 		score = 0;
 		player.reset();
 		camera.reset();

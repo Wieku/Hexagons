@@ -1,43 +1,33 @@
 package xyz.hexagons.client.engine;
 
 import com.badlogic.gdx.Gdx;
+import org.luaj.vm2.LuaNil;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import xyz.hexagons.client.Instance;
+import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.Patterns;
 import xyz.hexagons.client.utils.PathUtil;
 import xyz.hexagons.client.utils.function.Function;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 import java.util.function.Supplier;
+import java.util.zip.ZipFile;
 
 public class LuaInit {
     static Random random = new Random(); //TODO: CENTRAL SEED
 
     public static void init() {
-        Instance.luaGlobals.set("map", getMap());
         Instance.luaGlobals.set("game", getGame());
         Instance.luaGlobals.set("standardPattern", getStandardPatterns());
 
         LuaValue chunk = Instance.luaGlobals.load(Gdx.files.internal(PathUtil.getPathForFile("lua/boot.lua")).readString("UTF-8"), "boot.lua");
         chunk.call();
-    }
-
-    private static LuaValue getMap() {
-        LuaTable map = new LuaTable();
-
-        map.set("loadProperties", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue arg) {
-
-                return null;
-            }
-        });
-
-        return map;
     }
 
     private static LuaValue getGame() {
@@ -72,6 +62,30 @@ public class LuaInit {
                 return LuaValue.valueOf(Patterns.getHalfSides());
             }
         });
+
+        game.set("loadProperties", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue map, LuaValue file) {
+                try {
+                    ZipFile zip = (ZipFile) map.checkuserdata();
+                    InputStream in = zip.getInputStream(zip.getEntry(file.checkjstring()));
+                    CurrentMap.gameProperties.loadConfig(in);
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return LuaValue.NIL;
+            }
+        });
+
+        game.set("setProperty", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue path, LuaValue value) {
+                CurrentMap.gameProperties.setProperty(path.checkjstring(), value);
+                return LuaValue.NIL;
+            }
+        });
+
         return game;
     }
 
@@ -131,7 +145,7 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pAltBarrage(times.call().optint(1), step.call().optint(1));
-                    return null;
+                    return LuaValue.NIL;
                 }
             };
         }
@@ -152,7 +166,7 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pMirrorSpiral(times.call().optint(1), extra.call().optint(1));
-                    return null;
+                    return LuaValue.NIL;
                 }
             };
         }
@@ -174,7 +188,7 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pBarrageSpiral(times.call().optint(1), (float) delayMult.call().optdouble(1), step.call().optint(1));
-                    return null;
+                    return LuaValue.NIL;
                 }
             };
         }
@@ -194,7 +208,7 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pInverseBarrage(times.call().optint(1));
-                    return null;
+                    return LuaValue.NIL;
                 }
             };
         }
@@ -214,7 +228,7 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pTunnel(times.call().optint(1));
-                    return null;
+                    return LuaValue.NIL;
                 }
             };
         }

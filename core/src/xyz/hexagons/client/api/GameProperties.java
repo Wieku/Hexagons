@@ -3,6 +3,7 @@ package xyz.hexagons.client.api;
 import com.badlogic.gdx.graphics.Color;
 import xyz.hexagons.client.map.timeline.Timeline;
 import xyz.hexagons.client.map.timeline.TimelineRunnable;
+import xyz.hexagons.client.utils.Properties;
 
 import java.util.ArrayList;
 
@@ -86,7 +87,15 @@ public class GameProperties extends Properties {
 
 
     @Override
-    void registerProperties() {
+    protected void registerProperties() {
+        mkpath("rotation");
+        mkpath("difficulty");
+        mkpath("sides");
+        mkpath("beatPulse");
+        mkpath("pulse");
+        mkpath("color");
+        mkpath("view");
+
         registerFloat("rotation.speed", f -> rotationSpeed = f);
         registerFloat("rotation.maxSpeed", f -> rotationSpeedMax = f);
         registerFloat("rotation.increment", f -> rotationIncrement = f);
@@ -108,30 +117,28 @@ public class GameProperties extends Properties {
         registerFloat("beatPulse.delay", f -> beatPulseDelay = f);
 
         registerFloat("pulse.min", f -> pulseMin = f);
-        registerFloat("pulse.max", f -> pulseMin = f);
-        registerFloat("pulse.speed", f -> pulseMin = f);
-        registerFloat("pulse.speedReverse", f -> pulseMin = f);
-        registerFloat("pulse.delayHalfMax", f -> pulseDelayHalfMax = f);
-        registerFloat("pulse.delayMax", f -> pulseDelayMax = f);
-        registerFloat("pulse.min", f -> pulseMin = f);
+        registerFloat("pulse.max", f -> {pulseMax = f; pulse = f; pulseDir = 1;});
+        registerFloat("pulse.speed", f -> pulseSpeed = f);
+        registerFloat("pulse.speedReverse", f -> pulseSpeedR = f);
+        registerFloat("pulse.delayMax", f -> {pulseDelayMax = f; pulseDelayHalfMax = f / 2;});
 
         registerHColorArray("color.background", backgroundColors);
         registerFloat("color.pulseMin", f -> colorPulseMin = f);
         registerFloat("color.pulseMax", f -> colorPulseMin = f);
         registerFloat("color.pulseIncrement", f -> colorPulseMin = f);
-        registerFloat("color.offset", f -> colorOffset = f);
+        registerInteger("color.offset", i -> colorOffset = i);
         registerFloat("color.switch", f -> colorSwitch = f);
         registerHColor("color.walls", walls);
 
-        registerInteger("view.layers", i -> layers = i);
-        registerFloat("view.depth", i -> depth = i);
-        registerFloat("view.skew", i -> skew = i);
-        registerFloat("view.minSkew", i -> minSkew = i);
-        registerFloat("view.maxSkew", i -> maxSkew = i);
-        registerFloat("view.skewTime", i -> skewTime = i);
-        registerFloat("view.wallSkewLeft", i -> wallSkewLeft = i);
-        registerFloat("view.wallSkewRight", i -> wallSkewRight = i);
-        registerFloat("view.alphaMultiplier", i -> alphaMultiplier = i);
-        registerFloat("view.alphaFalloff", i -> alphaFalloff = i);
+        registerInteger("view.layers", f -> layers = f);
+        registerFloat("view.depth", f -> depth = f);
+        registerFloat("view.skew", f -> skew = f);
+        registerFloat("view.minSkew", f -> minSkew = f);
+        registerFloat("view.maxSkew", f -> maxSkew = f);
+        registerFloat("view.skewTime", f -> skewTime = f);
+        registerFloat("view.wallSkewLeft", f -> wallSkewLeft = f);
+        registerFloat("view.wallSkewRight", f -> wallSkewRight = f);
+        registerFloat("view.alphaMultiplier", f -> alphaMultiplier = f);
+        registerFloat("view.alphaFalloff", f -> alphaFalloff = f);
     }
 }

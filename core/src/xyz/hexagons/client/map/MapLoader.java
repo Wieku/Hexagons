@@ -78,7 +78,8 @@ public class MapLoader {
 					try {
 						InputStreamReader r = new InputStreamReader(jar.getInputStream(jar.getEntry("main.lua")));
 
-						Varargs pe = Instance.luaGlobals.get("prepareEnv").invoke(LuaString.valueOf(m.name));
+						Varargs pe = Instance.luaGlobals.get("prepareEnv")
+								.invoke(new LuaValue[]{ LuaString.valueOf(m.name), new LuaUserdata(jar)});
 
 						callbacks = pe.checktable(2);
 
@@ -102,7 +103,7 @@ public class MapLoader {
 
 			}
 		}
-		System.out.println("Loaded " + maps.size() + " maps");
+		System.out.println("Loaded " + maps.size() + " map(s)");
 		return maps;
 	}
 
