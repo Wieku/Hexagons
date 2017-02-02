@@ -128,7 +128,7 @@ public class GameProperties extends Properties {
         registerFloat("color.pulseIncrement", f -> colorPulseMin = f);
         registerInteger("color.offset", i -> colorOffset = i);
         registerFloat("color.switch", f -> colorSwitch = f);
-        registerHColor("color.walls", walls);
+        registerHColor("color.walls", c -> walls = c);
 
         registerInteger("view.layers", f -> layers = f);
         registerFloat("view.depth", f -> depth = f);
