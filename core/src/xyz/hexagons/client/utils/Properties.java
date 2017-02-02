@@ -46,8 +46,10 @@ public abstract class Properties {
         setters.put(path, new Pair<>(PropertyType.HCOLOR, cval -> setter.accept((HColor) cval)));
     }
 
-    protected void registerHColorArray(String path, ArrayList<HColor> array) {
-
+    protected void registerHColorArray(String path, Consumer<ArrayList<HColor>> setter) {
+        String[] pathParts = path.split("\\.");
+        pathList.get(pathParts[0]).add(pathParts[1]);
+        setters.put(path, new Pair<>(PropertyType.HCOLOR_ARRAY, cval -> setter.accept((ArrayList<HColor>) cval)));
     }
 
     public void setProperty(String path, LuaValue value) {
@@ -77,54 +79,14 @@ public abstract class Properties {
                                 break;
                             case HCOLOR:
                                 // { r: 0, b: 0, g: 0, a: 1, dynamicDarkness: 2.7, hue: { min: 0, max: 360, increment: 0.7, pingPong: false } }
-                                float r, g, b, a;
-                                r = b = g = a = 1f;
-                                System.out.println("COL: " + path);
-                                System.out.println("COLH: " + path + ".hue.min");
-
-                                if(config.hasPath(path + ".r"))
-                                    r = (float) config.getDouble(path + ".r");
-                                if(config.hasPath(path + ".g"))
-                                    g = (float) config.getDouble(path + ".g");
-                                if(config.hasPath(path + ".b"))
-                                    b = (float) config.getDouble(path + ".b");
-                                if(config.hasPath(path + ".a"))
-                                    a = (float) config.getDouble(path + ".a");
-
-                                HColor color = new HColor(r, g, b, a);
-
-                                if(config.hasPath(path + ".main"))
-                                    color.setMain(config.getBoolean(path + ".main"));
-                                if(config.hasPath(path + ".dynamicDarkness"))
-                                    color.addDynamicDarkness((float) config.getDouble(path + ".dynamicDarkness"));
-                                if(config.hasPath(path + ".hue")) {
-                                    Hue hue = new Hue(0f,360f,1f, false, false);
-                                    if(config.hasPath(path + ".hue.min"))
-                                        hue.hueMin = (float) config.getDouble(path + ".hue.min");
-                                    if(config.hasPath(path + ".hue.max"))
-                                        hue.hueMax = (float) config.getDouble(path + ".hue.max");
-                                    if(config.hasPath(path + ".hue.increment"))
-                                        hue.hueInc = (float) config.getDouble(path + ".hue.increment");
-                                    if(config.hasPath(path + ".hue.pingPong"))
-                                        hue.pingPong = config.getBoolean(path + ".hue.pingPong");
-                                    if(config.hasPath(path + ".hue.shared"))
-                                        hue.shared = config.getBoolean(path + ".hue.shared");
-                                    color.addHue(hue);
+                                setter.getValue1().accept(parseColor(config, path + "."));
+                                break;
+                            case HCOLOR_ARRAY:
+                                ArrayList<HColor> colors = new ArrayList<HColor>();
+                                for (Config c : config.getConfigList(path)) {
+                                    colors.add(parseColor(c, ""));
                                 }
-                                if(config.hasPath(path + ".pulse")) {
-                                    float pr, pg, pb, pa;
-                                    pr = pb = pg = pa = 1f;
-                                    if(config.hasPath(path + ".pulse.r"))
-                                        pr = (float) config.getDouble(path + ".pulse.r");
-                                    if(config.hasPath(path + ".pulse.g"))
-                                        pg = (float) config.getDouble(path + ".pulse.g");
-                                    if(config.hasPath(path + ".pulse.b"))
-                                        pb = (float) config.getDouble(path + ".pulse.b");
-                                    if(config.hasPath(path + ".pulse.a"))
-                                        pa = (float) config.getDouble(path + ".pulse.a");
-                                    color.addPulse(pr, pg, pb, pa);
-                                }
-                                setter.getValue1().accept(color);
+                                setter.getValue1().accept(colors);
                                 break;
                         }
 
@@ -134,9 +96,59 @@ public abstract class Properties {
         }
     }
 
+    private HColor parseColor(Config config, String path) {
+        float r, g, b, a;
+        r = b = g = a = 1f;
+
+        if(config.hasPath(path + "r"))
+            r = (float) config.getDouble(path + "r");
+        if(config.hasPath(path + "g"))
+            g = (float) config.getDouble(path + "g");
+        if(config.hasPath(path + "b"))
+            b = (float) config.getDouble(path + "b");
+        if(config.hasPath(path + "a"))
+            a = (float) config.getDouble(path + "a");
+
+        HColor color = new HColor(r, g, b, a);
+
+        if(config.hasPath(path + "main"))
+            color.setMain(config.getBoolean(path + "main"));
+        if(config.hasPath(path + "dynamicDarkness"))
+            color.addDynamicDarkness((float) config.getDouble(path + "dynamicDarkness"));
+        if(config.hasPath(path + "hue")) {
+            Hue hue = new Hue(0f,360f,1f, false, false);
+            if(config.hasPath(path + "hue.min"))
+                hue.hueMin = (float) config.getDouble(path + "hue.min");
+            if(config.hasPath(path + "hue.max"))
+                hue.hueMax = (float) config.getDouble(path + "hue.max");
+            if(config.hasPath(path + "hue.increment"))
+                hue.hueInc = (float) config.getDouble(path + "hue.increment");
+            if(config.hasPath(path + "hue.pingPong"))
+                hue.pingPong = config.getBoolean(path + "hue.pingPong");
+            if(config.hasPath(path + "hue.shared"))
+                hue.shared = config.getBoolean(path + "hue.shared");
+            color.addHue(hue);
+        }
+        if(config.hasPath(path + "pulse")) {
+            float pr, pg, pb, pa;
+            pr = pb = pg = pa = 1f;
+            if(config.hasPath(path + "pulse.r"))
+                pr = (float) config.getDouble(path + "pulse.r");
+            if(config.hasPath(path + "pulse.g"))
+                pg = (float) config.getDouble(path + "pulse.g");
+            if(config.hasPath(path + "pulse.b"))
+                pb = (float) config.getDouble(path + "pulse.b");
+            if(config.hasPath(path + "pulse.a"))
+                pa = (float) config.getDouble(path + "pulse.a");
+            color.addPulse(pr, pg, pb, pa);
+        }
+        return color;
+    }
+
     private enum PropertyType {
         FLOAT,
         INTEGER,
         HCOLOR,
+        HCOLOR_ARRAY,
     }
 }

@@ -122,7 +122,7 @@ public class GameProperties extends Properties {
         registerFloat("pulse.speedReverse", f -> pulseSpeedR = f);
         registerFloat("pulse.delayMax", f -> {pulseDelayMax = f; pulseDelayHalfMax = f / 2;});
 
-        registerHColorArray("color.background", backgroundColors);
+        registerHColorArray("color.background", a -> backgroundColors = a);
         registerFloat("color.pulseMin", f -> colorPulseMin = f);
         registerFloat("color.pulseMax", f -> colorPulseMin = f);
         registerFloat("color.pulseIncrement", f -> colorPulseMin = f);
