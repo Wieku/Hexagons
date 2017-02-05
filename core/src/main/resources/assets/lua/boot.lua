@@ -178,10 +178,14 @@ function prepareEnv(name, mapZipFile)
         standardPattern = {
             alternatingBarrage = standardPattern.alternatingBarrage,
             mirrorSpiral = standardPattern.mirrorSpiral,
+            doubleMirrorSpiral = standardPattern.doubleMirrorSpiral,
             barrageSpiral = standardPattern.barrageSpiral,
             inverseBarrage = standardPattern.inverseBarrage,
             tunnel = standardPattern.tunnel,
-            mirroredWallStrip = standardPattern.mirroredWallStrip
+            mirroredWallStrip = standardPattern.mirroredWallStrip,
+            vortex = standardPattern.vortex,
+            fixedDelayBarrageSpiral = standardPattern.fixedDelayBarrageSpiral,
+            randomBarrage = standardPattern.randomBarrage
         }
     }
 

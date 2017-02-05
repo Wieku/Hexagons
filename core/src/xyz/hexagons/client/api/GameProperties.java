@@ -124,8 +124,8 @@ public class GameProperties extends Properties {
 
         registerHColorArray("color.background", a -> backgroundColors = a);
         registerFloat("color.pulseMin", f -> colorPulseMin = f);
-        registerFloat("color.pulseMax", f -> colorPulseMin = f);
-        registerFloat("color.pulseIncrement", f -> colorPulseMin = f);
+        registerFloat("color.pulseMax", f -> colorPulseMax = f);
+        registerFloat("color.pulseIncrement", f -> colorPulseInc = f);
         registerInteger("color.offset", i -> colorOffset = i);
         registerFloat("color.switch", f -> colorSwitch = f);
         registerHColor("color.walls", c -> walls = c);

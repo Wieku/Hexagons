@@ -19,6 +19,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.zip.ZipFile;
 
+//TODO: check prebata, see if everything matches
 public class LuaInit {
     static Random random = new Random(); //TODO: CENTRAL SEED
 
@@ -94,10 +95,14 @@ public class LuaInit {
 
         standardPatterns.set("alternatingBarrage", getStandardPatternGenerator(new AlternatingBarrageGenerator()));
         standardPatterns.set("mirrorSpiral", getStandardPatternGenerator(new MirrorSpiralGenerator()));
+        standardPatterns.set("doubleMirrorSpiral", getStandardPatternGenerator(new DoubleMirrorSpiralGenerator()));
         standardPatterns.set("barrageSpiral", getStandardPatternGenerator(new BarrageSpiralGenerator()));
         standardPatterns.set("inverseBarrage", getStandardPatternGenerator(new InverseBarrageGenerator()));
         standardPatterns.set("tunnel", getStandardPatternGenerator(new TunnelGenerator()));
         standardPatterns.set("mirroredWallStrip", getStandardPatternGenerator(new MirroredWallStripGenerator()));
+        standardPatterns.set("vortex", getStandardPatternGenerator(new VortexGenerator()));
+        standardPatterns.set("fixedDelayBarrageSpiral", getStandardPatternGenerator(new FixedDelayBarrageSpiralGenerator()));
+        standardPatterns.set("randomBarrage", getStandardPatternGenerator(new RandomBarrageGenerator()));
 
         return standardPatterns;
     }
@@ -167,6 +172,27 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pMirrorSpiral(times.call().optint(1), extra.call().optint(1));
+                    return LuaValue.NIL;
+                }
+            };
+        }
+    }
+
+    private static class DoubleMirrorSpiralGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue extra = wrapLuaParam(arg.get("extra"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pMirrorSpiralDouble(times.call().optint(1), extra.call().optint(1));
                     return LuaValue.NIL;
                 }
             };
@@ -256,4 +282,68 @@ public class LuaInit {
         }
     }
 
+    private static class VortexGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue step = wrapLuaParam(arg.get("step"));
+            final LuaValue extra = wrapLuaParam(arg.get("extra"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pWallExVortex(times.call().optint(1), step.call().optint(1), extra.call().optint(1));
+                    return LuaValue.NIL;
+                }
+            };
+        }
+    }
+
+    private static class FixedDelayBarrageSpiralGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue delayMult = wrapLuaParam(arg.get("delayMult"));
+            final LuaValue step = wrapLuaParam(arg.get("step"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pDMBarrageSpiral(times.call().optint(1), (float) delayMult.call().optdouble(1), step.call().optint(1));
+                    return LuaValue.NIL;
+                }
+            };
+        }
+    }
+
+    private static class RandomBarrageGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue delayMult = wrapLuaParam(arg.get("delayMult"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pRandomBarrage(times.call().optint(1), (float) delayMult.call().optdouble(1));
+                    return LuaValue.NIL;
+                }
+            };
+        }
+    }
 }
