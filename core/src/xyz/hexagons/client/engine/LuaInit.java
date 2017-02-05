@@ -97,6 +97,7 @@ public class LuaInit {
         standardPatterns.set("barrageSpiral", getStandardPatternGenerator(new BarrageSpiralGenerator()));
         standardPatterns.set("inverseBarrage", getStandardPatternGenerator(new InverseBarrageGenerator()));
         standardPatterns.set("tunnel", getStandardPatternGenerator(new TunnelGenerator()));
+        standardPatterns.set("mirroredWallStrip", getStandardPatternGenerator(new MirroredWallStripGenerator()));
 
         return standardPatterns;
     }
@@ -228,6 +229,27 @@ public class LuaInit {
                 @Override
                 public LuaValue get() {
                     Patterns.pTunnel(times.call().optint(1));
+                    return LuaValue.NIL;
+                }
+            };
+        }
+    }
+
+    private static class MirroredWallStripGenerator implements PatternGenerator {
+
+        @Override
+        public Supplier<LuaValue> apply(LuaValue arg) {
+            if(!arg.istable()) {
+                throw new RuntimeException("Arg to pattern constructor must be a table!");
+            }
+
+            final LuaValue times = wrapLuaParam(arg.get("times"));
+            final LuaValue extra = wrapLuaParam(arg.get("extra"));
+
+            return new Supplier<LuaValue>() {
+                @Override
+                public LuaValue get() {
+                    Patterns.pMirrorWallStrip(times.call().optint(1), extra.call().optint(1));
                     return LuaValue.NIL;
                 }
             };

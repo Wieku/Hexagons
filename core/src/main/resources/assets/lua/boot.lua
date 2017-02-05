@@ -180,7 +180,8 @@ function prepareEnv(name, mapZipFile)
             mirrorSpiral = standardPattern.mirrorSpiral,
             barrageSpiral = standardPattern.barrageSpiral,
             inverseBarrage = standardPattern.inverseBarrage,
-            tunnel = standardPattern.tunnel
+            tunnel = standardPattern.tunnel,
+            mirroredWallStrip = standardPattern.mirroredWallStrip
         }
     }
 

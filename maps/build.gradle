@@ -40,10 +40,6 @@ task bundle << {
         into "../android/assets/Maps"
     }
     copy {
-        from "Moonless/build/libs/Moonless-${version}.jar"
-        into "../android/assets/Maps"
-    }
-    copy {
         from "Fairydust/build/libs/Fairydust-${version}.jar"
         into "../android/assets/Maps"
     }
@@ -63,6 +59,5 @@ bundle.dependsOn 'Hexagonest:jar'
 bundle.dependsOn 'Pi:jar'
 bundle.dependsOn 'Pointless:jar'
 bundle.dependsOn 'SecondDimension:jar'
-bundle.dependsOn 'Moonless:jar'
 bundle.dependsOn 'Fairydust:jar'
 bundle.dependsOn 'SynapseActivation:jar'
