@@ -2,6 +2,7 @@ package xyz.hexagons.client.map;
 
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.api.MapScript;
 
 public class LuaMap implements MapScript {
@@ -54,7 +55,7 @@ public class LuaMap implements MapScript {
     @Override
     public void nextLevel(int levelNum) {
         if(lNextLevel != null)
-            lNextLevel.call();
+            lNextLevel.call(LuaValue.valueOf(levelNum));
     }
 
     @Override
@@ -66,6 +67,6 @@ public class LuaMap implements MapScript {
     @Override
     public void update(float delta) {
         if(lUpdate != null)
-            lUpdate.call();
+            lUpdate.call(LuaValue.valueOf(delta));
     }
 }

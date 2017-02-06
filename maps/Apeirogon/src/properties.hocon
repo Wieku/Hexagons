@@ -2,7 +2,7 @@ rotation {
   speed: 0.55
   maxSpeed: 1.5
   increment: 0.083
-  fastRotate: 71
+  rapidSpinSpeed: 71
 }
 
 difficulty {

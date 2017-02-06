@@ -11,8 +11,11 @@ local patternQueue = game.newPatternQueue{
     { weight = 2, pattern = standardPattern.mirrorSpiral{ times = game.randomParam(2, 4), extra = 0 } }
 }
 
+local dirChangeTime = 1.666666
+
 function init()
     patternQueue:shuffle()
+    dirChangeTime = 1.666666
     game.loadProperties("properties.hocon")
 end
 
@@ -22,4 +25,12 @@ end
 
 function nextPattern()
     patternQueue:addNext()
+end
+
+function update(delta)
+    dirChangeTime = dirChangeTime - delta
+    if dirChangeTime < 0 and not game.getProperty("rotation.rapidSpin") then
+        game.setProperty("rotation.speed", game.getProperty("rotation.speed") * -1)
+        dirChangeTime = 300 / 60
+    end
 end

@@ -12,12 +12,12 @@ import static xyz.hexagons.client.api.MapUtils.shuffle;
 public class Pi implements MapScript {
 
 	public void addPattern(int mKey) {
-		if (mKey == 0)  {Patterns.cWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), Patterns.random(1, 2)); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.5f);}
+		if (mKey == 0)  {Patterns.cWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), Patterns.random(1, 2)); Patterns.timelineWait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.5f);}
 		else if (mKey == 1) Patterns.pMirrorSpiralDouble(Patterns.random(1, 2), 4);
-		else if (mKey == 2) {Patterns.rWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), Patterns.random(1, 2)); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.8f);}
+		else if (mKey == 2) {Patterns.rWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), Patterns.random(1, 2)); Patterns.timelineWait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.8f);}
 		else if (mKey == 3) Patterns.pMirrorWallStrip(1, 2);
-		else if (mKey == 4) {Patterns.rWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), 1); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.3f);}
-		else if (mKey == 5) {Patterns.cWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), 7); Patterns.t_wait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.7f);}
+		else if (mKey == 4) {Patterns.rWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), 1); Patterns.timelineWait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.3f);}
+		else if (mKey == 5) {Patterns.cWallEx(Patterns.random(0, CurrentMap.gameProperties.sides), 7); Patterns.timelineWait(Patterns.getPerfectDelay(Patterns.THICKNESS) * 2.7f);}
 
 	}
 
@@ -105,7 +105,7 @@ public class Pi implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.gameProperties.isFastRotation) {
+			if (!CurrentMap.gameProperties.rapidSpin) {
 				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 100f/60;
 			}

@@ -366,11 +366,11 @@ public class Game implements Screen {
 
 		if(!player.dead && (delta3 +=delta) >= CurrentMap.gameProperties.levelIncrement){
 
-			fastRotate = CurrentMap.gameProperties.fastRotate;
+			fastRotate = CurrentMap.gameProperties.rapidSpinSpeed;
 
 			SoundManager.playSound("levelup");
 
-			CurrentMap.gameProperties.isFastRotation = true;
+			CurrentMap.gameProperties.rapidSpin = true;
 			CurrentMap.gameProperties.rotationSpeed += (CurrentMap.gameProperties.rotationSpeed > 0 ? CurrentMap.gameProperties.rotationIncrement: -CurrentMap.gameProperties.rotationIncrement );
 			CurrentMap.gameProperties.rotationSpeed *= -1;
 			CurrentMap.gameProperties.rotationSpeed = Math.min(CurrentMap.gameProperties.rotationSpeedMax, Math.max(-CurrentMap.gameProperties.rotationSpeedMax, CurrentMap.gameProperties.rotationSpeed));
@@ -405,9 +405,9 @@ public class Game implements Screen {
 				CurrentMap.gameProperties.rotationSpeed = Math.max(0.02f, CurrentMap.gameProperties.rotationSpeed - 0.002f * 60 * delta);
 			}
 		}
-		camera.rotate(CurrentMap.gameProperties.rotationSpeed * (CurrentMap.gameProperties.useRadians?MathUtils.radiansToDegrees*10:360) * delta + (CurrentMap.gameProperties.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.gameProperties.fastRotate, fastRotate) / 3.5f) * 17.f * 60 * delta);
+		camera.rotate(CurrentMap.gameProperties.rotationSpeed * (CurrentMap.gameProperties.useRadians?MathUtils.radiansToDegrees*10:360) * delta + (CurrentMap.gameProperties.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.gameProperties.rapidSpinSpeed, fastRotate) / 3.5f) * 17.f * 60 * delta);
 		fastRotate = Math.max(0, fastRotate - 60f * delta);
-		if(fastRotate == 0) CurrentMap.gameProperties.isFastRotation = false;
+		if(fastRotate == 0) CurrentMap.gameProperties.rapidSpin = false;
 	}
 
 	float delta4;

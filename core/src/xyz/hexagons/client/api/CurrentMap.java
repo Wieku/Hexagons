@@ -52,11 +52,11 @@ public abstract class CurrentMap {
 	}
 
 	public static void setFastRotate(float fastRotate) {
-		gameProperties.fastRotate = fastRotate;
+		gameProperties.rapidSpinSpeed = fastRotate;
 	}
 
 	public static void setIsFastRotation(boolean isFastRotation) {
-		gameProperties.isFastRotation = isFastRotation;
+		gameProperties.rapidSpin = isFastRotation;
 	}
 
 	public static void setDifficulty(float difficulty) {

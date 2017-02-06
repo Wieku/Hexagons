@@ -170,10 +170,12 @@ function prepareEnv(name, mapZipFile)
 
             randomParam = game.randomParam,
             random = game.random,
+            randomSide = game.randomSide,
             getHalfSides = game.getHalfSides,
 
             loadProperties = mapCall(game.loadProperties),
-            setProperty = game.setProperty
+            setProperty = game.setProperty,
+            getProperty = game.getProperty
         },
         standardPattern = {
             alternatingBarrage = standardPattern.alternatingBarrage,
@@ -186,6 +188,17 @@ function prepareEnv(name, mapZipFile)
             vortex = standardPattern.vortex,
             fixedDelayBarrageSpiral = standardPattern.fixedDelayBarrageSpiral,
             randomBarrage = standardPattern.randomBarrage
+        },
+        patterns = {
+            THICKNESS = patterns.THICKNESS,
+            getPerfectThickness = patterns.getPerfectThickness,
+            getPerfectDelay = patterns.getPerfectDelay,
+            getBaseSpeed = patterns.getBaseSpeed,
+            barrage = patterns.barrage
+        },
+        timeline = {
+            wait = timeline.wait,
+            addWall = timeline.addWall
         }
     }
 

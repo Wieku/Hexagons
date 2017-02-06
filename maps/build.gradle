@@ -27,6 +27,10 @@ task bundle << {
         from "FlatteringShape/build/libs/FlatteringShape-${version}.jar"
         into "../android/assets/Maps"
     }
+/*    copy {
+        from "Hexagonest/build/libs/Hexagonest-${version}.jar"
+        into "../android/assets/Maps"
+    }*/
     copy {
         from "Pi/build/libs/Pi-${version}.jar"
         into "../android/assets/Maps"

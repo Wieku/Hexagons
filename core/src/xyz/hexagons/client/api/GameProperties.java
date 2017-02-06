@@ -1,6 +1,7 @@
 package xyz.hexagons.client.api;
 
 import com.badlogic.gdx.graphics.Color;
+import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.map.timeline.Timeline;
 import xyz.hexagons.client.map.timeline.TimelineRunnable;
 import xyz.hexagons.client.utils.Properties;
@@ -11,8 +12,8 @@ public class GameProperties extends Properties {
     public float rotationSpeed = 0.5f;
     public float rotationSpeedMax = 1.5f;
     public float rotationIncrement = 0.083f;
-    public float fastRotate = 70f;
-    public transient boolean isFastRotation = false;
+    public float rapidSpinSpeed = 70f;
+    public transient boolean rapidSpin = false;
 
     public float difficulty = 1f;
     public float levelIncrement = 15f;
@@ -96,49 +97,50 @@ public class GameProperties extends Properties {
         mkpath("color");
         mkpath("view");
 
-        registerFloat("rotation.speed", f -> rotationSpeed = f);
-        registerFloat("rotation.maxSpeed", f -> rotationSpeedMax = f);
-        registerFloat("rotation.increment", f -> rotationIncrement = f);
-        registerFloat("rotation.fastRotate", f -> fastRotate = f);
+        registerFloat("rotation.speed", f -> rotationSpeed = f, () -> LuaValue.valueOf(rotationSpeed));
+        registerFloat("rotation.maxSpeed", f -> rotationSpeedMax = f, () -> LuaValue.valueOf(rotationSpeedMax));
+        registerFloat("rotation.increment", f -> rotationIncrement = f, () -> LuaValue.valueOf(rotationIncrement));
+        registerFloat("rotation.rapidSpinSpeed", f -> rapidSpinSpeed = f, () -> LuaValue.valueOf(rapidSpinSpeed));
+        registerGetter("rotation.rapidSpin", () -> LuaValue.valueOf(rapidSpin));
 
-        registerFloat("difficulty.difficulty", f -> difficulty = f);
-        registerFloat("difficulty.delayMultiplier", f -> delayMult = f);
-        registerFloat("difficulty.delayMultiplierIncrement", f -> delayMultInc = f);
-        registerFloat("difficulty.levelIncrement", f -> levelIncrement = f);
-        registerFloat("difficulty.speed", f -> speed = f);
-        registerFloat("difficulty.speedIncrement", f -> speedInc = f);
+        registerFloat("difficulty.difficulty", f -> difficulty = f, () -> LuaValue.valueOf(difficulty));
+        registerFloat("difficulty.delayMultiplier", f -> delayMult = f, () -> LuaValue.valueOf(delayMult));
+        registerFloat("difficulty.delayMultiplierIncrement", f -> delayMultInc = f, () -> LuaValue.valueOf(delayMultInc));
+        registerFloat("difficulty.levelIncrement", f -> levelIncrement = f, () -> LuaValue.valueOf(levelIncrement));
+        registerFloat("difficulty.speed", f -> speed = f, () -> LuaValue.valueOf(speed));
+        registerFloat("difficulty.speedIncrement", f -> speedInc = f, () -> LuaValue.valueOf(speedInc));
 
-        registerInteger("sides.start", i -> sides = i);
-        registerInteger("sides.min", i -> minSides = i);
-        registerInteger("sides.max", i -> maxSides = i);
+        registerInteger("sides.start", i -> sides = i, () -> LuaValue.valueOf(sides));
+        registerInteger("sides.min", i -> minSides = i, () -> LuaValue.valueOf(minSides));
+        registerInteger("sides.max", i -> maxSides = i, () -> LuaValue.valueOf(maxSides));
 
-        registerFloat("beatPulse.min", f -> beatPulseMin = f);
-        registerFloat("beatPulse.max", f -> beatPulseMax = f);
-        registerFloat("beatPulse.delay", f -> beatPulseDelay = f);
+        registerFloat("beatPulse.min", f -> beatPulseMin = f, () -> LuaValue.valueOf(beatPulseMin));
+        registerFloat("beatPulse.max", f -> beatPulseMax = f, () -> LuaValue.valueOf(beatPulseMax));
+        registerFloat("beatPulse.delay", f -> beatPulseDelay = f, () -> LuaValue.valueOf(beatPulseDelay));
 
-        registerFloat("pulse.min", f -> pulseMin = f);
-        registerFloat("pulse.max", f -> {pulseMax = f; pulse = f; pulseDir = 1;});
-        registerFloat("pulse.speed", f -> pulseSpeed = f);
-        registerFloat("pulse.speedReverse", f -> pulseSpeedR = f);
-        registerFloat("pulse.delayMax", f -> {pulseDelayMax = f; pulseDelayHalfMax = f / 2;});
+        registerFloat("pulse.min", f -> pulseMin = f, () -> LuaValue.valueOf(pulseMin));
+        registerFloat("pulse.max", f -> {pulseMax = f; pulse = f; pulseDir = 1;}, () -> LuaValue.valueOf(pulseMax));
+        registerFloat("pulse.speed", f -> pulseSpeed = f, () -> LuaValue.valueOf(pulseSpeed));
+        registerFloat("pulse.speedReverse", f -> pulseSpeedR = f, () -> LuaValue.valueOf(pulseSpeedR));
+        registerFloat("pulse.delayMax", f -> {pulseDelayMax = f; pulseDelayHalfMax = f / 2;}, () -> LuaValue.valueOf(pulseDelayMax));
 
         registerHColorArray("color.background", a -> backgroundColors = a);
-        registerFloat("color.pulseMin", f -> colorPulseMin = f);
-        registerFloat("color.pulseMax", f -> colorPulseMax = f);
-        registerFloat("color.pulseIncrement", f -> colorPulseInc = f);
-        registerInteger("color.offset", i -> colorOffset = i);
-        registerFloat("color.switch", f -> colorSwitch = f);
+        registerFloat("color.pulseMin", f -> colorPulseMin = f, () -> LuaValue.valueOf(colorPulseMin));
+        registerFloat("color.pulseMax", f -> colorPulseMax = f, () -> LuaValue.valueOf(colorPulseMax));
+        registerFloat("color.pulseIncrement", f -> colorPulseInc = f, () -> LuaValue.valueOf(colorPulseInc));
+        registerInteger("color.offset", i -> colorOffset = i, () -> LuaValue.valueOf(colorOffset));
+        registerFloat("color.switch", f -> colorSwitch = f, () -> LuaValue.valueOf(colorSwitch));
         registerHColor("color.walls", c -> walls = c);
 
-        registerInteger("view.layers", f -> layers = f);
-        registerFloat("view.depth", f -> depth = f);
-        registerFloat("view.skew", f -> skew = f);
-        registerFloat("view.minSkew", f -> minSkew = f);
-        registerFloat("view.maxSkew", f -> maxSkew = f);
-        registerFloat("view.skewTime", f -> skewTime = f);
-        registerFloat("view.wallSkewLeft", f -> wallSkewLeft = f);
-        registerFloat("view.wallSkewRight", f -> wallSkewRight = f);
-        registerFloat("view.alphaMultiplier", f -> alphaMultiplier = f);
-        registerFloat("view.alphaFalloff", f -> alphaFalloff = f);
+        registerInteger("view.layers", f -> layers = f, () -> LuaValue.valueOf(layers));
+        registerFloat("view.depth", f -> depth = f, () -> LuaValue.valueOf(depth));
+        registerFloat("view.skew", f -> skew = f, () -> LuaValue.valueOf(skew));
+        registerFloat("view.minSkew", f -> minSkew = f, () -> LuaValue.valueOf(minSkew));
+        registerFloat("view.maxSkew", f -> maxSkew = f, () -> LuaValue.valueOf(maxSkew));
+        registerFloat("view.skewTime", f -> skewTime = f, () -> LuaValue.valueOf(skewTime));
+        registerFloat("view.wallSkewLeft", f -> wallSkewLeft = f, () -> LuaValue.valueOf(wallSkewLeft));
+        registerFloat("view.wallSkewRight", f -> wallSkewRight = f, () -> LuaValue.valueOf(wallSkewRight));
+        registerFloat("view.alphaMultiplier", f -> alphaMultiplier = f, () -> LuaValue.valueOf(alphaMultiplier));
+        registerFloat("view.alphaFalloff", f -> alphaFalloff = f, () -> LuaValue.valueOf(alphaFalloff));
     }
 }

@@ -20,7 +20,7 @@ public class Acceleradiant implements MapScript {
 			int currentSide = startSide + i;
 			wallSAcc(currentSide, 9 + Patterns.random(0, 1), -1.1f, 1, 12);
 		}
-		Patterns.t_wait(delay * 2.5f);
+		Patterns.timelineWait(delay * 2.5f);
 	}
 
 
@@ -35,7 +35,7 @@ public class Acceleradiant implements MapScript {
 			wallSAcc(currentSide, 0, 0.09f, 0, 4.0f);
 			wallSAcc(currentSide, 0, 0.12f, 0, 4.0f);
 		}
-		Patterns.t_wait(delay * 8);
+		Patterns.timelineWait(delay * 8);
 	}
 
 	public void pACBarrageMultiAltDir() {
@@ -47,10 +47,10 @@ public class Acceleradiant implements MapScript {
 		for (int i = 0; i <= currentSides + Patterns.getHalfSides(); i++) {
 			int currentSide = startSide + i * loopDir;
 			wallSAcc(currentSide, 10, -1.095f, 0.40f, 10f);
-			Patterns.t_wait((delay / 2.21f) * (mdiff * 1.29f));
+			Patterns.timelineWait((delay / 2.21f) * (mdiff * 1.29f));
 			wallSAcc(currentSide + (Patterns.getHalfSides() * loopDir), 0, 0.128f, 0, 1.4f);
 		}
-		Patterns.t_wait(delay * 8);
+		Patterns.timelineWait(delay * 8);
 	}
 
 	public void addPattern(int mKey) {
@@ -132,7 +132,7 @@ public class Acceleradiant implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.gameProperties.isFastRotation) {
+			if (!CurrentMap.gameProperties.rapidSpin) {
 				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 400f / 60;
 			}

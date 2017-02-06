@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import me.wieku.animation.animations.Animation;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.SoundManager;
-import xyz.hexagons.client.engine.LuaInit;
+import xyz.hexagons.client.engine.lua.LuaInit;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;

@@ -7,6 +7,7 @@ import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.map.Hue;
 import xyz.hexagons.client.utils.function.Consumer;
+import xyz.hexagons.client.utils.function.Supplier;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +20,7 @@ public abstract class Properties {
 
     private HashMap<String, HashSet<String>> pathList = new HashMap<>();
     private HashMap<String, Pair<PropertyType, Consumer<Object>>> setters = new HashMap<>();
+    private HashMap<String, Supplier<LuaValue>> getters = new HashMap<>();
 
     public Properties() {
         registerProperties();
@@ -28,16 +30,18 @@ public abstract class Properties {
         pathList.put(path, new HashSet<String>());
     }
 
-    protected void registerFloat(String path, final Consumer<Float> setter) {
+    protected void registerFloat(String path, final Consumer<Float> setter, Supplier<LuaValue> getter) {
         String[] pathParts = path.split("\\.");
         pathList.get(pathParts[0]).add(pathParts[1]);
         setters.put(path, new Pair<>(PropertyType.FLOAT, cval -> setter.accept((Float) cval)));
+        getters.put(path, getter);
     }
 
-    protected void registerInteger(String path, Consumer<Integer> setter) {
+    protected void registerInteger(String path, Consumer<Integer> setter, Supplier<LuaValue> getter) {
         String[] pathParts = path.split("\\.");
         pathList.get(pathParts[0]).add(pathParts[1]);
         setters.put(path, new Pair<>(PropertyType.INTEGER, cval -> setter.accept((Integer) cval)));
+        getters.put(path, getter);
     }
 
     protected void registerHColor(String path, final Consumer<HColor> setter) {
@@ -52,6 +56,10 @@ public abstract class Properties {
         setters.put(path, new Pair<>(PropertyType.HCOLOR_ARRAY, cval -> setter.accept((ArrayList<HColor>) cval)));
     }
 
+    protected void registerGetter(String path, Supplier<LuaValue> getter) {
+        getters.put(path, getter);
+    }
+
     public void setProperty(String path, LuaValue value) {
         if(!setters.containsKey(path))
             throw new RuntimeException("Property at path " + path + "doesn't exist!");
@@ -60,6 +68,15 @@ public abstract class Properties {
 
         if(setter.getValue0() == PropertyType.FLOAT)
             setter.getValue1().accept(value.tofloat());
+
+        //TODO: other types
+    }
+
+    public LuaValue getProperty(String path) {
+        Supplier<LuaValue> getter = getters.get(path);
+        if(getter == null)
+            return LuaValue.NIL;
+        return getter.get();
     }
 
     public void loadConfig(InputStream in) {

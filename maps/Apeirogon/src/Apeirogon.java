@@ -99,7 +99,7 @@ public class Apeirogon implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.gameProperties.isFastRotation) {
+			if (!CurrentMap.gameProperties.rapidSpin) {
 				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 300f/60;
 			}

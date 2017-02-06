@@ -1,7 +1,7 @@
 include "desktop",
         "android",
         "ios",
-        "html",
+//        "html",
         "core",
         "rankserv",
         "version",

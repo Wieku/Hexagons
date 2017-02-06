@@ -37,7 +37,6 @@ public class Wall extends TimelineObject {
 		this.thickness = thickness;
 		this.speed = speedData;
 		this.curve = curveData;
-
 	}
 
 	public Wall(int side, float thickness, SpeedData speedData) {

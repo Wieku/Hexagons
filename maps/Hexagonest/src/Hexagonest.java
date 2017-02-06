@@ -138,7 +138,7 @@ public class Hexagonest implements MapScript {
 	public void update(float delta) {
 		dirChangeTime = dirChangeTime - delta;
 		if (dirChangeTime < 0) {
-			if (!CurrentMap.gameProperties.isFastRotation) {
+			if (!CurrentMap.gameProperties.rapidSpin) {
 				CurrentMap.setRotationSpeed(CurrentMap.gameProperties.rotationSpeed * -1.0f);
 				dirChangeTime = 7f;
 			}
@@ -154,19 +154,19 @@ public class Hexagonest implements MapScript {
 		Patterns.THICKNESS = myThickness;
 
 		for (int i = 0; i < mTimes; ++i) {
-			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 1, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 2, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 3, myThickness + 9 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 1, myThickness + 9 * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 2, myThickness + 9 * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 3, myThickness + 9 * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
 		}
 
 		Patterns.THICKNESS = oldThickness;
 
 		Patterns.cBarrage(startSide + 4);
-		Patterns.t_wait(delay * 0.65f * mDelayMult);
+		Patterns.timelineWait(delay * 0.65f * mDelayMult);
 		Patterns.cBarrage(startSide + 6);
-		Patterns.t_wait(delay * 0.65f * mDelayMult);
+		Patterns.timelineWait(delay * 0.65f * mDelayMult);
 
-		Patterns.t_wait(delay);
+		Patterns.timelineWait(delay);
 	}
 	
 	// pTripleWall
@@ -176,16 +176,15 @@ public class Hexagonest implements MapScript {
 		float delay = Patterns.getPerfectDelay(myThickness) * 5.5f;
 		int startSide = Patterns.getRandomSide();
 
-			Patterns.THICKNESS = myThickness;
+			//Patterns.THICKNESS = myThickness;
 
 		for (int i = 0; i < mTimes; ++i) {
-			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 1, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 3, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
-			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 5, myThickness + 0.15f * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 1, myThickness + 0.15f * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 3, myThickness + 0.15f * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
+			CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide + 5, myThickness + 0.15f * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
 		}
 
-		Patterns.t_wait(delay);
-		Patterns.THICKNESS = oldThickness;
+		Patterns.timelineWait(delay);
+		//Patterns.THICKNESS = oldThickness;
 	}
-	
 }

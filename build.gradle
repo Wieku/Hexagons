@@ -105,7 +105,7 @@ project(":ios") {
     }
 }
 
-project(":html") {
+/*project(":html") {
     apply plugin: "gwt"
     apply plugin: "war"
 
@@ -115,7 +115,7 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
     }
-}
+}*/
 
 project(":core") {
     apply plugin: "java"

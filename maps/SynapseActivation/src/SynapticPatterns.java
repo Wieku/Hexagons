@@ -10,7 +10,7 @@ public class SynapticPatterns {
     public static float BARRAGE_THICKNESS = 25f;
 
     public static void cWall(int mSide, float thickness) {
-        CurrentMap.gameProperties.wallTimeline.submit(new Wall(mSide, thickness, new SpeedData(Patterns.getSpeedMultDM())));
+        CurrentMap.gameProperties.wallTimeline.submit(new Wall(mSide, thickness, new SpeedData(Patterns.getBaseSpeed())));
     }
 
     public static void cBarrageN(int mSide, int mNeighbors, float thickness) {
@@ -32,11 +32,11 @@ public class SynapticPatterns {
         for (int i = 0; i <= mTimes; ++i) {
             cBarrage(startSide + j, BARRAGE_THICKNESS);
             j = j + loopDir;
-            Patterns.t_wait(delay);
-            if(CurrentMap.gameProperties.sides < 6) { Patterns.t_wait(delay * 0.6f); }
+            Patterns.timelineWait(delay);
+            if(CurrentMap.gameProperties.sides < 6) { Patterns.timelineWait(delay * 0.6f); }
         }
 
-        Patterns.t_wait(Patterns.getPerfectDelayDM(BARRAGE_THICKNESS) * 6.1f);
+        Patterns.timelineWait(Patterns.getPerfectDelayDM(BARRAGE_THICKNESS) * 6.1f);
     }
 
     public static void patternTunnelFastAlt(int times){
@@ -46,13 +46,13 @@ public class SynapticPatterns {
         int loopDir = Patterns.getRandomDir();
 
         for (int i = 0; i < times; ++i) {
-            CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide, thickness + 5 * Patterns.getSpeedMultDM() * delay, new SpeedData(Patterns.getSpeedMultDM())));
+            CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide, thickness + 5 * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
 
             cBarrage(startSide + loopDir * ((int)(CurrentMap.gameProperties.sides / 2)), thickness);
-            Patterns.t_wait(delay);
+            Patterns.timelineWait(delay);
             loopDir = loopDir * -1;
         }
 
-        Patterns.t_wait(delay);
+        Patterns.timelineWait(delay);
     }
 }

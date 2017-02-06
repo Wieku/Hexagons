@@ -13,7 +13,7 @@ apply plugin: "me.tatarka.retrolambda"
 sourceSets {
     main {
         java {
-            srcDirs = ['src/']
+            srcDirs = []
         }
         resources {
             srcDirs = ['src/']

@@ -1,0 +1,12 @@
+color {
+  background: [
+    { r: 0.3764, g: 0.3764, b: 0.3764, a: 1, pulse: { r: 0.0784, g: 0.0784, b: 0.0784, a: 0 } }
+    { r: 0.5019, g: 0.5019, b: 0.5019, a: 1, pulse: { r: 0.0784, g: 0.0784, b: 0.0784, a: 0 } }
+  ]
+
+  walls: { r: 1, g: 1, b: 1, a: 1 }
+
+  pulseMax: 1.8
+  pulseIncrement: 0.027
+  switch: 1
+}
