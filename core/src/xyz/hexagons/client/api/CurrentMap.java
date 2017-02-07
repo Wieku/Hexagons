@@ -1,6 +1,7 @@
 package xyz.hexagons.client.api;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import org.luaj.vm2.Varargs;
 import xyz.hexagons.client.map.timeline.TimelineRunnable;
 import xyz.hexagons.client.utils.Utils;
 
@@ -210,7 +211,7 @@ public abstract class CurrentMap {
 		gameProperties.gameCompleted = true;
 	}
 	
-	public static void pushEvent(float time, String name, Object... data) {
+	public static void pushEvent(float time, String name, Varargs data) {
 		Runnable runnable = null;
 		
 		switch(name) {
@@ -224,20 +225,16 @@ public abstract class CurrentMap {
 				//TODO
 				break;
 			case "push_text":
-				runnable = ()->pushText((String)data[0], (float)data[1]);
+				runnable = ()->pushText(data.arg(1).checkjstring(), data.arg(1).tofloat());
 				break;
 			default:
-				if(data.length == 0) throw new GdxRuntimeException("Wrong argument size!");
-				
-				String methodName = "set" + name.substring(0,1).toUpperCase() + name.substring(1);
-				
-				for (Method method : CurrentMap.class.getDeclaredMethods()) {
-					if(method.getName().equals(methodName)) {
-						method.setAccessible(true);
-						runnable = ()-> Utils.tryOr(()->method.invoke(null, data), null);
-						break;
-					}
+				if(data.narg() == 0) throw new GdxRuntimeException("Wrong argument size!");
+				if(gameProperties.checkPath(name)) {
+					runnable = () -> gameProperties.setProperty(name, data.arg(1));
+				} else {
+					throw new RuntimeException("Unknown event: " + name);
 				}
+
 				break;
 		}
 		

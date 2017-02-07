@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.ThreeArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.ZeroArgFunction;
+import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.*;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.Patterns;
@@ -118,6 +116,14 @@ public class LuaInit {
             @Override
             public LuaValue call(LuaValue arg) {
                 return CurrentMap.gameProperties.getProperty(arg.checkjstring());
+            }
+        });
+
+        game.set("pushEvent", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                CurrentMap.pushEvent(args.arg(1).tofloat(), args.arg(2).checkjstring(), args.subargs(3));
+                return LuaValue.NIL;
             }
         });
 

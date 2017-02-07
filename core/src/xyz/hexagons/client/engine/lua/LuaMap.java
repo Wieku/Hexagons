@@ -1,4 +1,4 @@
-package xyz.hexagons.client.map;
+package xyz.hexagons.client.engine.lua;
 
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;

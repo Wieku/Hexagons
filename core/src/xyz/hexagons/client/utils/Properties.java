@@ -33,6 +33,16 @@ public abstract class Properties {
         pathList.put(path, new HashSet<String>());
     }
 
+    protected void registerBoolean(String path, final Consumer<Boolean> setter, Supplier<LuaValue> getter) {
+        String[] pathParts = path.split("\\.");
+        if(pathParts.length != 2)
+            throw new RuntimeException("Config path len should always be 2!");
+
+        pathList.get(pathParts[0]).add(pathParts[1]);
+        setters.put(path, new Pair<>(PropertyType.BOOLEAN, cval -> setter.accept((Boolean) cval)));
+        getters.put(path, getter);
+    }
+
     protected void registerFloat(String path, final Consumer<Float> setter, Supplier<LuaValue> getter) {
         String[] pathParts = path.split("\\.");
         if(pathParts.length != 2)
@@ -77,6 +87,15 @@ public abstract class Properties {
         getters.put(path, getter);
     }
 
+    public boolean checkPath(String path) {
+        Matcher baseMatcher = basePathPattern.matcher(path);
+        if(!baseMatcher.find())
+            return false;
+
+        String basePath = baseMatcher.group(1);
+        return setters.containsKey(basePath);
+    }
+
     public void setProperty(String path, LuaValue value) {
         Matcher baseMatcher = basePathPattern.matcher(path);
         if(!baseMatcher.find())
@@ -90,6 +109,9 @@ public abstract class Properties {
         Pair<PropertyType, Consumer<Object>> setter = setters.get(basePath);
 
         switch(setter.getValue0()) {
+            case BOOLEAN:
+                setter.getValue1().accept(value.toboolean());
+                break;
             case FLOAT:
                 setter.getValue1().accept(value.tofloat());
                 break;
@@ -147,6 +169,9 @@ public abstract class Properties {
                     if(config.hasPath(path)) {
                         Pair<PropertyType, Consumer<Object>> setter = setters.get(path);
                         switch (setter.getValue0()) {
+                            case BOOLEAN:
+                                setter.getValue1().accept(config.getBoolean(path));
+                                break;
                             case FLOAT:
                                 setter.getValue1().accept((float) config.getDouble(path));
                                 break;
@@ -165,7 +190,6 @@ public abstract class Properties {
                                 setter.getValue1().accept(colors);
                                 break;
                         }
-
                     }
                 }
             }
@@ -283,6 +307,7 @@ public abstract class Properties {
     }
 
     private enum PropertyType {
+        BOOLEAN,
         FLOAT,
         INTEGER,
         HCOLOR,

@@ -4,20 +4,13 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.luaj.vm2.*;
-import org.luaj.vm2.lib.jse.JsePlatform;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
@@ -97,7 +90,7 @@ public class MapLoader {
 				String sh1 = Utils.getFileHash(file);
 				File data = new File(DATA_PATH + sh1 + ".hxd");
 
-				maps.add(new Map(new LuaMap(callbacks), m, jar, data));
+				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, jar, data));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 

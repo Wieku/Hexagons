@@ -35,6 +35,8 @@ sides {
 view {
   layers: 3
   depth: 153.5
+  alphaMultiplier: 5.9
+  alphaFalloff: 0.06
   skew: 0.83
   minSkew: 0
   maxSkew: 0.83

@@ -97,6 +97,7 @@ public class GameProperties extends Properties {
         mkpath("color");
         mkpath("view");
 
+        registerBoolean("rotation.useRadians", b -> useRadians = b, () -> LuaValue.valueOf(useRadians));
         registerFloat("rotation.speed", f -> rotationSpeed = f, () -> LuaValue.valueOf(rotationSpeed));
         registerFloat("rotation.maxSpeed", f -> rotationSpeedMax = f, () -> LuaValue.valueOf(rotationSpeedMax));
         registerFloat("rotation.increment", f -> rotationIncrement = f, () -> LuaValue.valueOf(rotationIncrement));
@@ -131,8 +132,6 @@ public class GameProperties extends Properties {
         registerInteger("color.offset", i -> colorOffset = i, () -> LuaValue.valueOf(colorOffset));
         registerFloat("color.switch", f -> colorSwitch = f, () -> LuaValue.valueOf(colorSwitch));
         registerHColor("color.walls", c -> walls = c, () -> walls);
-        registerFloat("color.alphaMultiplier", f -> alphaMultiplier = f, () -> LuaValue.valueOf(alphaMultiplier));
-        registerFloat("color.alphaFalloff", f -> alphaFalloff = f, () -> LuaValue.valueOf(alphaFalloff));
 
         registerInteger("view.layers", f -> layers = f, () -> LuaValue.valueOf(layers));
         registerFloat("view.depth", f -> depth = f, () -> LuaValue.valueOf(depth));
@@ -142,5 +141,7 @@ public class GameProperties extends Properties {
         registerFloat("view.skewTime", f -> skewTime = f, () -> LuaValue.valueOf(skewTime));
         registerFloat("view.wallSkewLeft", f -> wallSkewLeft = f, () -> LuaValue.valueOf(wallSkewLeft));
         registerFloat("view.wallSkewRight", f -> wallSkewRight = f, () -> LuaValue.valueOf(wallSkewRight));
+        registerFloat("view.alphaMultiplier", f -> alphaMultiplier = f, () -> LuaValue.valueOf(alphaMultiplier));
+        registerFloat("view.alphaFalloff", f -> alphaFalloff = f, () -> LuaValue.valueOf(alphaFalloff));
     }
 }

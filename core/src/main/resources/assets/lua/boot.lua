@@ -177,7 +177,8 @@ function prepareEnv(name, mapZipFile)
             loadProperties = mapCall(game.loadProperties),
             setProperty = game.setProperty,
             setAll = game.setAll,
-            getProperty = game.getProperty
+            getProperty = game.getProperty,
+            pushEvent = game.pushEvent
         },
         standardPattern = {
             alternatingBarrage = standardPattern.alternatingBarrage,

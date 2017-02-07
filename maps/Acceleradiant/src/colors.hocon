@@ -8,7 +8,5 @@ color {
 
   pulseMax: 1.5
   pulseIncrement: 0.025
-  alphaMultiplier: 5.9
-  alphaFalloff: 0.06
   switch: 1
 }
