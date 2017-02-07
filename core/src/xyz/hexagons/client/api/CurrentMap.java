@@ -225,7 +225,7 @@ public abstract class CurrentMap {
 				//TODO
 				break;
 			case "push_text":
-				runnable = ()->pushText(data.arg(1).checkjstring(), data.arg(1).tofloat());
+				runnable = ()->pushText(data.arg(1).checkjstring(), data.arg(2).tofloat());
 				break;
 			default:
 				if(data.narg() == 0) throw new GdxRuntimeException("Wrong argument size!");
