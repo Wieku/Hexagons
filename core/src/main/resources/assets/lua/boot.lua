@@ -118,7 +118,7 @@ function prepareEnv(name, mapZipFile)
             pi = math.pi,
             pow = math.pow,
             rad = math.rad,
-            random = game.random, --TODO: Check compat
+            random = game.random, --TODO: Check compat, seed
             --randomseed = math.randomseed,
             sin = math.sin,
             sinh = math.sinh,
@@ -171,10 +171,12 @@ function prepareEnv(name, mapZipFile)
             randomParam = game.randomParam,
             random = game.random,
             randomSide = game.randomSide,
+            randomDir = game.randomDir,
             getHalfSides = game.getHalfSides,
 
             loadProperties = mapCall(game.loadProperties),
             setProperty = game.setProperty,
+            setAll = game.setAll,
             getProperty = game.getProperty
         },
         standardPattern = {

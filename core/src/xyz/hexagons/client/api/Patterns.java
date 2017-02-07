@@ -33,9 +33,6 @@ public abstract class Patterns {
 	//getPerfectDelayDM: returns getPerfectDelay calculated with difficulty mutliplier
 	public static float getPerfectDelay(float mThickness) { return mThickness / (5.02f * getBaseSpeed()) * getDelayMultDM(); }
 
-	//getPerfectDelayDM: returns getPerfectDelay calculated with difficulty mutliplier
-	public static float getPerfectDelayDM(float mThickness) { return mThickness / (5.02f * getBaseSpeed()) * getDelayMultDM(); }
-
 	//getPerfectThickness: returns a good THICKNESS value in relation to human reflexes
 	public static float getPerfectThickness(float mThickness) { return mThickness * getBaseSpeed(); }
 
@@ -127,7 +124,7 @@ public abstract class Patterns {
 	}
 	
 	public static void  pAltBarrage(int mTimes, int mStep) {
-		float delay = getPerfectDelayDM(THICKNESS) * 5.6f;
+		float delay = getPerfectDelay(THICKNESS) * 5.6f;
 		for (int i = 0; i<= mTimes; ++i) {
 			cAltBarrage(i, mStep, THICKNESS);
 			timelineWait(delay);
@@ -150,13 +147,13 @@ public abstract class Patterns {
 			timelineWait(delay);
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 6.5f);
+		timelineWait(getPerfectDelay(THICKNESS) * 6.5f);
 	}
 	
 	//pMirrorSpiralDouble: spawns a spiral of rWallEx where you need to change direction
 	public static void  pMirrorSpiralDouble(int mTimes, int mExtra) {
 		float thickness = getPerfectThickness(THICKNESS);
-		float delay = getPerfectDelayDM(thickness);
+		float delay = getPerfectDelay(thickness);
 		int startSide = getRandomSide();
 		int currentSide = startSide;
 		int loopDir = getRandomDir();
@@ -183,12 +180,12 @@ public abstract class Patterns {
 			timelineWait(delay);
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 7.5f);
+		timelineWait(getPerfectDelay(THICKNESS) * 7.5f);
 	}
 	
 	//pBarrageSpiral: spawns a spiral of cBarrage
 	public static void  pBarrageSpiral(int mTimes, float mDelayMult, int mStep) {
-		float delay = getPerfectDelayDM(THICKNESS) * 5.6f * mDelayMult;
+		float delay = getPerfectDelay(THICKNESS) * 5.6f * mDelayMult;
 		int startSide = getRandomSide();
 		int loopDir = mStep * getRandomDir();
 		int j = 0;
@@ -200,12 +197,12 @@ public abstract class Patterns {
 			if(CurrentMap.gameProperties.sides < 6) { timelineWait(delay * 0.6f); }
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 6.1f);
+		timelineWait(getPerfectDelay(THICKNESS) * 6.1f);
 	}
 	
 	//pDMBarrageSpiral: spawns a spiral of cBarrage, with static delay
 	public static void  pDMBarrageSpiral(int mTimes, float mDelayMult, int mStep) {
-		float delay = (getPerfectDelayDM(THICKNESS) * 5.42f) * (mDelayMult / (float) Math.pow(CurrentMap.gameProperties.difficulty, 0.4)) * (float)Math.pow(getBaseSpeed(), 0.35);
+		float delay = (getPerfectDelay(THICKNESS) * 5.42f) * (mDelayMult / (float) Math.pow(CurrentMap.gameProperties.difficulty, 0.4)) * (float)Math.pow(getBaseSpeed(), 0.35);
 		int  startSide = getRandomSide();
 		int loopDir = mStep * getRandomDir();
 		int j = 0;
@@ -217,12 +214,12 @@ public abstract class Patterns {
 			if(CurrentMap.gameProperties.sides < 6) { timelineWait(delay * 0.49f); }
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * (6.7f * (float)Math.pow(CurrentMap.gameProperties.difficulty, 0.7)));
+		timelineWait(getPerfectDelay(THICKNESS) * (6.7f * (float)Math.pow(CurrentMap.gameProperties.difficulty, 0.7)));
 	}
 	
 	//pWallExVortex: spawns left-left right-right spiral patters
 	public static void  pWallExVortex(int mTimes, int  mStep, int mExtraMult) {
-		float delay = getPerfectDelayDM(THICKNESS) * 5.0f;
+		float delay = getPerfectDelay(THICKNESS) * 5.0f;
 		int startSide = getRandomSide();
 		int loopDir = getRandomDir();
 		int currentSide = startSide;
@@ -243,12 +240,12 @@ public abstract class Patterns {
 			}
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 5.5f);
+		timelineWait(getPerfectDelay(THICKNESS) * 5.5f);
 	}
 	
 	//pInverseBarrage: spawns two barrages who force you to turn 180 degrees
 	public static void  pInverseBarrage(int mTimes) {
-		float delay = getPerfectDelayDM(THICKNESS) * 9.9f;
+		float delay = getPerfectDelay(THICKNESS) * 9.9f;
 		int startSide = getRandomSide();
 
 		for (int i = 0; i<= mTimes; ++i) {
@@ -259,7 +256,7 @@ public abstract class Patterns {
 			timelineWait(delay);
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 2.5f);
+		timelineWait(getPerfectDelay(THICKNESS) * 2.5f);
 	}
 	
 	//pRandomBarrage: spawns barrages with random side, and waits humanly-possible times dep}ing on the sides distance
@@ -271,15 +268,15 @@ public abstract class Patterns {
 			cBarrage(side, THICKNESS);
 			oldSide = side;
 			side = getRandomSide();
-			timelineWait(getPerfectDelayDM(THICKNESS) * (2 + (getSideDistance(side, oldSide) * mDelayMult)));
+			timelineWait(getPerfectDelay(THICKNESS) * (2 + (getSideDistance(side, oldSide) * mDelayMult)));
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 5.6f);
+		timelineWait(getPerfectDelay(THICKNESS) * 5.6f);
 	}
 	
 	//pMirrorWallStrip: spawns rWalls close to one another on the same side
 	public static void  pMirrorWallStrip(int mTimes, int mExtra) {
-		float delay = getPerfectDelayDM(THICKNESS) * 3.65f;
+		float delay = getPerfectDelay(THICKNESS) * 3.65f;
 		int startSide = getRandomSide();
 
 		for (int i = 0; i < mTimes; ++i) {
@@ -287,7 +284,7 @@ public abstract class Patterns {
 			timelineWait(delay);
 		}
 
-		timelineWait(getPerfectDelayDM(THICKNESS) * 5.00f);
+		timelineWait(getPerfectDelay(THICKNESS) * 5.00f);
 	}
 	
 	//pTunnel: forces you to circle around a very thick wall

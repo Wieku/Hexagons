@@ -48,6 +48,16 @@ public class HColor {
 		return this;
 	}
 
+	public HColor setHueMin(float min){
+		hue.hueMin = min;
+		return this;
+	}
+
+	public HColor setHueMax(float max){
+		hue.hueMax = max;
+		return this;
+	}
+
 	public float getHueInc(){
 		return hue.hueInc;
 	}

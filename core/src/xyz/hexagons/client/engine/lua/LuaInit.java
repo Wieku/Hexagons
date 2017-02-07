@@ -1,6 +1,7 @@
 package xyz.hexagons.client.engine.lua;
 
 import com.badlogic.gdx.Gdx;
+import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
@@ -68,6 +69,13 @@ public class LuaInit {
             }
         });
 
+        game.set("randomDir", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                return LuaValue.valueOf(random.nextBoolean() ? 1 : -1);
+            }
+        });
+
         game.set("getHalfSides", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
@@ -94,6 +102,14 @@ public class LuaInit {
             @Override
             public LuaValue call(LuaValue path, LuaValue value) {
                 CurrentMap.gameProperties.setProperty(path.checkjstring(), value);
+                return LuaValue.NIL;
+            }
+        });
+
+        game.set("setAll", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue base, LuaValue path, LuaValue value) {
+                CurrentMap.gameProperties.setAll(base.checkjstring(), path.checkjstring(), value);
                 return LuaValue.NIL;
             }
         });
@@ -182,7 +198,7 @@ public class LuaInit {
                 int side = arg.get("side").toint();
                 float thickness = arg.get("thickness").tofloat();
 
-                Wall wall = new Wall(side, thickness, luaSpeedData(arg.get("speed")));
+                Wall wall = new Wall(side, thickness, luaSpeedData(arg));
                 CurrentMap.gameProperties.wallTimeline.submit(wall);
                 return LuaValue.NIL;
             }

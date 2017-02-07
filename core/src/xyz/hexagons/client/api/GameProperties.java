@@ -110,7 +110,7 @@ public class GameProperties extends Properties {
         registerFloat("difficulty.speed", f -> speed = f, () -> LuaValue.valueOf(speed));
         registerFloat("difficulty.speedIncrement", f -> speedInc = f, () -> LuaValue.valueOf(speedInc));
 
-        registerInteger("sides.start", i -> sides = i, () -> LuaValue.valueOf(sides));
+        registerInteger("sides.start", i -> sides = i, () -> LuaValue.valueOf(sides)); //TODO: Find better name
         registerInteger("sides.min", i -> minSides = i, () -> LuaValue.valueOf(minSides));
         registerInteger("sides.max", i -> maxSides = i, () -> LuaValue.valueOf(maxSides));
 
@@ -124,13 +124,15 @@ public class GameProperties extends Properties {
         registerFloat("pulse.speedReverse", f -> pulseSpeedR = f, () -> LuaValue.valueOf(pulseSpeedR));
         registerFloat("pulse.delayMax", f -> {pulseDelayMax = f; pulseDelayHalfMax = f / 2;}, () -> LuaValue.valueOf(pulseDelayMax));
 
-        registerHColorArray("color.background", a -> backgroundColors = a);
+        registerHColorArray("color.background", a -> backgroundColors = a, () -> backgroundColors);
         registerFloat("color.pulseMin", f -> colorPulseMin = f, () -> LuaValue.valueOf(colorPulseMin));
         registerFloat("color.pulseMax", f -> colorPulseMax = f, () -> LuaValue.valueOf(colorPulseMax));
         registerFloat("color.pulseIncrement", f -> colorPulseInc = f, () -> LuaValue.valueOf(colorPulseInc));
         registerInteger("color.offset", i -> colorOffset = i, () -> LuaValue.valueOf(colorOffset));
         registerFloat("color.switch", f -> colorSwitch = f, () -> LuaValue.valueOf(colorSwitch));
-        registerHColor("color.walls", c -> walls = c);
+        registerHColor("color.walls", c -> walls = c, () -> walls);
+        registerFloat("color.alphaMultiplier", f -> alphaMultiplier = f, () -> LuaValue.valueOf(alphaMultiplier));
+        registerFloat("color.alphaFalloff", f -> alphaFalloff = f, () -> LuaValue.valueOf(alphaFalloff));
 
         registerInteger("view.layers", f -> layers = f, () -> LuaValue.valueOf(layers));
         registerFloat("view.depth", f -> depth = f, () -> LuaValue.valueOf(depth));
@@ -140,7 +142,5 @@ public class GameProperties extends Properties {
         registerFloat("view.skewTime", f -> skewTime = f, () -> LuaValue.valueOf(skewTime));
         registerFloat("view.wallSkewLeft", f -> wallSkewLeft = f, () -> LuaValue.valueOf(wallSkewLeft));
         registerFloat("view.wallSkewRight", f -> wallSkewRight = f, () -> LuaValue.valueOf(wallSkewRight));
-        registerFloat("view.alphaMultiplier", f -> alphaMultiplier = f, () -> LuaValue.valueOf(alphaMultiplier));
-        registerFloat("view.alphaFalloff", f -> alphaFalloff = f, () -> LuaValue.valueOf(alphaFalloff));
     }
 }
