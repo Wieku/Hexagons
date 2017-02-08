@@ -41,14 +41,6 @@ public class DesktopLauncher {
 
 		Instance.storageRoot = new File(".");
 		Instance.accountManager = new DesktopAccountManager();
-		Instance.classLoaderSupplier = file -> {
-			try {
-				return URLClassLoader.newInstance(new URL[]{file.toURI().toURL()}, DesktopLauncher.class.getClassLoader());
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			return null;
-		};
 
 		config = new LwjglApplicationConfiguration();
 

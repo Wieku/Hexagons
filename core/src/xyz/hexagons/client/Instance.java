@@ -40,7 +40,6 @@ public class Instance {
 
 
     public static Function<String, File> cacheFile; //Android only for now
-    public static Function<File, ClassLoader> classLoaderSupplier;
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

@@ -4,6 +4,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.luaj.vm2.*;
+import org.luaj.vm2.ast.Str;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.utils.Utils;
 
@@ -39,40 +40,41 @@ public class MapLoader {
 		}
 
 		for (File file : files) {
-			if (file.isFile() && Files.getFileExtension(file.getAbsolutePath()).equals("jar")) {
-				JarFile jar;
+			String ext = Files.getFileExtension(file.getAbsolutePath());
+			if (file.isFile() && (ext.equals("jar") || ext.equals("zip"))) {
+				ZipFile zip; //TODO: Directory based(unzipped) maps
 				try {
-					jar = new JarFile(file);
+					zip = new ZipFile(file);
 				} catch (IOException e) {
 					System.err.println("Cannot load " + file.getName());
 					e.printStackTrace();
 					continue;
 				}
 
-				if (jar.getEntry("map.json") == null) {
+				if (zip.getEntry("map.json") == null) {
 					System.err.println("File: " + file.getName() + " doesn't contain map.json!");
-					closeJar(jar);
+					closeJar(zip);
 					continue;
 				}
 
 				MapJson m;
 				try {
 					Gson gson = new GsonBuilder().create();
-					m = gson.fromJson(new InputStreamReader(jar.getInputStream(jar.getEntry("map.json"))), MapJson.class);
+					m = gson.fromJson(new InputStreamReader(zip.getInputStream(zip.getEntry("map.json"))), MapJson.class);
 				} catch (IOException e) {
 					System.err.println("File map.json in map " + file.getName() + " has wrong syntax!");
 					e.printStackTrace();
-					closeJar(jar);
+					closeJar(zip);
 					continue;
 				}
 
 				LuaTable callbacks = null;
-				if (jar.getEntry("main.lua") != null) {
+				if (zip.getEntry("main.lua") != null) {
 					try {
-						InputStreamReader r = new InputStreamReader(jar.getInputStream(jar.getEntry("main.lua")));
+						InputStreamReader r = new InputStreamReader(zip.getInputStream(zip.getEntry("main.lua")));
 
 						Varargs pe = Instance.luaGlobals.get("prepareEnv")
-								.invoke(new LuaValue[]{ LuaString.valueOf(m.name), new LuaUserdata(jar)});
+								.invoke(new LuaValue[]{ LuaString.valueOf(m.name), new LuaUserdata(zip)});
 
 						callbacks = pe.checktable(2);
 
@@ -83,14 +85,14 @@ public class MapLoader {
 					}
 				} else {
 					System.err.println("File main.lua in map " + file.getName() + " doesn't exist!");
-					closeJar(jar);
+					closeJar(zip);
 					continue;
 				}
 
 				String sh1 = Utils.getFileHash(file);
 				File data = new File(DATA_PATH + sh1 + ".hxd");
 
-				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, jar, data));
+				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, zip, data));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 
