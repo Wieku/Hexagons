@@ -227,6 +227,9 @@ public abstract class CurrentMap {
 			case "push_text":
 				runnable = ()->pushText(data.arg(1).checkjstring(), data.arg(2).tofloat());
 				break;
+			case "function":
+				runnable = data.arg(1)::call;
+				break;
 			default:
 				if(data.narg() == 0) throw new GdxRuntimeException("Wrong argument size!");
 				if(gameProperties.checkPath(name)) {

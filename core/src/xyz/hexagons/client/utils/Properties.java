@@ -232,6 +232,8 @@ public abstract class Properties {
                     case "increment":
                         color.setHueInc(value.checknumber().tofloat());
                         break;
+                    case "offset":
+                        color.addHueOffset(value.checknumber().tofloat());
                 }
                 break;
             case "pulse":
@@ -288,6 +290,8 @@ public abstract class Properties {
                 hue.pingPong = config.getBoolean(path + "hue.pingPong");
             if(config.hasPath(path + "hue.shared"))
                 hue.shared = config.getBoolean(path + "hue.shared");
+            if(config.hasPath(path + "hue.offset"))
+                color.addHueOffset((float) config.getDouble(path + "hue.offset"));
             color.addHue(hue);
         }
         if(config.hasPath(path + "pulse")) {

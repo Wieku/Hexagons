@@ -122,7 +122,10 @@ public class LuaInit {
         game.set("pushEvent", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {
-                CurrentMap.pushEvent(args.arg(1).tofloat(), args.arg(2).checkjstring(), args.subargs(3));
+                if(args.arg(2).isstring())
+                    CurrentMap.pushEvent(args.arg(1).tofloat(), args.arg(2).checkjstring(), args.subargs(3));
+                else if(args.arg(2).isfunction())
+                    CurrentMap.pushEvent(args.arg(1).tofloat(), "function", args.subargs(2));
                 return LuaValue.NIL;
             }
         });
