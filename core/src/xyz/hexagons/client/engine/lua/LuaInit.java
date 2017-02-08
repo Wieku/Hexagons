@@ -56,7 +56,7 @@ public class LuaInit {
             @Override
             public LuaValue call(LuaValue arg) {
                 final int bound = arg.checkint();
-                return LuaValue.valueOf(random.nextInt(bound));
+                return LuaValue.valueOf(random.nextInt(bound + 1));
             }
         });
 
@@ -170,6 +170,22 @@ public class LuaInit {
             }
         });
 
+        patterns.set("wallExtra", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue side, LuaValue extra, LuaValue thickness) {
+                Patterns.cWallEx(side.toint(), extra.toint(), thickness.tofloat());
+                return LuaValue.NIL;
+            }
+        });
+
+        patterns.set("wallExtraMirrored", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue side, LuaValue extra, LuaValue thickness) {
+                Patterns.rWallEx(side.toint(), extra.toint(), thickness.tofloat());
+                return LuaValue.NIL;
+            }
+        });
+
         return patterns;
     }
 
@@ -219,6 +235,9 @@ public class LuaInit {
     private static SpeedData luaSpeedData(LuaValue lval) {
         if(lval.isnumber())
             return new SpeedData(lval.tofloat());
+
+        if(lval.get("acceleration").isnil())
+            return new SpeedData(lval.get("speed").tofloat());
 
         return new SpeedData(
                 lval.get("speed").tofloat(),

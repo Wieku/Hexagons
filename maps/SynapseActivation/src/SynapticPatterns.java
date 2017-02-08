@@ -40,15 +40,14 @@ public class SynapticPatterns {
     }
 
     public static void patternTunnelFastAlt(int times){
-        float thickness = BARRAGE_THICKNESS;
         float delay = Patterns.getPerfectDelay(getPerfectThickness(BARRAGE_THICKNESS)) * 2;
         int startSide = getRandomSide();
         int loopDir = Patterns.getRandomDir();
 
         for (int i = 0; i < times; ++i) {
-            CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide, thickness + 5 * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
+            CurrentMap.gameProperties.wallTimeline.submit(new Wall(startSide, BARRAGE_THICKNESS + 5 * Patterns.getBaseSpeed() * delay, new SpeedData(Patterns.getBaseSpeed())));
 
-            cBarrage(startSide + loopDir * ((int)(CurrentMap.gameProperties.sides / 2)), thickness);
+            cBarrage(startSide + loopDir * ((int)(CurrentMap.gameProperties.sides / 2)), BARRAGE_THICKNESS);
             Patterns.timelineWait(delay);
             loopDir = loopDir * -1;
         }

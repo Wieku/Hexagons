@@ -5,6 +5,7 @@ import com.typesafe.config.*;
 import org.javatuples.Pair;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.ast.Str;
+import xyz.hexagons.client.api.DynamicColor;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.map.Hue;
 import xyz.hexagons.client.utils.function.Consumer;
@@ -73,6 +74,16 @@ public abstract class Properties {
         rawGetters.put(path, getter);
     }
 
+    protected void registerDynamicColor(String path, final Consumer<DynamicColor> setter, Supplier<DynamicColor> getter) {
+        String[] pathParts = path.split("\\.");
+        if(pathParts.length != 2)
+            throw new RuntimeException("Config path len should always be 2!");
+
+        pathList.get(pathParts[0]).add(pathParts[1]);
+        setters.put(path, new Pair<>(PropertyType.DYNAMIC_COLOR, cval -> setter.accept((DynamicColor) cval)));
+        rawGetters.put(path, getter);
+    }
+
     protected void registerHColorArray(String path, Consumer<ArrayList<HColor>> setter, Supplier<ArrayList<HColor>> getter) {
         String[] pathParts = path.split("\\.");
         if(pathParts.length != 2)
@@ -119,8 +130,17 @@ public abstract class Properties {
                 setter.getValue1().accept(value.toint());
                 break;
             case HCOLOR:
-                String[] pathParts = path.split("\\.");
-                setColorProperty((HColor) rawGetters.get(basePath).get(), 2, pathParts, value);
+                setColorProperty((HColor) rawGetters.get(basePath).get(), 2, path.split("\\."), value);
+                break;
+            case DYNAMIC_COLOR: //TODO: test
+                DynamicColor dcolor = (DynamicColor) rawGetters.get(basePath).get();
+                if(dcolor instanceof DynamicColor.StaticDynamicColor)
+                    setDynamicColorProperty(dcolor, 2, path.split("\\."), value);
+                else {
+                    dcolor = new DynamicColor.StaticDynamicColor(dcolor);
+                    setDynamicColorProperty(dcolor, 2, path.split("\\."), value);
+                    setter.getValue1().accept(dcolor);
+                }
                 break;
             case HCOLOR_ARRAY:
                 throw new RuntimeException("Use game.setAll");
@@ -188,6 +208,21 @@ public abstract class Properties {
                                     colors.add(parseColor(c, ""));
                                 }
                                 setter.getValue1().accept(colors);
+                                break;
+                            case DYNAMIC_COLOR:
+                                float r, g, b, a;
+                                r = b = g = a = 1f;
+
+                                if(config.hasPath(path + ".r"))
+                                    r = (float) config.getDouble(path + ".r");
+                                if(config.hasPath(path + ".g"))
+                                    g = (float) config.getDouble(path + ".g");
+                                if(config.hasPath(path + ".b"))
+                                    b = (float) config.getDouble(path + ".b");
+                                if(config.hasPath(path + ".a"))
+                                    a = (float) config.getDouble(path + ".a");
+
+                                setter.getValue1().accept(new DynamicColor.StaticDynamicColor(r, g, b, a));
                                 break;
                         }
                     }
@@ -259,6 +294,29 @@ public abstract class Properties {
         }
     }
 
+    private void setDynamicColorProperty(DynamicColor color, int pathBase, String[] pathParts, LuaValue value) {
+        if(pathParts.length == pathBase)
+            throw new RuntimeException("Full color setting is not implemented yet");
+
+
+        switch (pathParts[pathBase]) {
+            case "r":
+                color.r = value.checknumber().tofloat();
+                break;
+            case "g":
+                color.g = value.checknumber().tofloat();
+                break;
+            case "b":
+                color.b = value.checknumber().tofloat();
+                break;
+            case "a":
+                color.a = value.checknumber().tofloat();
+                break;
+            default:
+                throw new RuntimeException("Invalid path");
+        }
+    }
+
     private HColor parseColor(Config config, String path) {
         float r, g, b, a;
         r = b = g = a = 1f;
@@ -292,6 +350,8 @@ public abstract class Properties {
                 hue.shared = config.getBoolean(path + "hue.shared");
             if(config.hasPath(path + "hue.offset"))
                 color.addHueOffset((float) config.getDouble(path + "hue.offset"));
+            if(config.hasPath(path + "hue.shift"))
+                color.addHueShift((float) config.getDouble(path + "hue.shift"));
             color.addHue(hue);
         }
         if(config.hasPath(path + "pulse")) {
@@ -316,5 +376,6 @@ public abstract class Properties {
         INTEGER,
         HCOLOR,
         HCOLOR_ARRAY,
+        DYNAMIC_COLOR
     }
 }

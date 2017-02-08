@@ -197,7 +197,10 @@ function prepareEnv(name, mapZipFile)
             getPerfectThickness = patterns.getPerfectThickness,
             getPerfectDelay = patterns.getPerfectDelay,
             getBaseSpeed = patterns.getBaseSpeed,
-            barrage = patterns.barrage
+
+            barrage = patterns.barrage,
+            wallExtra = patterns.wallExtra,
+            wallExtraMirrored = patterns.wallExtraMirrored
         },
         timeline = {
             wait = timeline.wait,

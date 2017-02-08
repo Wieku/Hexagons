@@ -132,6 +132,7 @@ public class GameProperties extends Properties {
         registerInteger("color.offset", i -> colorOffset = i, () -> LuaValue.valueOf(colorOffset));
         registerFloat("color.switch", f -> colorSwitch = f, () -> LuaValue.valueOf(colorSwitch));
         registerHColor("color.walls", c -> walls = c, () -> walls);
+        registerDynamicColor("color.shadow", c -> shadow = c, () -> shadow);
 
         registerInteger("view.layers", f -> layers = f, () -> LuaValue.valueOf(layers));
         registerFloat("view.depth", f -> depth = f, () -> LuaValue.valueOf(depth));

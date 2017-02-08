@@ -1,0 +1,11 @@
+color {
+  background: [
+    { r: 0.6274, g: 0.6274, b: 0.6274, a: 1 }
+  ]
+  shadow: {r: 0.0078, g: 0.9176, b: 0.9803, a: 1 }
+
+  walls: { r: 0.1529, g: 0.1529, b: 0.1529, a: 1 }
+
+  pulseMax: 1.8
+  pulseIncrement: 0.027
+}

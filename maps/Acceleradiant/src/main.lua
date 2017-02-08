@@ -13,9 +13,9 @@ local function pACBarrage()
     local difficulty = game.getProperty("difficulty.difficulty")
     local sides = game.getProperty("sides.start")
     local delay = patterns.getPerfectDelay(patterns.THICKNESS) * 3.7
-    local startSide = game.random(11)
+    local startSide = game.random(10)
     for i = 0, sides - 2 do
-        acceleradiantWall(startSide + i, (9 + game.random(2)), -1.1 * difficulty, 1, 12)
+        acceleradiantWall(startSide + i, (9 + game.random(1)), -1.1 * difficulty, 1, 12)
     end
     timeline.wait(delay * 2.5)
 end
@@ -24,7 +24,7 @@ local function pACBarrageMulti()
     local difficulty = game.getProperty("difficulty.difficulty")
     local sides = game.getProperty("sides.start")
     local delay = patterns.getPerfectDelay(patterns.THICKNESS) * 3.7
-    local startSide = game.random(11)
+    local startSide = game.random(10)
 
     for i = 0, sides - 2 do
         acceleradiantWall(startSide + i, 10, -1.09 * difficulty, 0.31, 10)
@@ -40,7 +40,7 @@ local function pACBarrageMultiAltDir()
     local sides = game.getProperty("sides.start")
     local delay = patterns.getPerfectDelay(patterns.THICKNESS) * 3.7
     local mdiff = 1 + math.abs(1 - difficulty)
-    local startSide = game.random(11)
+    local startSide = game.random(10)
     local loopDir = game.randomDir()
 
     for i = 0, sides + game.getHalfSides() do
