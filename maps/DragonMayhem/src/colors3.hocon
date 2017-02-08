@@ -1,0 +1,14 @@
+color {
+  background: [
+    { r: 1, g: 0, b: 0, a: 1, hue: { min: 0, max: 100, increment: 0.541, pingPong: true } }
+    { r: 0.8823, g: 0, b: 0, a: 1 }
+    { r: 0.7647, g: 0, b: 0, a: 1, hue: { min: 0, max: 100, increment: 0.541, pingPong: true } }
+    { r: 0.7647, g: 0, b: 0, a: 1 }
+    { r: 0.8823, g: 0, b: 0, a: 1, hue: { min: 0, max: 100, increment: 0.541, pingPong: true } }
+    { r: 1, g: 0, b: 0, a: 1 }
+  ]
+
+  walls: { r: 1, g: 0, b: 0, a: 1, pulse: { r: 0, g: 1, b: 1, a: 0 } }
+
+  pulseIncrement: 0.541
+}

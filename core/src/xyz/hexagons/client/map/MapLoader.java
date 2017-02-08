@@ -4,20 +4,14 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.luaj.vm2.*;
-import org.luaj.vm2.lib.jse.JsePlatform;
+import org.luaj.vm2.ast.Str;
 import xyz.hexagons.client.Instance;
-import xyz.hexagons.client.api.MapScript;
 import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
@@ -46,92 +40,65 @@ public class MapLoader {
 		}
 
 		for (File file : files) {
-			if (file.isFile() && Files.getFileExtension(file.getAbsolutePath()).equals("jar")) {
-				JarFile jar;
+			String ext = Files.getFileExtension(file.getAbsolutePath());
+			if (file.isFile() && (ext.equals("jar") || ext.equals("zip"))) {
+				ZipFile zip; //TODO: Directory based(unzipped) maps
 				try {
-					jar = new JarFile(file);
+					zip = new ZipFile(file);
 				} catch (IOException e) {
 					System.err.println("Cannot load " + file.getName());
 					e.printStackTrace();
 					continue;
 				}
 
-				if (jar.getEntry("map.json") == null) {
+				if (zip.getEntry("map.json") == null) {
 					System.err.println("File: " + file.getName() + " doesn't contain map.json!");
-					closeJar(jar);
+					closeJar(zip);
 					continue;
 				}
 
 				MapJson m;
 				try {
 					Gson gson = new GsonBuilder().create();
-					m = gson.fromJson(new InputStreamReader(jar.getInputStream(jar.getEntry("map.json"))), MapJson.class);
+					m = gson.fromJson(new InputStreamReader(zip.getInputStream(zip.getEntry("map.json"))), MapJson.class);
 				} catch (IOException e) {
-					System.err.println("File map.json in mod " + file.getName() + " has wrong syntax!");
+					System.err.println("File map.json in map " + file.getName() + " has wrong syntax!");
 					e.printStackTrace();
-					closeJar(jar);
+					closeJar(zip);
 					continue;
 				}
 
-				if (jar.getEntry("main.lua") != null) {
+				LuaTable callbacks = null;
+				if (zip.getEntry("main.lua") != null) {
 					try {
-						InputStreamReader r = new InputStreamReader(jar.getInputStream(jar.getEntry("main.lua")));
+						InputStreamReader r = new InputStreamReader(zip.getInputStream(zip.getEntry("main.lua")));
 
-						Varargs pe = Instance.luaGlobals.get("prepareEnv").invoke(LuaString.valueOf(m.name));
+						Varargs pe = Instance.luaGlobals.get("prepareEnv")
+								.invoke(new LuaValue[]{ LuaString.valueOf(m.name), new LuaUserdata(zip)});
 
-						LuaTable callbacks = pe.checktable(2);
+						callbacks = pe.checktable(2);
 
 						LuaValue chunk = Instance.luaGlobals.load(r, "=Map/" + file.getName() + "/main.lua", pe.checktable(1));
 						chunk.call();
-
-						callbacks.get("init").call();
-
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				}
-
-				ClassLoader loader = Instance.classLoaderSupplier.apply(file);
-				if(loader == null) {
-					closeJar(jar);
+				} else {
+					System.err.println("File main.lua in map " + file.getName() + " doesn't exist!");
+					closeJar(zip);
 					continue;
 				}
 
-				Class<?> toLoad;
-				try {
-					toLoad = loader.loadClass(m.className);
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-					closeJar(jar);
-					continue;
-				}
+				String sh1 = Utils.getFileHash(file);
+				File data = new File(DATA_PATH + sh1 + ".hxd");
 
-				List<Class<?>> interfaces = Arrays.asList(toLoad.getInterfaces());
-				//System.err.println("fghjty " + interfaces);
-				if (!interfaces.contains(MapScript.class)) {
-					System.err.println("Script of " + m.name + "(" + file.getName() + ") Doesn't implement 'MapScript' interface!");
-					closeJar(jar);
-					continue;
-				}
-
-				try {
-					String sh1 = Utils.getFileHash(file);
-					File data = new File(DATA_PATH + sh1 + ".hxd");
-					//if(!data.exists()) data.createNewFile();
-					maps.add(new Map((MapScript) toLoad.newInstance(), m, jar, data));
-
-				} catch (Exception e1) {
-					System.err.println("Script of " + m.name + "(" + file.getName() + ") couldn't contain custom constructor!");
-					e1.printStackTrace();
-					closeJar(jar);
-					continue;
-				}
+				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, zip, data));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 
 			}
 		}
-		System.out.println("Loaded " + maps.size() + " maps");
+		System.out.println("Loaded " + maps.size() + " map(s)");
 		return maps;
 	}
 

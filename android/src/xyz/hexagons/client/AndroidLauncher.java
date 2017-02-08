@@ -85,9 +85,6 @@ public class AndroidLauncher extends AndroidApplication {
 		};
 
 		Instance.accountManager = new AndroidAccountManager();
-		Instance.classLoaderSupplier = file ->
-			new DexClassLoader(file.getPath(), getFilesDir().getPath(), null, this.getClassLoader());
-
 		Instance.audioPlayerFactory = new AndroidAudioPlayerFactory();
 
 

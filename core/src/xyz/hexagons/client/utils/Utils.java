@@ -202,4 +202,13 @@ public class Utils {
 			return alt;
 		}
 	}
+
+	public static Throwable getRootCause(Throwable th) {
+		Throwable cause = th.getCause();
+		while(cause != null) {
+			th = cause;
+			cause = th.getCause();
+		}
+		return th;
+	}
 }

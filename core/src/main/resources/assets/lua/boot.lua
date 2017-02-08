@@ -1,6 +1,47 @@
 print "Running Lua bootstrap code"
 
-function prepareEnv(name)
+local gameutil = {}
+local patternQueue = {}
+
+function patternQueue:shuffle()
+    for i = #self, 2, -1 do
+        local r = game.random(i - 1) + 1
+        self[i], self[r] = self[r], self[i]
+    end
+end
+
+function patternQueue:addNext()
+    if self.at >= #self then
+        self.at = 0
+    end
+    self.at = self.at + 1
+    self[self.at]()
+end
+
+function gameutil.newPatternQueue(queue)
+    local unpacked = {at = 0}
+    local n = 1
+    for _, v in ipairs(queue) do
+        for i = 1, v.weight do
+            unpacked[n] = v.pattern
+            n = n + 1
+        end
+    end
+
+    if #unpacked < 1 then
+        error("Pattern queue must contain at least 1 element with weight > 0!")
+    end
+
+    return setmetatable(unpacked, {__index = patternQueue})
+end
+
+function prepareEnv(name, mapZipFile)
+    local function mapCall(f)
+        return function(...)
+            return f(mapZipFile, ...)
+        end
+    end
+
     local env = {
         assert = assert,
         error = error,
@@ -77,8 +118,8 @@ function prepareEnv(name)
             pi = math.pi,
             pow = math.pow,
             rad = math.rad,
-            random = math.random,
-            randomseed = math.randomseed,
+            random = game.random, --TODO: Check compat, seed
+            --randomseed = math.randomseed,
             sin = math.sin,
             sinh = math.sinh,
             sqrt = math.sqrt,
@@ -123,6 +164,47 @@ function prepareEnv(name)
                 end
             end,
             traceback = debug.traceback
+        },
+        game = {
+            newPatternQueue = gameutil.newPatternQueue,
+
+            randomParam = game.randomParam,
+            random = game.random,
+            randomSide = game.randomSide,
+            randomDir = game.randomDir,
+            getHalfSides = game.getHalfSides,
+
+            loadProperties = mapCall(game.loadProperties),
+            setProperty = game.setProperty,
+            setAll = game.setAll,
+            getProperty = game.getProperty,
+            pushEvent = game.pushEvent
+        },
+        standardPattern = {
+            alternatingBarrage = standardPattern.alternatingBarrage,
+            mirrorSpiral = standardPattern.mirrorSpiral,
+            doubleMirrorSpiral = standardPattern.doubleMirrorSpiral,
+            barrageSpiral = standardPattern.barrageSpiral,
+            inverseBarrage = standardPattern.inverseBarrage,
+            tunnel = standardPattern.tunnel,
+            mirroredWallStrip = standardPattern.mirroredWallStrip,
+            vortex = standardPattern.vortex,
+            fixedDelayBarrageSpiral = standardPattern.fixedDelayBarrageSpiral,
+            randomBarrage = standardPattern.randomBarrage
+        },
+        patterns = {
+            THICKNESS = patterns.THICKNESS,
+            getPerfectThickness = patterns.getPerfectThickness,
+            getPerfectDelay = patterns.getPerfectDelay,
+            getBaseSpeed = patterns.getBaseSpeed,
+
+            barrage = patterns.barrage,
+            wallExtra = patterns.wallExtra,
+            wallExtraMirrored = patterns.wallExtraMirrored
+        },
+        timeline = {
+            wait = timeline.wait,
+            addWall = timeline.addWall
         }
     }
 

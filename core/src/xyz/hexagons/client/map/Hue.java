@@ -14,7 +14,7 @@ public class Hue {
 	}
 
 	public void update (float delta) {
-		hue += hueInc * delta * 60f * Math.pow(CurrentMap.data.difficulty, 0.8);
+		hue += hueInc * delta * 60f * Math.pow(CurrentMap.gameProperties.difficulty, 0.8);
 
 		if(hue < hueMin)
 		{

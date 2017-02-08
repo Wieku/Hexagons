@@ -1,0 +1,16 @@
+color {
+  background: [
+    { r: 0.7450, g: 0.2901, b: 0.7450, a: 1, hue: { min: 0, max: 255, increment: 1, pingPong: false, offset: 4.2, shift: 25 } },
+    { r: 0.7450, g: 0.7450, b: 0.7450, a: 1, hue: { min: 0, max: 255, increment: 1, pingPong: false, offset: 4.2, shift: 50 } },
+    { r: 0.7450, g: 0.4509, b: 0.7450, a: 1, hue: { min: 0, max: 255, increment: 1, pingPong: false, offset: 4.2, shift: 75 } },
+    { r: 0.7450, g: 0.7450, b: 0.3843, a: 1, hue: { min: 0, max: 255, increment: 1, pingPong: false, offset: 4.2, shift: 100 } },
+    { r: 0.9803, g: 0.7450, b: 0.7450, a: 1, hue: { min: 0, max: 255, increment: 1, pingPong: false, offset: 4.2, shift: 125 } },
+    { r: 0.6392, g: 0.7450, b: 0.7450, a: 1, hue: { min: 0, max: 255, increment: 1, pingPong: false, offset: 4.2, shift: 150 } },
+  ]
+
+  walls: { r: 0, g: 0, b: 0, a: 1, main: true, pulse: {r: 0.3882, g: 0.1176, b: 0.6470, a: 0} }
+
+  pulseMax: 1.5
+  pulseIncrement: 0.025
+  switch: 1
+}

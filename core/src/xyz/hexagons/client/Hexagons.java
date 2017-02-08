@@ -3,15 +3,14 @@ package xyz.hexagons.client;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import me.wieku.animation.animations.Animation;
-import org.luaj.vm2.LuaValue;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.SoundManager;
+import xyz.hexagons.client.engine.lua.LuaInit;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
@@ -69,8 +68,7 @@ public class Hexagons extends Game {
 
 		Instance.scheduleOnMain = (task) -> taskList.add(task);
 
-		LuaValue chunk = Instance.luaGlobals.load(Gdx.files.internal(PathUtil.getPathForFile("lua/boot.lua")).readString("UTF-8"), "boot.lua");
-		chunk.call();
+		LuaInit.init();
 
 		stage = new Stage(new ExtendViewport(1024, 768));
 
@@ -113,7 +111,7 @@ public class Hexagons extends Game {
 			if(getScreen() instanceof MapSelect)
 				color.set(Color.WHITE);
 			else
-				color.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, 1);
+				color.set(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, 1);
 			fps.getStyle().fontColor = color;
 			fps.setText((int)(fpsCounter.getFPS()) + "FPS\n" + delayFormat.format(1000f/fpsCounter.getFPS())+"ms");
 			fps.pack();

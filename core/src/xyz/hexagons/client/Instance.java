@@ -18,22 +18,28 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class Instance {
     private static AnimationManager animationManager = new AnimationManager();
-    public static ArrayList<Map> maps;
-    public static float diagonal = 1600f;
-    public static Hexagons game = null;
-    public static boolean noupdate = false;
-    public static Consumer<Integer> setForegroundFps = null;
-    public static Consumer<Runnable> scheduleOnMain = null;
-    public static File storageRoot = null;
+    public static IAudioPlayerFactory audioPlayerFactory;
+
+    public static EventBus eventBus = new EventBus();
     public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     public static ExecutorService cachedExecutor = Executors.newCachedThreadPool();
+    public static Consumer<Runnable> scheduleOnMain = null;
+
     public static Globals luaGlobals = JsePlatform.standardGlobals();
+    public static ArrayList<Map> maps;
+    public static Hexagons game = null;
+
+    public static File storageRoot = null;
+    public static float diagonal = 1600f;
+    public static boolean noupdate = false;
+
+    public static Consumer<Integer> setForegroundFps = null;
+
     public static AccountManager accountManager = null;
     public static AccountManager.Account currentAccount = null;
-    public static IAudioPlayerFactory audioPlayerFactory;
-    public static EventBus eventBus = new EventBus();
+
+
     public static Function<String, File> cacheFile; //Android only for now
-    public static Function<File, ClassLoader> classLoaderSupplier;
 
     public static AnimationManager getAnimationManager() {
         return animationManager;

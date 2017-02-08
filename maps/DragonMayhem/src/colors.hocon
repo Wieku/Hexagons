@@ -1,0 +1,12 @@
+color {
+  background: [
+    { r: 1, g: 0, b: 0, a: 1, hue: { min: 0, max: 25, increment: 0.345, pingPong: true } }
+    { r: 0.7058, g: 0, b: 0, a: 1 }
+  ]
+
+  walls: { r: 1, g: 1, b: 1, a: 1 }
+
+  pulseMax: 2.5
+  pulseIncrement: 0.345
+  switch: 1
+}

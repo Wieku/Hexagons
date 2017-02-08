@@ -163,7 +163,7 @@ public class MenuMap extends Button {
 		renderer.rect(getX(), getY(), getWidth(),getHeight());
 		renderer.end();
 	/*	renderer.begin(ShapeType.Line);
-		renderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+		renderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
 		renderer.rect(getX(), getY(), getWidth(),getHeight());
 		renderer.end();
 */

@@ -41,10 +41,7 @@ import xyz.hexagons.client.rankserv.EventLogin;
 import xyz.hexagons.client.rankserv.MotdApi;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.rankserv.RankApi.PlayerRankInfo;
-import xyz.hexagons.client.utils.FpsCounter;
-import xyz.hexagons.client.utils.GUIHelper;
-import xyz.hexagons.client.utils.Glider;
-import xyz.hexagons.client.utils.PathUtil;
+import xyz.hexagons.client.utils.*;
 
 import java.util.ArrayList;
 
@@ -300,15 +297,20 @@ public class MainMenu implements Screen {
 			motdAnimation.start(Instance.getAnimationManager());
 			first = true;
 			if(Instance.maps.isEmpty()) {
-				CurrentMap.data.colors.add(new HColor(36f/255, 36f/255, 36f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
-				CurrentMap.data.colors.add(new HColor(20f / 255, 20f / 255, 20f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(36f/255, 36f/255, 36f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
+				CurrentMap.gameProperties.backgroundColors.add(new HColor(20f / 255, 20f / 255, 20f / 255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
 			}
 		}
 
 		if(!Instance.maps.isEmpty()){
-			CurrentMap.reset();
-			MenuPlaylist.getCurrent().script.initColors();
-			MenuPlaylist.getCurrent().script.onInit();
+			try {
+				CurrentMap.reset();
+				MenuPlaylist.getCurrent().script.initColors();
+				MenuPlaylist.getCurrent().script.onInit();
+			} catch (Exception e) {
+				System.err.println("MAP INIT FAILED:");
+				e.printStackTrace();
+			}
 		}
 
 		MenuPlaylist.setLooping(false);
@@ -340,7 +342,7 @@ public class MainMenu implements Screen {
 		Gdx.gl20.glClearColor(0, 0, 0, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
+		camera.rotate(CurrentMap.gameProperties.rotationSpeed * 360f * delta);
 		camera.update(delta);
 		if((delta0 += delta)>=1f/60) {
 			cd.update(delta);
@@ -348,8 +350,8 @@ public class MainMenu implements Screen {
 			darknessGlider.update(1f/60);
 			alphaGlider.update(1f/60);
 			
-			CurrentMap.data.walls.update(delta0);
-			CurrentMap.data.skew = 1f;
+			CurrentMap.gameProperties.walls.update(delta0);
+			CurrentMap.gameProperties.skew = 1f;
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
 			CurrentMap.setSkewTime(1);
@@ -487,7 +489,7 @@ public class MainMenu implements Screen {
 		shapeRenderer.identity();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-		shapeRenderer.setColor(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, alphaGlider.getValue());
+		shapeRenderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, alphaGlider.getValue());
 		float g = stage.getHeight()/40f;
 		for(int i=0;i<40;i++){
 			shapeRenderer.rect(0, i*g, dfg[i], g-1);

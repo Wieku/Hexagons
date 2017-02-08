@@ -1,0 +1,42 @@
+rotation {
+  speed: 0.35
+  maxSpeed: 1.5
+  increment: 0.083
+  rapidSpinSpeed: 71
+}
+
+difficulty {
+  delayMultiplier: 1.1
+  difficulty: 1
+  levelIncrement: 15
+  speed: 2
+}
+
+beatPulse {
+  delay: 1
+}
+
+pulse {
+  min: 100
+  max: 100
+  speed: 1.03
+  speedReverse: 1.01
+  delayMax: 9
+}
+
+sides {
+  start: 5
+  min: 5
+  max: 5
+}
+
+view {
+  layers: 8
+  depth: 0.5
+  skew: 0.2
+  minSkew: 0.2
+  maxSkew: 1
+  skewTime: 10
+}
+
+

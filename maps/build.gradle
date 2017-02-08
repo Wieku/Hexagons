@@ -27,6 +27,10 @@ task bundle << {
         from "FlatteringShape/build/libs/FlatteringShape-${version}.jar"
         into "../android/assets/Maps"
     }
+/*    copy {
+        from "Hexagonest/build/libs/Hexagonest-${version}.jar"
+        into "../android/assets/Maps"
+    }*/
     copy {
         from "Pi/build/libs/Pi-${version}.jar"
         into "../android/assets/Maps"
@@ -37,10 +41,6 @@ task bundle << {
     }
     copy {
         from "SecondDimension/build/libs/SecondDimension-${version}.jar"
-        into "../android/assets/Maps"
-    }
-    copy {
-        from "Moonless/build/libs/Moonless-${version}.jar"
         into "../android/assets/Maps"
     }
     copy {
@@ -63,6 +63,5 @@ bundle.dependsOn 'Hexagonest:jar'
 bundle.dependsOn 'Pi:jar'
 bundle.dependsOn 'Pointless:jar'
 bundle.dependsOn 'SecondDimension:jar'
-bundle.dependsOn 'Moonless:jar'
 bundle.dependsOn 'Fairydust:jar'
 bundle.dependsOn 'SynapseActivation:jar'

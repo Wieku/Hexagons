@@ -6,10 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.google.common.eventbus.Subscribe;
-import com.sun.org.apache.xerces.internal.util.SAX2XNI;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
@@ -267,11 +264,11 @@ public class MapSelect implements Screen {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		updateSkew(delta);
-		camera.rotate(CurrentMap.data.rotationSpeed * 360f * delta);
+		camera.rotate(CurrentMap.gameProperties.rotationSpeed * 360f * delta);
 		camera.update(delta);
 
 		if((delta0 += delta)>=1f/60){
-			CurrentMap.data.walls.update(delta0);
+			CurrentMap.gameProperties.walls.update(delta0);
 
 			MenuPlaylist.update(delta0);
 
@@ -279,7 +276,7 @@ public class MapSelect implements Screen {
 			CurrentMap.setMaxSkew(1);
 			CurrentMap.setSkewTime(1);
 
-			tmpC.set(CurrentMap.data.walls.r, CurrentMap.data.walls.g, CurrentMap.data.walls.b, CurrentMap.data.walls.a);
+			tmpC.set(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
 
 			//number.getStyle().fontColor = tmpC;
 			//name.getStyle().fontColor = tmpC;
@@ -304,11 +301,11 @@ public class MapSelect implements Screen {
 	int inc;
 	float delta2;
 	public void updateSkew(float delta) {
-		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.data.skewTime ? -1 : inc));
+		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.gameProperties.skewTime ? -1 : inc));
 		delta2 += delta * inc;
-		delta2 = Math.min(CurrentMap.data.skewTime, Math.max(delta2, 0));
-		float percent = delta2 / CurrentMap.data.skewTime;
-		CurrentMap.data.skew = CurrentMap.data.minSkew + (CurrentMap.data.maxSkew - CurrentMap.data.minSkew) * percent;
+		delta2 = Math.min(CurrentMap.gameProperties.skewTime, Math.max(delta2, 0));
+		float percent = delta2 / CurrentMap.gameProperties.skewTime;
+		CurrentMap.gameProperties.skew = CurrentMap.gameProperties.minSkew + (CurrentMap.gameProperties.maxSkew - CurrentMap.gameProperties.minSkew) * percent;
 	}
 
 	@Override
