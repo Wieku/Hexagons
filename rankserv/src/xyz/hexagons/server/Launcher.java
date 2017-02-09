@@ -102,6 +102,8 @@ public class Launcher {
             ctx.setContextPath("/");
             server.setHandler(ctx);
 
+            ctx.addServlet(RankedChallenge.class,   "/v1/game/ranked/challenge");
+            ctx.addServlet(RankedToken.class,       "/v1/game/ranked/token");
             ctx.addServlet(MapDone.class,           "/v1/game");
             ctx.addServlet(MapLeaders.class,        "/v1/leaders");
             ctx.addServlet(GetNick.class,           "/v1/nick");

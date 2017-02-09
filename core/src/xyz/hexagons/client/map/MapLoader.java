@@ -3,16 +3,18 @@ package xyz.hexagons.client.map;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.luaj.vm2.*;
-import org.luaj.vm2.ast.Str;
 import xyz.hexagons.client.Instance;
+import xyz.hexagons.client.utils.Holder;
 import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
 /**
@@ -53,7 +55,7 @@ public class MapLoader {
 
 				if (zip.getEntry("map.json") == null) {
 					System.err.println("File: " + file.getName() + " doesn't contain map.json!");
-					closeJar(zip);
+					closeMap(zip);
 					continue;
 				}
 
@@ -64,7 +66,7 @@ public class MapLoader {
 				} catch (IOException e) {
 					System.err.println("File map.json in map " + file.getName() + " has wrong syntax!");
 					e.printStackTrace();
-					closeJar(zip);
+					closeMap(zip);
 					continue;
 				}
 
@@ -85,26 +87,56 @@ public class MapLoader {
 					}
 				} else {
 					System.err.println("File main.lua in map " + file.getName() + " doesn't exist!");
-					closeJar(zip);
+					closeMap(zip);
 					continue;
+				}
+
+				Map.RankedMap rankedInfo = null;
+				if(zip.getEntry("ranked.json") != null) {
+					try {
+						Gson gson = new GsonBuilder().create();
+						RankedJson rankedJson = gson.fromJson(new InputStreamReader(zip.getInputStream(zip.getEntry("ranked.json"))), RankedJson.class);
+						Holder<Boolean> valid = new Holder<>(true);
+						rankedJson.essentialFiles.forEach((f, hash) -> {
+							try {
+								String fileHex = DigestUtils.sha256Hex(zip.getInputStream(zip.getEntry(f)));
+								if(!hash.equals(fileHex)) {
+									valid.value = false;
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
+						if(!valid.value) {
+							System.err.println("Files in map " + file.getName() + " appear to be invalid!");
+							closeMap(zip);
+							continue;
+						}
+
+						rankedInfo = new Map.RankedMap();
+						rankedInfo.permit = rankedJson.permissionId;
+						rankedInfo.hash = DigestUtils.sha256Hex(zip.getInputStream(zip.getEntry("ranked.json")));
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 
 				String sh1 = Utils.getFileHash(file);
 				File data = new File(DATA_PATH + sh1 + ".hxd");
 
-				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, zip, data));
+				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, zip, data, rankedInfo));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
-
 			}
 		}
 		System.out.println("Loaded " + maps.size() + " map(s)");
 		return maps;
 	}
 
-	public static void closeJar(ZipFile jar){
+	public static void closeMap(ZipFile zip){
 		try {
-			jar.close();
+			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

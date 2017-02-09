@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS games( id SERIAL,
                                   score BIGINT NOT NULL,
                                   user_id INTEGER,
                                   at BIGINT NOT NULL,
+                                  ranked BOOLEAN NOT NULL DEFAULT false,
                                   PRIMARY KEY(id),
                                   FOREIGN KEY(user_id) REFERENCES users(id));
 
@@ -21,7 +22,14 @@ CREATE TABLE IF NOT EXISTS user_auth( user_id INTEGER,
 
 CREATE TABLE IF NOT EXISTS maps( id SERIAL,
                                  uuid UUID,
-                                 name VARCHAR(128));
+                                 name VARCHAR(128),
+                                 PRIMARY KEY(id));
+
+CREATE TABLE IF NOT EXISTS ranked_maps( id SERIAL,
+                                        map_id INTEGER,
+                                        ranked_hash CHAR(64),
+                                        PRIMARY KEY(id),
+                                        FOREIGN KEY(map_id) REFERENCES maps(id));
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS top_scores AS
                                       SELECT user_id, map_id, MAX(score) AS sc FROM games GROUP BY map_id, user_id;

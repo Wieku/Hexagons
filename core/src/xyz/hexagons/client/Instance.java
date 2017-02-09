@@ -20,8 +20,10 @@ public class Instance {
     private static AnimationManager animationManager = new AnimationManager();
     public static IAudioPlayerFactory audioPlayerFactory;
 
-    public static EventBus eventBus = new EventBus();
+    //MUST BE SINGLE THREADED, @see RankApi
     public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+    public static EventBus eventBus = new EventBus();
     public static ExecutorService cachedExecutor = Executors.newCachedThreadPool();
     public static Consumer<Runnable> scheduleOnMain = null;
 

@@ -131,7 +131,7 @@ public class Hexagons extends Game {
 		super.dispose();
 		if(Instance.maps != null) {
 			for (Map map : Instance.maps) {
-				MapLoader.closeJar(map.file);
+				MapLoader.closeMap(map.file);
 			}
 		}
 

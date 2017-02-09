@@ -60,8 +60,6 @@ public class Settings implements Serializable {
 	public class Ranking {
 		public String server = "https://rankserv.hexagons.xyz";
 
-		public String nickname = "Anonymous";
-
 		public String authToken = null;
 	}
 }

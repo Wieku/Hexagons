@@ -1,0 +1,10 @@
+{
+  "rankedId": "bcbd6289-65f9-4e02-91ee-db726bb18546",
+  "permissionId": 7,
+  "essentialFiles": {
+    "map.json": "8846f8e85b15c1f19354bcd849c845a972f5e5dd939a5a08e14f34299df9a1a9",
+    "colors.hocon": "8c79e3d2d213adf89d8270d533d8f12ed4f80adc2bd8781babd814ef24ef367f",
+    "main.lua": "44d8a5717452caea9ae57e1ca28249477be4b20e3b9521c8fce0f4936a9a631c",
+    "properties.hocon": "e53b362c7110376aada8ff6019aa79a8607e9f3d37ce2ef695d90aa3432ef0fd"
+  }
+}

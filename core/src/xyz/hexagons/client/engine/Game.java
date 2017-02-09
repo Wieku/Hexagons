@@ -32,6 +32,7 @@ import xyz.hexagons.client.engine.render.ObjRender;
 //import xyz.hexagons.client.engine.render.Renderer;
 import xyz.hexagons.client.menu.widgets.HProgressBar;
 import xyz.hexagons.client.map.Map;
+import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.io.InputStream;
@@ -41,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Sebastian Krajewski on 28.03.15.
@@ -48,36 +50,36 @@ import java.util.List;
 public class Game implements Screen {
 
 
-	Map map;
+	private Map map;
 	//AudioPlayer audioPlayer;
 
-	public float exitPosition;
+	private float exitPosition;
 
-	ObjRender renderer;
-	MapRenderer mapRenderer = new MapRenderer();
-	SkewCamera camera = new SkewCamera();
-	Stage stage;
+	private ObjRender renderer;
+	private MapRenderer mapRenderer = new MapRenderer();
+	private SkewCamera camera = new SkewCamera();
+	private Stage stage;
 
-	Player player = new Player(this);
+	private Player player = new Player(this);
 
-	Label points;
-	Label time;
-	Label message;
-	ProgressBar next;
+	private Label points;
+	private Label time;
+	private Label message;
+	private ProgressBar next;
 
 	//LinkedList<Renderer> renderers = new LinkedList<>();
 
-	int retries = 0;
-	
-	int width, height;
+	private int retries = 0;
 
-	float score = 0;
-	boolean scoreSent = false;
+	private int width, height;
+
+	private float score = 0;
+	private boolean scoreSent = false;
 
 	public static float scale = 1f;
 	private int inc = 1;
 
-	DecimalFormat timeFormat = new DecimalFormat("0.000");
+	private DecimalFormat timeFormat = new DecimalFormat("0.000");
 
 	public Game (Map map){
 		this.map = map;
@@ -106,21 +108,10 @@ public class Game implements Screen {
 		next.layout();
 
 		stage.addActor(next);
-		
-		//audioPlayer = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file,map.info.audioFileName));
-		//audioPlayer.setLooping(true);
 
-
-		//addRenderer(player);
 		MenuPlaylist.setLooping(true);
 		start(map.info.startTimes[0]);
 	}
-
-	//public void addRenderer(Renderer renderer){
-		//renderers.add(renderer);
-		//renderers.sort((o1, o2) -> Integer.compare(o1.getIndex(), o2.getIndex()));
-	//}
-
 
 	@Override
 	public void show() {
@@ -166,7 +157,7 @@ public class Game implements Screen {
 		if(renderer != null) renderer.dispose();
 	}
 
-	public void start(float startTime){
+	public void start(float startTime) {
 
 		delta0 = delta1 = delta5 = delta4 = delta3 = 0;
 		scoreSent = false;
@@ -177,8 +168,8 @@ public class Game implements Screen {
 		score = 0;
 		player.reset();
 		camera.reset();
-		/*audioPlayer*/MenuPlaylist.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
-		//audioPlayer.play(startTime);
+		MenuPlaylist.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.musicVolume / 10000f);
+
 		MenuPlaylist.play();
 		MenuPlaylist.setPosition(startTime);
 
@@ -193,11 +184,11 @@ public class Game implements Screen {
 			Instance.game.fps.setVisible(false);
 		}
 
-		//CurrentMap.gameProperties.eventTimeline.update(startTime);
 		SoundManager.playSound("start");
+		RankApi.instance.setupRankedMap(map);
 	}
 
-	public void restart(){
+	private void restart(){
 		++retries;
 		start(map.info.startTimes[MathUtils.random(0, map.info.startTimes.length - 1)]);
 	}
@@ -211,10 +202,10 @@ public class Game implements Screen {
 		}
 	}
 
-	float fastRotate = 0f;
-	float delta0;
-	boolean escClick = false;
-	Color tmpColor = new Color();
+	private float fastRotate = 0f;
+	private float delta0;
+	private boolean escClick = false;
+	private Color tmpColor = new Color();
 
 	private void updateGame(float delta) {
 
@@ -249,34 +240,7 @@ public class Game implements Screen {
 
 			if(!scoreSent && score > 0 && !Settings.instance.gameplay.invincibility) {
 				scoreSent = true;
-				Instance.executor.execute(() -> {
-					try {
-						System.out.println("Sending score");
-						URL url = new URL(Settings.instance.ranking.server);
-
-						HttpClient httpclient = HttpClients.createDefault();
-						HttpPost httppost = new HttpPost(Settings.instance.ranking.server + "/v1/game");
-
-						List<NameValuePair> params = new ArrayList<>(3);
-						params.add(new BasicNameValuePair("token", Instance.currentAccount.authToken().toString()));
-						params.add(new BasicNameValuePair("score", String.valueOf((long) score)));
-						params.add(new BasicNameValuePair("mapid", map.info.uuid));
-						httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-						HttpResponse response = httpclient.execute(httppost);
-						HttpEntity entity = response.getEntity();
-
-						if (entity != null) {
-							InputStream in = entity.getContent();
-							System.out.println(CharStreams.toString(new InputStreamReader(in, StandardCharsets.UTF_8)));
-							in.close();
-						}
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				});
+				RankApi.instance.sendScore(map, score);
 			}
 
 		} else {
@@ -316,8 +280,8 @@ public class Game implements Screen {
 			map.script.update(delta);
 	}
 
-	float delta1;
-	public void updateText(float delta) {
+	private float delta1;
+	private void updateText(float delta) {
 		if(CurrentMap.currentText != null){
 
 			if(!CurrentMap.currentText.visible){
@@ -334,7 +298,7 @@ public class Game implements Screen {
 
 
 		time.setText("Time: " + timeFormat.format(CurrentMap.gameProperties.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (retries>1?"\nRetried " + retries + " times":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
-		points.setText(String.format("%08d", (int) score));
+		points.setText(String.format(Locale.US, "%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
 		next.setPosition(stage.getWidth() - next.getWidth() - 5 , stage.getHeight() - next.getHeight() - points.getHeight() + 5);
@@ -345,8 +309,8 @@ public class Game implements Screen {
 		time.setY(stage.getHeight()-time.getHeight());
 	}
 
-	float delta2;
-	public void updateSkew(float delta) {
+	private float delta2;
+	private void updateSkew(float delta) {
 		
 		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.gameProperties.skewTime ? -1 : inc));
 		delta2 += delta * inc;
@@ -355,8 +319,8 @@ public class Game implements Screen {
 		CurrentMap.gameProperties.skew = CurrentMap.gameProperties.minSkew + (CurrentMap.gameProperties.maxSkew - CurrentMap.gameProperties.minSkew) * percent;
 	}
 
-	float delta3;
-	public void updateTimeline(float delta) {
+	private float delta3;
+	private void updateTimeline(float delta) {
 
 		if(!player.dead){
 			CurrentMap.gameProperties.wallTimeline.update(delta);
@@ -396,7 +360,7 @@ public class Game implements Screen {
 
 	}
 
-	public void updateRotation(float delta) {
+	private void updateRotation(float delta) {
 
 		if(player.dead) {
 			if(CurrentMap.gameProperties.rotationSpeed < 0) {
@@ -410,10 +374,10 @@ public class Game implements Screen {
 		if(fastRotate == 0) CurrentMap.gameProperties.rapidSpin = false;
 	}
 
-	float delta4;
-	float delta5;
-	float delta6;
-	public void updatePulse(float delta){
+	private float delta4;
+	private float delta5;
+	private float delta6;
+	private void updatePulse(float delta){
 		if(player.dead) return;
 
 		if(delta4 <= 0){
@@ -443,14 +407,12 @@ public class Game implements Screen {
 
 	}
 
-	float getSaturated(float mValue) {
+	private float getSaturated(float mValue) {
 		return Math.max(0.f, Math.min(1.f, mValue));
 	}
-	
-	float getSmootherStep(float edge0, float edge1, float x) {
+
+	private float getSmootherStep(float edge0, float edge1, float x) {
 		x = getSaturated((x - edge0)/(edge1 - edge0));
 		return x * x * x * (x * (x * 6 - 15) + 10);
 	}
-
-
 }

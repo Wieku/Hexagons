@@ -36,6 +36,25 @@ public class MapDone extends HttpServlet {
 
 			AccountUtils.SessionAccount account = new Gson().fromJson(t.getPayload().toString(), AccountUtils.SessionAccount.class);
 
+			boolean ranked = false;
+            String rankedToken = req.getParameter("rankedToken");
+			if(rankedToken != null) {
+                JWSObject rt = JWSObject.parse(rankedToken);
+                if(!RuntimeSecrets.check(t)) {
+                    resp.setStatus(500);
+                    return;
+                }
+                RankedToken rtok = new Gson().fromJson(rt.getPayload().toString(), RankedToken.class);
+                if(rtok.ranked) {
+                    System.out.println("Ranked game!");
+                    ranked = true;
+                    //TODO: this fucking sucks
+                    //If you are reading this, please remind us that this code is terrible
+                    //Also, please don't cheat, we appreciate (:
+                }
+            }
+
+            final boolean _ranked = ranked;
             String nick = account.account;
             String mapid = req.getParameter("mapid");
             long score = Long.valueOf(req.getParameter("score"));
@@ -47,6 +66,7 @@ public class MapDone extends HttpServlet {
                 statement.setLong(2, score);
                 statement.setLong(3, account.id);
                 statement.setLong(4, Instant.now().getEpochSecond());
+                statement.setBoolean(5, _ranked);
                 statement.executeUpdate();
                 return null;
             });
@@ -55,7 +75,11 @@ public class MapDone extends HttpServlet {
             e.printStackTrace();
             resp.getWriter().print("{\"state\": \"ERROR\"}");
         }
+    }
 
-
+    private static class RankedToken {
+        public boolean ranked;
+        public long at;
+        public String permId;
     }
 }
