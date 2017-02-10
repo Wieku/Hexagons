@@ -12,7 +12,7 @@ public class VersionInfo {
 
 	static {
 		defaultInfo = new VersionInfo();
-		defaultInfo.branch = "test";
+		defaultInfo.branch = "stable";
 	}
 
 	public static class File {
