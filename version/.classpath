@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry path="bin" kind="output"/>
-	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7/" kind="con"/>
-	<classpathentry exported="true" path="/home/magik6k/Developmet/Hexagons/version/build/gen/buildconfig/classes/main" kind="lib"/>
-</classpath>
