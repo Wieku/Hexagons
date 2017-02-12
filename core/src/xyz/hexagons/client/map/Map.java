@@ -13,11 +13,11 @@ public class Map {
 
 	public final MapScript script;
 	public final MapJson info;
-	public final ZipFile file;
+	public final MapFile file;
 	public final File dataFile;
 	public final RankedMap rankedMap;
 
-	public Map(MapScript script, MapJson info, ZipFile file, File dataFile, RankedMap rankedMap) {
+	public Map(MapScript script, MapJson info, MapFile file, File dataFile, RankedMap rankedMap) {
 		this.script = script;
 		this.info = info;
 		this.file = file;

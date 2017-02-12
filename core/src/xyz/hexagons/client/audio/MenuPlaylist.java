@@ -170,7 +170,7 @@ public class MenuPlaylist {
 		stopAndDispose();
 		current = map;
 		//System.out.println(map.getMetaData().getAudioFileName());
-		player = Instance.audioPlayerFactory.instance(new ArchiveFileHandle(map.file, map.info.audioFileName));
+		player = Instance.audioPlayerFactory.instance(map.file.getFileHandle(map.info.audioFileName));
 	}
 
 	public static float getPosition(){

@@ -12,8 +12,6 @@ import xyz.hexagons.client.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.zip.ZipFile;
 
@@ -26,8 +24,11 @@ public class MapLoader {
 	//private static Logger log = LoggerFactory.getLogger(MapLoader.class);
 
 	public static ArrayList<Map> load() {
-		new File(Instance.storageRoot, MAPS_PATH).mkdirs();
-		new File(Instance.storageRoot, DATA_PATH).mkdirs();
+		if(!new File(Instance.storageRoot, MAPS_PATH).mkdirs())
+			System.out.println("Couldn't create Maps directory!");
+
+		if(!new File(Instance.storageRoot, DATA_PATH).mkdirs())
+			System.out.println("Couldn't create Data directory!");
 
 		System.out.println("Loading maps");
 		ArrayList<Map> maps = new ArrayList<>();
@@ -43,40 +44,44 @@ public class MapLoader {
 
 		for (File file : files) {
 			String ext = Files.getFileExtension(file.getAbsolutePath());
-			if (file.isFile() && (ext.equals("jar") || ext.equals("zip"))) {
-				ZipFile zip; //TODO: Directory based(unzipped) maps
+			if ((file.isFile() && (ext.equals("jar") || ext.equals("zip"))) || file.isDirectory()) {
+				MapFile mapFile;
 				try {
-					zip = new ZipFile(file);
+					if(file.isFile())
+						mapFile = new ZipMapFile(new ZipFile(file));
+					else
+						mapFile = new DirectoryZipFile(file);
+
 				} catch (IOException e) {
 					System.err.println("Cannot load " + file.getName());
 					e.printStackTrace();
 					continue;
 				}
 
-				if (zip.getEntry("map.json") == null) {
+				if (!mapFile.contains("map.json")) {
 					System.err.println("File: " + file.getName() + " doesn't contain map.json!");
-					closeMap(zip);
+					closeMap(mapFile);
 					continue;
 				}
 
 				MapJson m;
 				try {
 					Gson gson = new GsonBuilder().create();
-					m = gson.fromJson(new InputStreamReader(zip.getInputStream(zip.getEntry("map.json"))), MapJson.class);
+					m = gson.fromJson(new InputStreamReader(mapFile.getInputStream("map.json")), MapJson.class);
 				} catch (IOException e) {
 					System.err.println("File map.json in map " + file.getName() + " has wrong syntax!");
 					e.printStackTrace();
-					closeMap(zip);
+					closeMap(mapFile);
 					continue;
 				}
 
 				LuaTable callbacks = null;
-				if (zip.getEntry("main.lua") != null) {
+				if (mapFile.contains("main.lua")) {
 					try {
-						InputStreamReader r = new InputStreamReader(zip.getInputStream(zip.getEntry("main.lua")));
+						InputStreamReader r = new InputStreamReader(mapFile.getInputStream("main.lua"));
 
 						Varargs pe = Instance.luaGlobals.get("prepareEnv")
-								.invoke(new LuaValue[]{ LuaString.valueOf(m.name), new LuaUserdata(zip)});
+								.invoke(new LuaValue[]{ LuaString.valueOf(m.name), new LuaUserdata(mapFile)});
 
 						callbacks = pe.checktable(2);
 
@@ -87,19 +92,19 @@ public class MapLoader {
 					}
 				} else {
 					System.err.println("File main.lua in map " + file.getName() + " doesn't exist!");
-					closeMap(zip);
+					closeMap(mapFile);
 					continue;
 				}
 
 				Map.RankedMap rankedInfo = null;
-				if(zip.getEntry("ranked.json") != null) {
+				if(mapFile.contains("ranked.json")) {
 					try {
 						Gson gson = new GsonBuilder().create();
-						RankedJson rankedJson = gson.fromJson(new InputStreamReader(zip.getInputStream(zip.getEntry("ranked.json"))), RankedJson.class);
+						RankedJson rankedJson = gson.fromJson(new InputStreamReader(mapFile.getInputStream("ranked.json")), RankedJson.class);
 						Holder<Boolean> valid = new Holder<>(true);
 						rankedJson.essentialFiles.forEach((f, hash) -> {
 							try {
-								String fileHex = DigestUtils.sha256Hex(zip.getInputStream(zip.getEntry(f)));
+								String fileHex = DigestUtils.sha256Hex(mapFile.getInputStream(f));
 								if(!hash.equals(fileHex)) {
 									valid.value = false;
 								}
@@ -109,23 +114,22 @@ public class MapLoader {
 						});
 						if(!valid.value) {
 							System.err.println("Files in map " + file.getName() + " appear to be invalid!");
-							closeMap(zip);
+							closeMap(mapFile);
 							continue;
 						}
 
 						rankedInfo = new Map.RankedMap();
 						rankedInfo.permit = rankedJson.permissionId;
-						rankedInfo.hash = DigestUtils.sha256Hex(zip.getInputStream(zip.getEntry("ranked.json")));
+						rankedInfo.hash = DigestUtils.sha256Hex(mapFile.getInputStream("ranked.json"));
 
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 
-				String sh1 = Utils.getFileHash(file);
-				File data = new File(DATA_PATH + sh1 + ".hxd");
+				File data = new File(new File(DATA_PATH), m.uuid + ".hxd");
 
-				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, zip, data, rankedInfo));
+				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, mapFile, data, rankedInfo));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 			}
@@ -134,7 +138,7 @@ public class MapLoader {
 		return maps;
 	}
 
-	public static void closeMap(ZipFile zip){
+	public static void closeMap(MapFile zip){
 		try {
 			zip.close();
 		} catch (IOException e) {

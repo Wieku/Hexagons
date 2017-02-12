@@ -11,6 +11,7 @@ import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.Patterns;
 import xyz.hexagons.client.api.SpeedData;
 import xyz.hexagons.client.api.Wall;
+import xyz.hexagons.client.map.MapFile;
 import xyz.hexagons.client.utils.PathUtil;
 import xyz.hexagons.client.utils.function.Function;
 
@@ -85,8 +86,8 @@ public class LuaInit {
             @Override
             public LuaValue call(LuaValue map, LuaValue file) {
                 try {
-                    ZipFile zip = (ZipFile) map.checkuserdata();
-                    InputStream in = zip.getInputStream(zip.getEntry(file.checkjstring()));
+                    MapFile zip = (MapFile) map.checkuserdata();
+                    InputStream in = zip.getInputStream(file.checkjstring());
                     CurrentMap.gameProperties.loadConfig(in);
                     in.close();
                 } catch (IOException e) {
