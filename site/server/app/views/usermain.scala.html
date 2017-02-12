@@ -1,24 +1,29 @@
 @(title: String, username: String)(content: Html)
 
 @main(title) {
-    <div class="user-root">
-        <div class="user-head">
-            <div class="user-logo">
-                <img src="@routes.Assets.versioned("images/hexlogobig.png")">
-            </div>
-            <div class="user-menu">
-                <a href="/"><div><div>Home</div></div></a>
-                @if(username != null) {
-                    <a href="/profile"><div><div>Profile</div></div></a>
-                    <a href="/logout"><div><div>Logout</div></div></a>
-                    <div class="user-username"><div>@username</div></div>
-                } else {
-                    <a href="/login"><div><div>Login</div></div></a>
-                }
-            </div>
+    <div class="user-bg-root">
+        <div class="user-bg">
+            <img src="@routes.Assets.versioned("images/bg.svg")">
         </div>
-        <div class="user-main">
-            @content
+        <div class="user-root">
+            <div class="user-head">
+                <div class="user-logo">
+                    <img src="@routes.Assets.versioned("images/hexlogobig.png")">
+                </div>
+                <div class="user-menu">
+                    <a href="/"><div><div>Home</div></div></a>
+                    @if(username != null) {
+                        <a href="/profile"><div><div>Profile</div></div></a>
+                        <a href="/logout"><div><div>Logout</div></div></a>
+                        <div class="user-username"><div>@username</div></div>
+                    } else {
+                        <a href="/login"><div><div>Login</div></div></a>
+                    }
+                </div>
+            </div>
+            <div class="user-main">
+                @content
+            </div>
         </div>
     </div>
 }
