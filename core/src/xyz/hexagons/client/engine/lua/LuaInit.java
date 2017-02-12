@@ -171,6 +171,14 @@ public class LuaInit {
             }
         });
 
+        patterns.set("wall", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue side, LuaValue thickness) {
+                Patterns.cWall(side.toint(), thickness.tofloat());
+                return LuaValue.NIL;
+            }
+        });
+
         patterns.set("wallExtra", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue side, LuaValue extra, LuaValue thickness) {

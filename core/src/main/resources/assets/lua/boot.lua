@@ -199,6 +199,7 @@ function prepareEnv(name, mapZipFile)
             getBaseSpeed = patterns.getBaseSpeed,
 
             barrage = patterns.barrage,
+            wall = patterns.wall,
             wallExtra = patterns.wallExtra,
             wallExtraMirrored = patterns.wallExtraMirrored
         },

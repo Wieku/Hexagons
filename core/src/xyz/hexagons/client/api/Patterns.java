@@ -306,7 +306,7 @@ public abstract class Patterns {
 	}
 
 	public static void timelineWait(float delay){
-		CurrentMap.gameProperties.wallTimeline.wait(delay / 60);
+		CurrentMap.gameProperties.wallTimeline.wait(delay / 60); //TODO: WAT
 	}
 
 }
