@@ -206,6 +206,7 @@ public class Game implements Screen {
 	private float delta0;
 	private boolean escClick = false;
 	private Color tmpColor = new Color();
+	private boolean touch = true;
 
 	private void updateGame(float delta) {
 
@@ -227,9 +228,12 @@ public class Game implements Screen {
 				//audioPlayer.stop();
 				exitPosition = MenuPlaylist.getPosition();
 				MenuPlaylist.pause();
+				touch = true;
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isTouched()){
+			if(!Gdx.input.isTouched()) touch = false;
+
+			if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || (!touch && Gdx.input.isTouched())){
 				restart();
 			}
 
