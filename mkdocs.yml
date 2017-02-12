@@ -4,4 +4,5 @@ pages:
     - Home: index.md
     - Creating Maps: mapping.md
     - Properties: properties.md
+    - Functions: functions.md
 theme: readthedocs
