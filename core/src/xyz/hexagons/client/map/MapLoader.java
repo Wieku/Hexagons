@@ -7,6 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.luaj.vm2.*;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.utils.Holder;
+import xyz.hexagons.client.utils.LFAgonisticInputStream;
 import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;
@@ -104,7 +105,7 @@ public class MapLoader {
 						Holder<Boolean> valid = new Holder<>(true);
 						rankedJson.essentialFiles.forEach((f, hash) -> {
 							try {
-								String fileHex = DigestUtils.sha256Hex(mapFile.getInputStream(f));
+								String fileHex = DigestUtils.sha256Hex(new LFAgonisticInputStream(mapFile.getInputStream(f)));
 								if(!hash.equals(fileHex)) {
 									valid.value = false;
 								}
@@ -120,7 +121,7 @@ public class MapLoader {
 
 						rankedInfo = new Map.RankedMap();
 						rankedInfo.permit = rankedJson.permissionId;
-						rankedInfo.hash = DigestUtils.sha256Hex(mapFile.getInputStream("ranked.json"));
+						rankedInfo.hash = DigestUtils.sha256Hex(new LFAgonisticInputStream(mapFile.getInputStream("ranked.json")));
 
 					} catch (IOException e) {
 						e.printStackTrace();
