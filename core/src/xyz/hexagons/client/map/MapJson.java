@@ -4,8 +4,6 @@ package xyz.hexagons.client.map;
  * @author Sebastian Krajewski on 28.03.15.
  */
 public class MapJson {
-
-	public String className = "";
 	public String audioFileName = "";
 	public String audioTempName = "";
 	public String name = "";

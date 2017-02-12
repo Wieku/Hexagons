@@ -1,0 +1,7 @@
+site_name: Hexagons! Docs
+site_dir: docs_build
+pages:
+    - Home: index.md
+    - Creating Maps: mapping.md
+    - Properties: properties.md
+theme: readthedocs
