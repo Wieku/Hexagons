@@ -232,7 +232,12 @@ public class LuaInit {
                 int side = arg.get("side").toint();
                 float thickness = arg.get("thickness").tofloat();
 
-                Wall wall = new Wall(side, thickness, luaSpeedData(arg));
+                Wall wall;
+                if(arg.get("curve").isnil())
+                    wall = new Wall(side, thickness, luaSpeedData(arg));
+                else
+                    wall = new Wall(side, thickness, luaSpeedData(arg), luaSpeedData(arg.get("curve")));
+
                 CurrentMap.gameProperties.wallTimeline.submit(wall);
                 return LuaValue.NIL;
             }
