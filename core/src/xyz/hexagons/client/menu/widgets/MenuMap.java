@@ -20,6 +20,9 @@ import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.utils.GUIHelper;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class MenuMap extends Button {
 
 	public Map map;
@@ -55,20 +58,12 @@ public class MenuMap extends Button {
 		borderLeft = new Image(GUIHelper.getTxWRegion(Color.WHITE, 1), Scaling.stretchY);
 		borderRight = new Image(GUIHelper.getTxWRegion(Color.WHITE, 1), Scaling.stretchY);
 
-		/*borderTop.setVisible(false);
-		borderBottom.setVisible(false);
-		borderLeft.setVisible(false);
-		borderRight.setVisible(false);*/
-
 		add(borderTop).fill().colspan(4).row();
-
 
 		Table info = new Table();
 		info.add(name = new Label(map.info.name.substring(0, Math.min(24, map.info.name.length())), GUIHelper.getLabelStyle(Color.WHITE, 12))).top().left().expandX().fillX().row();
 		info.add(author = new Label("Author: "+map.info.author, GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
-		info.add(description = new Label(map.info.description.substring(0, Math.min(40, map.info.description.length())), GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
-		//info.add(song = new Label(map.info.songName + " by " + map.info.songAuthor, GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
-
+		info.add(description = new Label(Arrays.stream(map.info.description.split("\n")).map(s -> s.substring(0, Math.min(39, s.length()))).collect(Collectors.joining("\n")), GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
 
 		add(borderLeft).fillY();
 		add(info).expand().padLeft(5).padTop(5).padBottom(5).left();
@@ -105,9 +100,6 @@ public class MenuMap extends Button {
 			fade = true;
 			selected=false;
 		}
-
-
-
 	}
 
 	@Override
@@ -162,11 +154,7 @@ public class MenuMap extends Button {
 		renderer.setColor(color.r, color.g, color.b, color.a);
 		renderer.rect(getX(), getY(), getWidth(),getHeight());
 		renderer.end();
-	/*	renderer.begin(ShapeType.Line);
-		renderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
-		renderer.rect(getX(), getY(), getWidth(),getHeight());
-		renderer.end();
-*/
+
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		batch.begin();
