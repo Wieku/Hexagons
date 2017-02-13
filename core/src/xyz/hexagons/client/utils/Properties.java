@@ -161,12 +161,13 @@ public abstract class Properties {
                 setProperty(basePath + "." + path, value); //TODO: Normalize path?
         }
 
-        List<?> toSet = (List<?>) rawGetters.get(basePath).get();
+        List<HColor> toSet = (List<HColor>) rawGetters.get(basePath).get();
 
         switch (type) {
             case HCOLOR_ARRAY:
-                ArrayList<HColor> colors = (ArrayList<HColor>) toSet;
-                colors.forEach(color -> setColorProperty(color, 0, path.split("\\."), value));
+                for (HColor color : toSet) {
+                    setColorProperty(color, 0, path.split("\\."), value);
+                }
                 break;
             default:
                 throw new RuntimeException("WTF code 77e7620a-5d4b-4d5e-8159-01fd9e0cb3b2, please report.");
