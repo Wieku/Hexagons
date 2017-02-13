@@ -24,7 +24,7 @@ public abstract class Properties {
     private HashMap<String, Pair<PropertyType, Consumer<Object>>> setters = new HashMap<>();
     private HashMap<String, Supplier<LuaValue>> getters = new HashMap<>();
     private HashMap<String, Supplier<?>> rawGetters = new HashMap<>();
-    private Pattern basePathPattern = Pattern.compile("^([a-z]+\\.[a-z]+)");
+    private Pattern basePathPattern = Pattern.compile("^([a-zA-Z0-9]+\\.[a-zA-Z0-9]+)");
 
     public Properties() {
         registerProperties();
@@ -115,7 +115,7 @@ public abstract class Properties {
         String basePath = baseMatcher.group(1);
 
         if(!setters.containsKey(basePath))
-            throw new RuntimeException("Property at path " + basePath + "doesn't exist!");
+            throw new RuntimeException("Property at path " + basePath + " doesn't exist!");
 
         Pair<PropertyType, Consumer<Object>> setter = setters.get(basePath);
 
