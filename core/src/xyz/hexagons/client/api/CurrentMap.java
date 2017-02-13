@@ -221,9 +221,6 @@ public abstract class CurrentMap {
 			case "change_direction":
 				runnable = () -> CurrentMap.setRotationSpeed(-CurrentMap.gameProperties.rotationSpeed);
 				break;
-			case "set_style":
-				//TODO
-				break;
 			case "push_text":
 				runnable = ()->pushText(data.arg(1).checkjstring(), data.arg(2).tofloat());
 				break;

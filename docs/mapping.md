@@ -60,7 +60,7 @@ color {
   switch: 1
 }
 ```
-You can read more on properties on the [Properties](properties.md) page.
+You can read more on properties on the [Properties](scripting/properties.md) page.
 If you were to launch the game, you should see background colors
 you specified in configuration, and hear the soundtrack.
 
@@ -127,7 +127,6 @@ rotation {
 difficulty {
   delayMultiplier: 1.0
   delayMultiplierIncrement: -0.01
-  difficulty: 1
   levelIncrement: 15
   speed: 1.55
   speedIncrement: 0.125
@@ -161,7 +160,7 @@ view {
 }
 ```
 These are properties from the `Pointless` level, change them as you wish.
-All the values are described on the [Properties](properties.md) page.
+All the values are described on the [Properties](scripting/properties.md) page.
 You can start the game to test your settings. 
 
 ## Creating custom patterns
