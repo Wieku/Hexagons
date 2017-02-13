@@ -118,7 +118,7 @@ function prepareEnv(name, mapZipFile)
             pi = math.pi,
             pow = math.pow,
             rad = math.rad,
-            random = game.random, --TODO: Check compat, seed
+            random = math.random, --TODO: Check compat, seed
             --randomseed = math.randomseed,
             sin = math.sin,
             sinh = math.sinh,
