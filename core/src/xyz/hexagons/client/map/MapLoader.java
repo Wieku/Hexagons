@@ -8,7 +8,6 @@ import org.luaj.vm2.*;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.utils.Holder;
 import xyz.hexagons.client.utils.LFAgonisticInputStream;
-import xyz.hexagons.client.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,9 +48,9 @@ public class MapLoader {
 				MapFile mapFile;
 				try {
 					if(file.isFile())
-						mapFile = new ZipMapFile(new ZipFile(file));
+						mapFile = new DirectoryMapFile(new ZipFile(file), file);
 					else
-						mapFile = new DirectoryZipFile(file);
+						mapFile = new DirectoryMapFile(file);
 
 				} catch (IOException e) {
 					System.err.println("Cannot load " + file.getName());
