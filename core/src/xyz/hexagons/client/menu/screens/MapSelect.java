@@ -399,6 +399,7 @@ public class MapSelect implements Screen {
 			music.setText("Music: " + map.info.songName + " by " + map.info.songAuthor);
 			info.pack();
 
+			GUIHelper.cacheFonts(scoreTable);
 			scoreTable.clear();
 
 			Table tb = GUIHelper.getTable(new Color(0,0,0,0.5f));
@@ -409,6 +410,8 @@ public class MapSelect implements Screen {
 			Instance.executor.execute(() -> {
 				RankApi.LeaderBoard lb = RankApi.instance.getScoreForMap(map, 50);
 				Instance.scheduleOnMain.accept(() -> {
+
+					GUIHelper.cacheFonts(scoreTable);
 					scoreTable.clear();
 					tnumber = 1;
 					if(lb == null) {

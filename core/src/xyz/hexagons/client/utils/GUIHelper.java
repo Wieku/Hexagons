@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import xyz.hexagons.client.resources.FontManager;
 
+import java.awt.*;
 import java.util.HashMap;
 
 public class GUIHelper{
@@ -254,5 +256,14 @@ public class GUIHelper{
 		stl.fontColor = color;
 		return stl;
 	}
-	
+
+	public static void cacheFonts(Group scoreTable) {
+		for(Actor ac : scoreTable.getChildren()) {
+			if(ac instanceof Group) {
+				cacheFonts((Group) ac);
+			} else if (ac instanceof Label){
+				FontManager.putToCache(((Label) ac).getStyle().font);
+			}
+		}
+	}
 }

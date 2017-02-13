@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pool;
 import org.slf4j.LoggerFactory;
 //import java.awt.Font;
 //import java.io.BufferedInputStream;
@@ -24,6 +25,13 @@ public enum FontManager{
 	MAIN("Orbitron-Medium"/*"Pixel-UniCode"*/, 64, 35f, 39f);//128, 70, 78);
 	//FF("ffforward"/*"Pixel-UniCode"*/, 16, 11, 12);
 	protected static HashMap<FontManager, FontData> fonts = new HashMap<>();
+	protected static Pool<BitmapFont> cache = new Pool<BitmapFont>() {
+		@Override
+		protected BitmapFont newObject() {
+			return createFont(MAIN);
+		}
+	};
+
 	protected String name;
 	protected int genSize;
 	protected float widthScale;
@@ -37,47 +45,53 @@ public enum FontManager{
 	}
 
 	public static BitmapFont getFont(FontManager val, int size) {
+		BitmapFont font = cache.obtain();
+
+		font.getData().setScale((float) size / val.widthScale, (float) size / val.heightScale);
+		return font;
+	}
+
+	private static BitmapFont createFont(FontManager val) {
 		BitmapFontData data = fonts.get(val).data, dataCopy = new BitmapFontData();
 		try {
-			
-			
+
 			Glyph[][] h = data.glyphs;
 			Glyph[][] g = new Glyph[h.length][h[0].length];
 			for(int i=0;i<h.length; i++) {
 				if(h[i] != null)
-				for(int j=0;j<h[i].length; j++) {
-					if(h[i][j] != null) {
-						g[i][j] = new Glyph();
-						for (Field field : g[i][j].getClass().getFields()) {
-							field.setAccessible(true);
-							field.set(g[i][j], h[i][j].getClass().getField(field.getName()).get(h[i][j]));
+					for(int j=0;j<h[i].length; j++) {
+						if(h[i][j] != null) {
+							g[i][j] = new Glyph();
+							for (Field field : g[i][j].getClass().getFields()) {
+								field.setAccessible(true);
+								field.set(g[i][j], h[i][j].getClass().getField(field.getName()).get(h[i][j]));
+							}
 						}
 					}
-				}
 			}
-			
+
 			for (Field field : dataCopy.getClass().getFields()) {
 				field.setAccessible(true);
 				if(field.getName().equals("glyphs"))
 					field.set(dataCopy, g);
 				else field.set(dataCopy, data.getClass().getField(field.getName()).get(data));
 			}
-			
+
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Failed to create font", e);
 		}
 
 		BitmapFont font = new BitmapFont(dataCopy, fonts.get(val).regions, false);
-		font.getData().setScale((float) size / val.widthScale, (float) size / val.heightScale);
 		return font;
 	}
 
+	public static void putToCache(BitmapFont font) {
+		cache.free(font);
+	}
 
 	public static void dispose() {
 		fonts.clear();
 	}
-
-
 
 	public static void init() {
 
