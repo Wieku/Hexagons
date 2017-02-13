@@ -1,8 +1,5 @@
 task removeMaps(type: Delete) {
-    FileTree mapsDir = fileTree (dir: "../android/assets/Maps");
-    mapsDir.each { File file ->
-        delete(file)
-    }
+    delete "../android/assets/Maps"
 }
 
 task bundle << {
