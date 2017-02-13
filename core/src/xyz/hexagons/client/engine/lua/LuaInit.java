@@ -1,7 +1,6 @@
 package xyz.hexagons.client.engine.lua;
 
 import com.badlogic.gdx.Gdx;
-import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
@@ -14,12 +13,11 @@ import xyz.hexagons.client.api.Wall;
 import xyz.hexagons.client.map.MapFile;
 import xyz.hexagons.client.utils.PathUtil;
 import xyz.hexagons.client.utils.function.Function;
+import xyz.hexagons.client.utils.function.Supplier;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
-import java.util.function.Supplier;
-import java.util.zip.ZipFile;
 
 //TODO: check prebata, see if everything matches
 public class LuaInit {

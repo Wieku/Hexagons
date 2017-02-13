@@ -88,6 +88,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
         compile "com.google.code.gson:gson:2.7"
+        compile "commons-codec:commons-codec:1.10"
     }
 }
 
