@@ -1,8 +1,7 @@
 package xyz.hexagons.client.map;
 
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -73,6 +72,6 @@ public class DirectoryMapFile extends MapFile {
 
     @Override
     public FileHandle getFileHandle(String file) {
-        return new FileHandle(new File(dir, file));
+        return Gdx.files.absolute(new File(dir, file).getAbsolutePath());
     }
 }
