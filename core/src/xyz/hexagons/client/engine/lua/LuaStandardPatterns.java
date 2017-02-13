@@ -3,9 +3,8 @@ package xyz.hexagons.client.engine.lua;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import xyz.hexagons.client.api.Patterns;
+import xyz.hexagons.client.utils.function.Supplier;
 import xyz.hexagons.client.utils.function.Function;
-
-import java.util.function.Supplier;
 
 public class LuaStandardPatterns {
     interface PatternGenerator extends Function<LuaValue, Supplier<LuaValue>> {}

@@ -3,6 +3,7 @@ package xyz.hexagons.client.map;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.luaj.vm2.*;
 import xyz.hexagons.client.Instance;
@@ -102,16 +103,16 @@ public class MapLoader {
 						Gson gson = new GsonBuilder().create();
 						RankedJson rankedJson = gson.fromJson(new InputStreamReader(mapFile.getInputStream("ranked.json")), RankedJson.class);
 						Holder<Boolean> valid = new Holder<>(true);
-						rankedJson.essentialFiles.forEach((f, hash) -> {
+						for (java.util.Map.Entry<String, String> entry : rankedJson.essentialFiles.entrySet()) {
 							try {
-								String fileHex = DigestUtils.sha256Hex(new LFAgonisticInputStream(mapFile.getInputStream(f)));
-								if(!hash.equals(fileHex)) {
+								String fileHex = new String(Hex.encodeHex(DigestUtils.sha256(new LFAgonisticInputStream(mapFile.getInputStream(entry.getKey())))));
+								if(!entry.getValue().equals(fileHex)) {
 									valid.value = false;
 								}
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-						});
+						}
 						if(!valid.value) {
 							System.err.println("Files in map " + file.getName() + " appear to be invalid!");
 							closeMap(mapFile);
@@ -120,7 +121,7 @@ public class MapLoader {
 
 						rankedInfo = new Map.RankedMap();
 						rankedInfo.permit = rankedJson.permissionId;
-						rankedInfo.hash = DigestUtils.sha256Hex(new LFAgonisticInputStream(mapFile.getInputStream("ranked.json")));
+						rankedInfo.hash = new String(Hex.encodeHex(DigestUtils.sha256(new LFAgonisticInputStream(mapFile.getInputStream("ranked.json")))));
 
 					} catch (IOException e) {
 						e.printStackTrace();

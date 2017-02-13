@@ -63,7 +63,15 @@ public class MenuMap extends Button {
 		Table info = new Table();
 		info.add(name = new Label(map.info.name.substring(0, Math.min(24, map.info.name.length())), GUIHelper.getLabelStyle(Color.WHITE, 12))).top().left().expandX().fillX().row();
 		info.add(author = new Label("Author: "+map.info.author, GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
-		info.add(description = new Label(Arrays.stream(map.info.description.split("\n")).map(s -> s.substring(0, Math.min(39, s.length()))).collect(Collectors.joining("\n")), GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
+
+		StringBuilder descriptionBuilder = new StringBuilder();
+		for(String lines : map.info.description.split("\n")) {
+			if(descriptionBuilder.length() > 0)
+				descriptionBuilder.append("\n");
+			descriptionBuilder.append(lines.substring(0, Math.min(39, lines.length())));
+		}
+		info.add(description = new Label(descriptionBuilder.toString(), GUIHelper.getLabelStyle(Color.WHITE, 10))).top().left().expandX().fillX().row();
+
 
 		add(borderLeft).fillY();
 		add(info).expand().padLeft(5).padTop(5).padBottom(5).left();
