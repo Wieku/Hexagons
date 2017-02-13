@@ -320,10 +320,12 @@ public class MapSelect implements Screen {
 		scrollPane.layout();
 		
 		mapButtons.forEachComp(e->{e.setX(0);e.update();});
-		
-		MenuMap ms = mapButtons.get(mapIndex);
-		scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
-		
+
+		if(!mapButtons.isEmpty()) {
+			MenuMap ms = mapButtons.get(mapIndex);
+			scrollPane.scrollTo(0, ms.getY(), ms.getWidth(), ms.getHeight(), true, true);
+		}
+
 		myScoreTable.setBounds(0, 100, 350, myScoreTable.getHeight());
 		leaderboard.setBounds(0, 100+myScoreTable.getHeight(), 350, stage.getHeight()-info.getHeight()-120-myScoreTable.getHeight());
 		leaderboard.layout();

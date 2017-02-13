@@ -29,3 +29,4 @@ rankserv/settings.json
 test-deploy.sh
 docs_build/
 local.properties
+version/.classpath
