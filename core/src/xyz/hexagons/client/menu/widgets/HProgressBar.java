@@ -18,20 +18,18 @@ public class HProgressBar extends ProgressBar {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		batch.end();
+
 		shape.setProjectionMatrix(batch.getProjectionMatrix());
 		shape.begin(ShapeType.Filled);
 
-		float scale = getHeight() / 6f;
-
 		shape.setColor(CurrentMap.gameProperties.walls.r * 0.5f, CurrentMap.gameProperties.walls.g * 0.5f, CurrentMap.gameProperties.walls.b * 0.5f, CurrentMap.gameProperties.walls.a);
-		shape.rect(getX() + scale, getY(), (getWidth() - scale) * (getValue() / getMaxValue()), getHeight() - scale);
+		shape.rect(getX()-2, getY(), getWidth() * (getValue() / getMaxValue())+4, getHeight());
 
 		shape.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, CurrentMap.gameProperties.walls.a);
-		shape.rect(getX(), getY() + scale, (getWidth() - scale) * (getValue() / getMaxValue()), getHeight() - scale);
+		shape.rect(getX(), getY() + 2, getWidth() * (getValue() / getMaxValue()), getHeight() - 4);
 
 		shape.end();
 
 		batch.begin();
-		//super.draw(batch, parentAlpha);
 	}
 }
