@@ -27,6 +27,8 @@ import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static xyz.hexagons.client.audio.MenuPlaylist.update;
 
@@ -39,7 +41,7 @@ public class Hexagons extends Game {
 	public Label fps;
 
 	int width, height;
-	private List<Runnable> taskList = new LinkedList<>();
+	private Queue<Runnable> taskList = new ConcurrentLinkedQueue<>();
 
 	public Hexagons() {
 		Instance.game = this;
