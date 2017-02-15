@@ -12,8 +12,6 @@ and help it grow.
 The game is now in early beta stage. This means that you'll see many bugs
 and missing features. All feedback is more than welcome.
 
-
-
 ## Running the game
 
 To run the game, follow these steps:
@@ -35,6 +33,9 @@ To run the game, follow these steps:
      * This is caused by most DEs running apps in user home directory bu default
  * Game doesn't launch
    * Windows
+     * Make sure you have correct java version installed
+       * 64bit java for 64bit windows
+       * 32bit java for 32bit windows
      * Try running it in CMD
        * Shift-RightClick in directory the launcher is in
        * Click `Open command prompt here`

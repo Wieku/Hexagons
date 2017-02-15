@@ -2,7 +2,7 @@
 
 The game has simple event system. There is event timeline which is separate
 from wall timeline. Events should be initialized in `initEvents` callback.
-To put events onto the timeline use `game.pushEvent(timeOffset: float, event, args...)`,
+To put events onto the timeline use `game.pushEvent(timeOffset: float, event: String, args...)`,
 where `timeOffset` is offset in seconds from last pushed event, `event` is
 either event name, [property](properties.md#property-list) name to be set
 or Lua function to execute. `args` depend on what event was set to. If event

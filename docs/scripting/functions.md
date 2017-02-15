@@ -13,51 +13,57 @@ local patternQueue = game.newPatternQueue{
 }
 ```
 
-### `game.randomParam`
-TODO
+### `game.randomParam(start: Int, end: Int): Function():Int`
+Returns a [closure](https://en.wikipedia.org/wiki/Closure_(computer_programming))
+(function) which upon calling returns integer value within specified range.
 
-### `game.random`
-TODO
+### `game.random(max): Int`
+Returns a random integer from 0 to specified max. `max` has to be positive.
 
-### `game.randomSide`
-TODO
+### `game.randomSide(): Int`
+Returns a integer from 1 up to current wall count
 
-### `game.randomDir`
-TODO
+### `game.randomDir(): Int`
+Returns either -1 or 1 randomly
 
-### `game.getHalfSides`
-TODO
+### `game.getHalfSides(): Int`
+Returns current wall count divided by 2 and rounded down
 
-### `game.loadProperties`
-TODO
+### `game.loadProperties(file: String)`
+Loads properties from a file located inside map directory. File is file path
+relative to map root directory. See [properties](properties.md) page.
 
-### `game.setProperty`
-TODO
+### `game.setProperty(property: String, value)`
+Sets a single level property under given path.
+See [Properties](properties.md) page.
 
-### `game.setAll`
-TODO
+### `game.setAll(basePath: String, subPath: String, value)`
+Sets a value for all elements in a property list. `basePath` is path of the list,
+`subPath` is path inside list elements to be set. See [properties](properties.md) page.
 
-### `game.getProperty`
-TODO
+### `game.getProperty(path: String): Value`
+Returns value of a property under specified path. See [properties](properties.md) page.a
 
-### `game.pushEvent`
-TODO
-
+### `game.pushEvent(timeOffset: Float, event: String, args...)`
+Pushes event onto game event timeline. See [events](events.md) page.
 
 ## `patterns`
 `patterns` namespace contains functions for use when creating custom patterns.
 
 ### `patterns.THICKNESS`
+Base wall thickness.
+
+### `patterns.getPerfectThickness(thickness: Float): Float`
+returns a good thickness value in relation to human reflexes
+
+### `patterns.getPerfectDelay(delay: Float): Float`
 TODO
 
-### `patterns.getPerfectThickness`
+### `patterns.getBaseSpeed(): Float`
 TODO
 
-### `patterns.getPerfectDelay`
-TODO
-
-### `patterns.getBaseSpeed`
-TODO
+### `patterns.getSideDistance(from: Int, to: Int): Int`
+Returns shortest distance from a side to another
 
 ## `timeline`
 
@@ -88,3 +94,7 @@ timeline.addWall{
     }
 }
 ```
+
+### `timeline.wait(time: Float)`
+Shifts wall timeline 'base' by specified amount of time. The unit is 1/60 of a
+second.

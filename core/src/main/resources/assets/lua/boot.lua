@@ -141,7 +141,10 @@ function prepareEnv(name, mapZipFile)
             rshift = bit32.rshift
         },
         os = {
-
+            clock = os.clock,
+            date = os.date,
+            difftime = os.difftime,
+            time = os.time
         },
         debug = debug and {
             getinfo = function(...)

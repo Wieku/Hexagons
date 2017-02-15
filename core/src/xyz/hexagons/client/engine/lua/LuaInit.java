@@ -158,6 +158,13 @@ public class LuaInit {
             }
         });
 
+        patterns.set("getSideDistance", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue sideA, LuaValue sideB) {
+                return LuaValue.valueOf(Patterns.getSideDistance(sideA.toint(), sideB.toint()));
+            }
+        });
+
         ////////
         // Pattern components
 
@@ -181,6 +188,30 @@ public class LuaInit {
             @Override
             public LuaValue call(LuaValue side, LuaValue extra, LuaValue thickness) {
                 Patterns.cWallEx(side.toint(), extra.toint(), thickness.tofloat());
+                return LuaValue.NIL;
+            }
+        });
+
+        patterns.set("wallOpposite", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue side, LuaValue thickness) {
+                Patterns.oWall(side.toint(), thickness.tofloat());
+                return LuaValue.NIL;
+            }
+        });
+
+        patterns.set("wallOppositeExtra", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue side, LuaValue extra, LuaValue thickness) {
+                Patterns.oWallEx(side.toint(), extra.toint(), thickness.tofloat());
+                return LuaValue.NIL;
+            }
+        });
+
+        patterns.set("wallMirrored", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue side, LuaValue thickness) {
+                Patterns.rWall(side.toint(), thickness.tofloat());
                 return LuaValue.NIL;
             }
         });
