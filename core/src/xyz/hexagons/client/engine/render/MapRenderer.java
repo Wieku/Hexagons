@@ -10,6 +10,7 @@ import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.Wall;
 import xyz.hexagons.client.engine.Game;
 import xyz.hexagons.client.engine.Player;
+import xyz.hexagons.client.engine.camera.SkewCamera;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class MapRenderer {
 
 		renderer.setProjectionMatrix(camera.combined);
 		renderer.identity();
+		renderer.translate(((SkewCamera)camera).rumbleX*1.5f, 0, ((SkewCamera)camera).rumbleZ*1.5f);
 		((ObjRender) renderer).setHeight(0);
 		renderer.begin(ObjRender.ShapeType.Filled);
 		renderBackground(renderer, delta, true, 0);
@@ -104,9 +106,9 @@ public class MapRenderer {
 				renderer.setColor(CurrentMap.gameProperties.shadow.r, CurrentMap.gameProperties.shadow.g, CurrentMap.gameProperties.shadow.b, (CurrentMap.gameProperties.shadow.a/CurrentMap.gameProperties.alphaMultiplier)-shadLev*CurrentMap.gameProperties.alphaFalloff);
 
 
-			tmp.set(0, Instance.diagonal * 0.048f * Game.scale).rotate(i / CurrentMap.gameProperties.sides * -360f);
+			tmp.set(0, Instance.diagonal * 0.048f * CurrentMap.gameProperties.beatPulse).rotate(i / CurrentMap.gameProperties.sides * -360f);
 			tmp2.set(tmp).rotate(-360f/CurrentMap.gameProperties.sides);
-			tmp2.set(0, Instance.diagonal * 0.048f * Game.scale).rotate((i + 1) / CurrentMap.gameProperties.sides * -360f);
+			tmp2.set(0, Instance.diagonal * 0.048f * CurrentMap.gameProperties.beatPulse).rotate((i + 1) / CurrentMap.gameProperties.sides * -360f);
 
 			if(!shadows){
 				renderer.triangle(0, 0, tmp.x, tmp.y, tmp2.x, tmp2.y);

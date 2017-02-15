@@ -128,7 +128,7 @@ public class Player {
 
 		rot = (rot < 0 ? rot + 360f : (rot > 360f ? rot - 360f : rot));
 
-		fCh.set(0, 0.061f * Instance.diagonal * Game.scale).rotate(rot);
+		fCh.set(0, 0.061f * Instance.diagonal * CurrentMap.gameProperties.beatPulse).rotate(rot);
 		lCh.set(0, 0.01f).rotate(rot-90).add(fCh);
 		rCh.set(0, 0.01f).rotate(rot+90).add(fCh);
 
@@ -147,9 +147,9 @@ public class Player {
 			}
 		}
 
-		tmp.set(0, 0.061f * Instance.diagonal * Game.scale).rotate(rot);
-		tmp2.set(0, 0.055f * Instance.diagonal * Game.scale).rotate(rot - 6);
-		tmp3.set(0, 0.055f * Instance.diagonal * Game.scale).rotate(rot + 6);
+		tmp.set(0, 0.061f * Instance.diagonal * CurrentMap.gameProperties.beatPulse).rotate(rot);
+		tmp2.set(0, 0.055f * Instance.diagonal * CurrentMap.gameProperties.beatPulse).rotate(rot - 6);
+		tmp3.set(0, 0.055f * Instance.diagonal * CurrentMap.gameProperties.beatPulse).rotate(rot + 6);
 
 	}
 

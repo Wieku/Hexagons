@@ -302,6 +302,7 @@ public class OpenALPlayer extends OpenALMusic {
 		stop();
 		if (audio.noDevice) return;
 		if (buffers == null) return;
+		alSourceUnqueueBuffers(sourceID, buffers);
 		//audio.freeSource(sourceID);
 		//sourceID=-1;
 		//alDeleteBuffers(buffers);

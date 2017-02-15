@@ -34,6 +34,7 @@ import xyz.hexagons.client.menu.widgets.HProgressBar;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.utils.GUIHelper;
+import xyz.hexagons.client.utils.Utils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,9 +52,6 @@ public class Game implements Screen {
 
 
 	private Map map;
-	//AudioPlayer audioPlayer;
-
-	private float exitPosition;
 
 	private ObjRender renderer;
 	private MapRenderer mapRenderer = new MapRenderer();
@@ -67,8 +65,6 @@ public class Game implements Screen {
 	private Label message;
 	private ProgressBar next;
 
-	//LinkedList<Renderer> renderers = new LinkedList<>();
-
 	private int retries = 0;
 
 	private int width, height;
@@ -76,7 +72,6 @@ public class Game implements Screen {
 	private float score = 0;
 	private boolean scoreSent = false;
 
-	public static float scale = 1f;
 	private int inc = 1;
 
 	private DecimalFormat timeFormat = new DecimalFormat("0.000");
@@ -220,13 +215,12 @@ public class Game implements Screen {
 
 		if(player.dead){
 
-			if (!MenuPlaylist.isPaused()/*audioPlayer != null && !audioPlayer.hasEnded()*/) {
+			if (!MenuPlaylist.isPaused()) {
 				SoundManager.playSound("death");
 				SoundManager.playSound("gameover");
+
 				camera.rumble(20f, 1f);
-				//exitPosition = audioPlayer.getPosition();
-				//audioPlayer.stop();
-				exitPosition = MenuPlaylist.getPosition();
+
 				MenuPlaylist.pause();
 				touch = true;
 			}
@@ -238,7 +232,6 @@ public class Game implements Screen {
 			}
 
 			if((Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) && !escClick){
-				//audioPlayer.dispose();
 				Instance.game.setScreen(MapSelect.getInstance());
 			}
 
@@ -301,7 +294,7 @@ public class Game implements Screen {
 		}
 
 
-		time.setText("Time: " + timeFormat.format(CurrentMap.gameProperties.currentTime) + (Settings.instance.gameplay.invincibility?"\nInvincibility mode":"") + (retries>1?"\nRetried " + retries + " times":"") + (player.dead?"\nYou died! Press \"Space\" to restart!":""));
+		time.setText("Time: " + timeFormat.format(CurrentMap.gameProperties.currentTime) + (Settings.instance.gameplay.invincibility ? "\nInvincibility mode" : "") + (retries > 1 ? "\nRetried " + retries + " times" : "") + (player.dead ? "\nYou died! Press \"Space\" to restart!" : ""));
 		points.setText(String.format(Locale.US, "%08d", (int) score));
 		points.pack();
 		points.setPosition(stage.getWidth() - points.getWidth() - 5, stage.getHeight() - points.getHeight() + 5);
@@ -310,15 +303,15 @@ public class Game implements Screen {
 		time.pack();
 		message.pack();
 
-		time.setY(stage.getHeight()-time.getHeight());
+		time.setY(stage.getHeight() - time.getHeight());
 	}
 
 	private float delta2;
 	private void updateSkew(float delta) {
-		
 		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.gameProperties.skewTime ? -1 : inc));
 		delta2 += delta * inc;
-		delta2 = Math.min(CurrentMap.gameProperties.skewTime, Math.max(delta2, 0));
+		delta2 = MathUtils.clamp(delta2, 0, CurrentMap.gameProperties.skewTime);
+
 		float percent = delta2 / CurrentMap.gameProperties.skewTime;
 		CurrentMap.gameProperties.skew = CurrentMap.gameProperties.minSkew + (CurrentMap.gameProperties.maxSkew - CurrentMap.gameProperties.minSkew) * percent;
 	}
@@ -330,24 +323,24 @@ public class Game implements Screen {
 			CurrentMap.gameProperties.wallTimeline.update(delta);
 			CurrentMap.gameProperties.eventTimeline.update(delta);
 			CurrentMap.gameProperties.currentTime += delta;
-		}
 
-		if(!player.dead && (delta3 +=delta) >= CurrentMap.gameProperties.levelIncrement){
+			if((delta3 +=delta) >= CurrentMap.gameProperties.levelIncrement){
 
-			fastRotate = CurrentMap.gameProperties.rapidSpinSpeed;
+				fastRotate = CurrentMap.gameProperties.rapidSpinSpeed;
 
-			SoundManager.playSound("levelup");
+				SoundManager.playSound("levelup");
 
-			CurrentMap.gameProperties.rapidSpin = true;
-			CurrentMap.gameProperties.rotationSpeed += (CurrentMap.gameProperties.rotationSpeed > 0 ? CurrentMap.gameProperties.rotationIncrement: -CurrentMap.gameProperties.rotationIncrement );
-			CurrentMap.gameProperties.rotationSpeed *= -1;
-			CurrentMap.gameProperties.rotationSpeed = Math.min(CurrentMap.gameProperties.rotationSpeedMax, Math.max(-CurrentMap.gameProperties.rotationSpeedMax, CurrentMap.gameProperties.rotationSpeed));
+				CurrentMap.gameProperties.rapidSpin = true;
+				CurrentMap.gameProperties.mustChangeSides = true;
 
-			CurrentMap.gameProperties.mustChangeSides = true;
+				CurrentMap.gameProperties.rotationSpeed += Utils.signum(CurrentMap.gameProperties.rotationSpeed) * CurrentMap.gameProperties.rotationIncrement;//(CurrentMap.gameProperties.rotationSpeed > 0 ? CurrentMap.gameProperties.rotationIncrement: -CurrentMap.gameProperties.rotationIncrement );
+				CurrentMap.gameProperties.rotationSpeed = MathUtils.clamp(-CurrentMap.gameProperties.rotationSpeed, -CurrentMap.gameProperties.rotationSpeedMax, CurrentMap.gameProperties.rotationSpeedMax);
 
-			CurrentMap.gameProperties.speed += CurrentMap.gameProperties.speedInc;
-			CurrentMap.gameProperties.delayMult += CurrentMap.gameProperties.delayMultInc;
-			delta3 = 0;
+				CurrentMap.gameProperties.speed += CurrentMap.gameProperties.speedInc;
+				CurrentMap.gameProperties.delayMult += CurrentMap.gameProperties.delayMultInc;
+				delta3 = 0;
+			}
+
 		}
 
 		next.setValue(delta3 / CurrentMap.gameProperties.levelIncrement);
@@ -365,15 +358,14 @@ public class Game implements Screen {
 	}
 
 	private void updateRotation(float delta) {
-
-		if(player.dead) {
-			if(CurrentMap.gameProperties.rotationSpeed < 0) {
+		if(player.dead){
+			if(CurrentMap.gameProperties.rotationSpeed < 0)
 				CurrentMap.gameProperties.rotationSpeed = Math.min(-0.02f, CurrentMap.gameProperties.rotationSpeed + 0.002f * 60 * delta);
-			} else if(CurrentMap.gameProperties.rotationSpeed > 0) {
+			else if(CurrentMap.gameProperties.rotationSpeed > 0)
 				CurrentMap.gameProperties.rotationSpeed = Math.max(0.02f, CurrentMap.gameProperties.rotationSpeed - 0.002f * 60 * delta);
-			}
 		}
-		camera.rotate(CurrentMap.gameProperties.rotationSpeed * (CurrentMap.gameProperties.useRadians?MathUtils.radiansToDegrees*10:360) * delta + (CurrentMap.gameProperties.rotationSpeed > 0 ? 1 : -1) * (getSmootherStep(0, CurrentMap.gameProperties.rapidSpinSpeed, fastRotate) / 3.5f) * 17.f * 60 * delta);
+
+		camera.rotate(CurrentMap.gameProperties.rotationSpeed * (CurrentMap.gameProperties.useRadians ? MathUtils.radiansToDegrees * 10 : 360) * delta + Utils.signum(CurrentMap.gameProperties.rotationSpeed) * (Utils.getSmootherStep(0, CurrentMap.gameProperties.rapidSpinSpeed, fastRotate) / 3.5f) * 17.f * 60 * delta);
 		fastRotate = Math.max(0, fastRotate - 60f * delta);
 		if(fastRotate == 0) CurrentMap.gameProperties.rapidSpin = false;
 	}
@@ -384,14 +376,12 @@ public class Game implements Screen {
 	private void updatePulse(float delta){
 		if(player.dead) return;
 
-		if(delta4 <= 0){
+		if((delta4 -= delta) <= 0){
 			CurrentMap.gameProperties.beatPulse = CurrentMap.gameProperties.beatPulseMax;
 			delta4 = CurrentMap.gameProperties.beatPulseDelay;
 		}
 
-		delta4 -= delta;
-
-		if(CurrentMap.gameProperties.beatPulse > CurrentMap.gameProperties.beatPulseMin) scale = CurrentMap.gameProperties.beatPulse -= 1.2f * delta;
+		CurrentMap.gameProperties.beatPulse = Math.max(CurrentMap.gameProperties.beatPulse - 1.2f * delta, CurrentMap.gameProperties.beatPulseMin);
 
 		if(delta5 <= 0 && delta6 <= 0){
 
@@ -411,12 +401,4 @@ public class Game implements Screen {
 
 	}
 
-	private float getSaturated(float mValue) {
-		return Math.max(0.f, Math.min(1.f, mValue));
-	}
-
-	private float getSmootherStep(float edge0, float edge1, float x) {
-		x = getSaturated((x - edge0)/(edge1 - edge0));
-		return x * x * x * (x * (x * 6 - 15) + 10);
-	}
 }

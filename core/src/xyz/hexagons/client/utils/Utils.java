@@ -190,6 +190,19 @@ public class Utils {
 		return new float[]{r/255f, g/255f, b/255f};
 	}
 
+	public static float getSaturated(float mValue) {
+		return Math.max(0.f, Math.min(1.f, mValue));
+	}
+
+	public static float getSmootherStep(float edge0, float edge1, float x) {
+		x = getSaturated((x - edge0)/(edge1 - edge0));
+		return x * x * x * (x * (x * 6 - 15) + 10);
+	}
+
+	public static float signum(float number) {
+		return number >= 0f ? 1f : -1f;
+	}
+
 	public interface Supplier<T> {
 		T get() throws Exception;
 	}

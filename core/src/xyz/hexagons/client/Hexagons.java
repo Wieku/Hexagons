@@ -15,7 +15,7 @@ import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.menu.screens.MapSelect;
-import xyz.hexagons.client.menu.screens.Updater;
+import xyz.hexagons.client.menu.screens.Splash;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.menu.settings.SettingsManager;
 import xyz.hexagons.client.resources.FontManager;
@@ -59,7 +59,7 @@ public class Hexagons extends Game {
 		SoundManager.registerSound("click", PathUtil.getPathForFile("sound/menuclick.ogg"), true);
 		SoundManager.registerSound("levelup", PathUtil.getPathForFile("sound/levelUp.ogg"), true);
 
-		setScreen(Updater.instance);
+		setScreen(Splash.instance);
 		if(Settings.instance.graphics.fullscreen){
 			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		} else {
@@ -120,7 +120,7 @@ public class Hexagons extends Game {
 
 		Instance.getAnimationManager().update(Gdx.graphics.getDeltaTime());
 		super.render();
-		if(!(getScreen() instanceof Updater)) {
+		if(!(getScreen() instanceof Splash)) {
 			stage.act();
 			stage.draw();
 		}

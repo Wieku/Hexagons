@@ -65,7 +65,7 @@ public class Wall extends TimelineObject {
 		angle1 += delta * curve.getSpeed();
 		angle2 += delta * curve.getSpeed();
 
-		float gsc = Instance.diagonal * 0.048f * Game.scale;
+		float gsc = Instance.diagonal * 0.048f * CurrentMap.gameProperties.beatPulse;
 
 		tmp.set(0, Math.max(gsc, position * pulseSpeed)).rotate(-angle1);
 		temp[0] = tmp.x; temp[1] = tmp.y;
