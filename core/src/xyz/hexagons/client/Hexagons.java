@@ -70,8 +70,6 @@ public class Hexagons extends Game {
 
 		Instance.scheduleOnMain = (task) -> taskList.add(task);
 
-		LuaInit.init();
-
 		stage = new Stage(new ExtendViewport(1024, 768));
 
 		fps = new Label("", GUIHelper.getLabelStyle(Color.WHITE, 10));

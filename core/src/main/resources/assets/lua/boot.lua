@@ -221,3 +221,5 @@ function prepareEnv(name, mapZipFile)
 
     return setmetatable(wenv, {__index = env}), wenv
 end
+
+print "Bootstrap code OK"

@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import xyz.hexagons.client.Instance;
+import xyz.hexagons.client.engine.lua.LuaInit;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.utils.Glider;
@@ -129,6 +130,7 @@ public class Splash implements Screen {
 	public void show() {
 
 		Instance.cachedExecutor.submit(()->{
+			LuaInit.init();
 			Instance.maps = MapLoader.load();
 			Utils.sleep(1000);
 			ended = true;
