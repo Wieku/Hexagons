@@ -197,6 +197,7 @@ function prepareEnv(name, mapZipFile)
         },
         patterns = {
             THICKNESS = patterns.THICKNESS,
+            getSideDistance = patterns.getSideDistance,
             getPerfectThickness = patterns.getPerfectThickness,
             getPerfectDelay = patterns.getPerfectDelay,
             getBaseSpeed = patterns.getBaseSpeed,
@@ -204,6 +205,9 @@ function prepareEnv(name, mapZipFile)
             barrage = patterns.barrage,
             wall = patterns.wall,
             wallExtra = patterns.wallExtra,
+            wallOpposite = patterns.wallOpposite,
+            wallOppositeExtra = patterns.wallOppositeExtra,
+            wallMirrored = patterns.wallMirrored,
             wallExtraMirrored = patterns.wallExtraMirrored
         },
         timeline = {
