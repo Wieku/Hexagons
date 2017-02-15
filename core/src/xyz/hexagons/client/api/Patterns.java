@@ -28,7 +28,7 @@ public abstract class Patterns {
 
 	public static float getBaseSpeed() { return CurrentMap.gameProperties.speed * (float)(Math.pow(CurrentMap.gameProperties.difficulty, 0.65f)); }
 
-	public static float getDelayMultDM() { return CurrentMap.gameProperties.delayMult / (float)(Math.pow(CurrentMap.gameProperties.difficulty, 0.10f)); }
+	public static float getDelayMultDM() { return CurrentMap.gameProperties.delayMult / (float)(Math.pow(CurrentMap.gameProperties.difficulty, 0.10f)); } //TODO: Check if has bindings
 
 	//getPerfectDelayDM: returns getPerfectDelay calculated with difficulty mutliplier
 	public static float getPerfectDelay(float mThickness) { return mThickness / (5.02f * getBaseSpeed()) * getDelayMultDM(); }
@@ -37,7 +37,7 @@ public abstract class Patterns {
 	public static float getPerfectThickness(float mThickness) { return mThickness * getBaseSpeed(); }
 
 	//getSideDistance: returns shortest distance from a side to another
-	public static int getSideDistance(int mSide1, int mSide2){
+	public static int getSideDistance(int mSide1, int mSide2){ //TODO: Check if has bindings
 		int start = mSide1;
 		int rightSteps = 0;
 		while (start != mSide2) {
@@ -58,17 +58,17 @@ public abstract class Patterns {
 		return leftSteps;
 	}
 
-	public static void wallAcc(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax) {
+	public static void wallAcc(int side, float thickness, float speed, float acceleration, float speedMin, float speedMax) { //TODO: Check if has bindings
 		CurrentMap.gameProperties.wallTimeline.submit(new Wall(side, thickness, new SpeedData(speed * getBaseSpeed(), acceleration, speedMin * getBaseSpeed(), speedMax * getBaseSpeed())));
 	}
 
 	//cWall: creates a wall with the common THICKNESS
-	public static void cWall(int mSide, float thickness){
+	public static void cWall(int mSide, float thickness) {
 		CurrentMap.gameProperties.wallTimeline.submit(new Wall(mSide, thickness, new SpeedData(getBaseSpeed())));
 	}
 
 	//oWall: creates a wall opposite to the mSide passed
-	public static void oWall(int mSide, float thickness){
+	public static void oWall(int mSide, float thickness) {
 		cWall(mSide + getHalfSides(), thickness);
 	}
 
@@ -111,13 +111,13 @@ public abstract class Patterns {
 	public static void  cBarrage(int mSide, float thickness) { cBarrageN(mSide, 0, thickness); }
 
 	//cBarrageOnlyN: spawns a barrage of wall, with only free mNeighbors
-	public static void  cBarrageOnlyN(int mSide, int mNeighbors, float thickness){
+	public static void  cBarrageOnlyN(int mSide, int mNeighbors, float thickness){ //TODO: Check if has bindings
 		cWall(mSide, thickness);
 		cBarrageN(mSide, mNeighbors, thickness);
 	}
 
 	//cAltBarrage: spawns a barrage of alternate walls
-	public static void  cAltBarrage(int mSide, int mStep, float thickness) {
+	public static void  cAltBarrage(int mSide, int mStep, float thickness) { //TODO: Check if has bindings
 		for (int i = 0; i <= CurrentMap.gameProperties.sides / mStep; ++i ) {
 			cWall(mSide + i * mStep, thickness);
 		}
@@ -288,7 +288,7 @@ public abstract class Patterns {
 	}
 	
 	//pTunnel: forces you to circle around a very thick wall
-	public static void pTunnel(int mTimes){
+	public static void pTunnel(int mTimes) {
 		float thickness = getPerfectThickness(THICKNESS);
 		float delay = getPerfectDelay(thickness) * 5;
 		int startSide = getRandomSide();
@@ -305,7 +305,7 @@ public abstract class Patterns {
 		timelineWait(delay);
 	}
 
-	public static void timelineWait(float delay){
+	public static void timelineWait(float delay) {
 		CurrentMap.gameProperties.wallTimeline.wait(delay / 60); //TODO: WAT
 	}
 

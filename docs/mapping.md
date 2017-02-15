@@ -98,7 +98,7 @@ function nextPattern()
 end
 ```
 You can now try the level in game.
-If you want more patterns, read the [Standard Patterns](standardPatterns.md)
+If you want more patterns, read the [Standard Patterns](scripting/standardPatterns.md)
 
 ## Level properties
 The level is using default properties for everything except colors.
@@ -207,7 +207,7 @@ end
 Now we get spiral that starts at random side and has 10 walls. We can use
 `patterns.wall` instead of `timeline.addWall` to add the wall to the
 timeline. You can also use other predefined pattern 'parts' from `patterns`
-as documented [here](componentPatterns.md). The difference between patterns
+as documented [here](scripting/componentPatterns.md). The difference between patterns
 from `patterns` and `standardPatterns` is that the first one doesn't shift
 the timeline, and the function directly performs the action instead of
 returning a [closure](https://en.wikipedia.org/wiki/Closure_(computer_programming)).
