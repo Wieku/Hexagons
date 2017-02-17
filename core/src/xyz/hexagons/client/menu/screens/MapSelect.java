@@ -352,9 +352,6 @@ public class MapSelect implements Screen {
 		}
 		mapButtons.forEachComp(MenuMap::update);
 
-		//scrollPane.setBounds(Gdx.graphics.getWidth()-Math.max(468, Gdx.graphics.getWidth()/3), 100, Math.max(468, Gdx.graphics.getWidth()/3), Gdx.graphics.getHeight()-200);
-		//scrollPane.layout();
-
 		table.setHeight(Gdx.graphics.getHeight()-200);
 		table.layout();
 		showed = false;

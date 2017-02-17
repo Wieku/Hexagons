@@ -90,7 +90,6 @@ public class ConfigEngine {
 					Object fieldParent = f.get(Settings.instance);
 					Section sec = fieldParent.getClass().getAnnotation(Section.class);
 					for(Field f1 : fieldParent.getClass().getFields()) {
-						//System.out.println(f1.getName());
 						if(f1.getAnnotations().length > 0) {
 							Annotation an = f1.getAnnotations()[0];
 							if (an instanceof Section.Slider) {
@@ -99,6 +98,9 @@ public class ConfigEngine {
 							} else if (an instanceof Section.Switch) {
 								Section.Switch sl = (Section.Switch) an;
 								elements.add(new State(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.def(), sl.order()));
+							} else if (an instanceof Section.Combo) {
+								Section.Combo sl = (Section.Combo) an;
+								elements.add(new Combo(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model(), sl.def(), sl.order()));
 							}
 						}
 					}

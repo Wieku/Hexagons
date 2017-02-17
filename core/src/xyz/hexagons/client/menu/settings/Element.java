@@ -105,6 +105,4 @@ public abstract class Element<T> extends Table {
 		return sectionI18n.toLowerCase().contains(phrase) || nameI18n.toLowerCase().contains(phrase);
 	}
 
-	public abstract void action();
-	public abstract void select(boolean state);
 }

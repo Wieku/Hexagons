@@ -161,7 +161,7 @@ public class SettingsTab extends Table{
 				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0, 0.0f))
 				.push(ActorAccessor.createFadeTween(field, 1.0f, 0, 0.0f))
 				.end()
-				.setCallback((s)->{hidden = true;});
+				.setCallback((s)->hidden = true);
 
 		hidingTween.start(Instance.getAnimationManager());
 	}

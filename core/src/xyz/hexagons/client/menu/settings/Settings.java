@@ -26,8 +26,8 @@ public class Settings implements Serializable {
 		@Section.Switch(name="fixedratio", enName="Fixed aspect ratio (4:3)", def = false, order=2)
 		public boolean fixedratio = false;
 
-		@Section.Slider(name="msaa", enName="MSAA", model={0, 4, 1, 4}, order=3)
-		public int msaa = 4;
+		@Section.Combo(name="msaa", enName="MSAA", model={"OFF", "2x", "4x", "8x", "16x"}, def = "4x", order=3)
+		public String msaa = "4x";
 	}
 
 
