@@ -55,9 +55,11 @@ public abstract class Element<T> extends Table {
 				}
 			}
 		}
+
 		left();
 		nameLabel = new Label(nameI18n, GUIHelper.getLabelStyle(Color.WHITE, 10));
-		add(nameLabel).left().padLeft(2).expandX();
+		nameLabel.pack();
+		add(nameLabel).left().padLeft(2).padRight(10);
 	}
 
 	@Override
@@ -76,6 +78,7 @@ public abstract class Element<T> extends Table {
 			throw new IllegalStateException(e);
 		}
 	}
+
 	public T loadValue() {
 		try {
 			return (T)valReflection.get(fieldParent);

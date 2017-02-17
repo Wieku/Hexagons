@@ -143,11 +143,11 @@ public class GUIHelper{
 	
 	public static SliderStyle getSliderStyle(){
 
-		Pixmap pix = new Pixmap(16, 16, Format.RGBA8888);
+		Pixmap pix = new Pixmap(12, 12, Format.RGBA8888);
 		pix.setColor(Color.LIGHT_GRAY);
-		pix.fillCircle(8, 8, 7);
+		pix.fillCircle(6, 6, 5);
 
-		SliderStyle stl = new SliderStyle(getTxRegion(Color.WHITE,1,3),getTxRegion(pix));
+		SliderStyle stl = new SliderStyle(getTxRegion(Color.WHITE,1,2),getTxRegion(pix));
 		return stl;
 	}
 	

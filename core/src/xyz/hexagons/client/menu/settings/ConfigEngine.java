@@ -36,6 +36,20 @@ public class ConfigEngine {
 					sec.put("MAIN", sub);
 				}
 
+				ArrayList<Element<?>> sub1 = sec.get("MAIN2");
+
+				if (sub1 == null) {
+					sub1 = new ArrayList<Element<?>>();
+					sec.put("MAIN2", sub1);
+				}
+
+				ArrayList<Element<?>> sub2 = sec.get("MAIN3");
+
+				if (sub2 == null) {
+					sub2 = new ArrayList<Element<?>>();
+					sec.put("MAIN3", sub2);
+				}
+
 				sub.add(el);
 				Collections.sort(sub, (e1,e2)->e1.getOrder().compareTo(e2.getOrder()));
 			}

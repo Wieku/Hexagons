@@ -10,10 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,6 +18,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.google.common.eventbus.Subscribe;
 import me.wieku.animation.animations.Animation;
+import me.wieku.animation.timeline.AnimationParallel;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
@@ -50,9 +48,9 @@ public class MainMenu implements Screen {
 	public static MainMenu instance = new MainMenu();
 
 	private Stage stage;
-	private Stage stage2;
 	private MenuButton buttonStart, buttonOptions, buttonExit;
 	private ArrayList<MenuButton> list = new ArrayList<>();
+	private ArrayList<Actor> list2 = new ArrayList<>();
 	private Label version, copyright;
 	private int currentIndex = -1;
 	private Image beatIHigh;
@@ -73,13 +71,12 @@ public class MainMenu implements Screen {
 	private float[] dfg = new float[60];
 
 	public boolean optionsShowed;
-
 	
 	private static float COUNT = 10f;
 	private float countDown = COUNT;
 	private boolean visible = true;
 	private boolean activity = false;
-	private Animation uiAnimation;
+	private Timeline uiAnimation;
 	
 	SettingsTab sTab;
 	
@@ -90,9 +87,6 @@ public class MainMenu implements Screen {
 	public MainMenu(){
 		stage = new Stage(new ExtendViewport(1024, 768));
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		
-		stage2 = new Stage(new ExtendViewport(1024, 768));
-		stage2.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		
 		blurEffect = new BlurEffect(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		blurEffect.setPower(5f);
@@ -236,8 +230,11 @@ public class MainMenu implements Screen {
 		beatILow.setColor(1, 1, 1, 0.3f);
 		beatILow.setScaling(Scaling.fit);
 
-		stage2.addActor(beatIHigh);
-		stage2.addActor(beatILow);
+		list2.add(beatIHigh);
+		list2.add(beatILow);
+
+		stage.addActor(beatIHigh);
+		stage.addActor(beatILow);
 
 
 		music = new Table();
@@ -259,7 +256,8 @@ public class MainMenu implements Screen {
 		stage.addActor(buttonStart);
 		stage.addActor(buttonOptions);
 		stage.addActor(buttonExit);
-		stage2.addActor(sTab);
+		list2.add(sTab);
+		stage.addActor(sTab);
 		selectIndex(0);
 		
 		rank = new PlayerRank();
@@ -273,8 +271,9 @@ public class MainMenu implements Screen {
 		motdTable.setWidth(stage.getWidth());
 		motdTable.setPosition(0, 1f/3 * 768);
 		motdTable.setTouchable(Touchable.disabled);
-		
-		stage2.addActor(motdTable);
+
+		list2.add(motdTable);
+		stage.addActor(motdTable);
 		
 		Instance.accountManager.loginSaved();
 	}
@@ -288,6 +287,7 @@ public class MainMenu implements Screen {
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
 		Gdx.input.setInputProcessor(stage);
+
 		Instance.setForegroundFps.accept(0);
 		if(!first){
 			MenuPlaylist.start();
@@ -378,9 +378,7 @@ public class MainMenu implements Screen {
 			
 			motdTable.setWidth(stage.getWidth());
 			motdTable.layout();
-			//lel.set(Gdx.graphics.getWidth() - music.getWidth(), Gdx.graphics.getHeight() - music.getHeight());
-			//float gx = (stage.getWidth()/1024f) * music.getWidth();
-			//float gy = (stage.getHeight()/1024f) * music.getHeight();
+
 			music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
 			
 			boolean cd = false;
@@ -429,8 +427,15 @@ public class MainMenu implements Screen {
 			if(countDown < 0 && visible) {
 				
 				if(uiAnimation != null) uiAnimation.kill();
-				
-				uiAnimation = ActorAccessor.createFadeGroupTween(stage.getRoot(), 5f, 0f, 0f);
+
+				AnimationParallel parr = new Timeline().beginParallel();
+
+				for(Actor actor : stage.getActors()) {
+					if(!list2.contains(actor))
+						parr.push(ActorAccessor.createFadeTween(actor, 5f, 0f, 0f));
+				}
+				uiAnimation = parr.end();
+
 				uiAnimation.start(Instance.getAnimationManager());
 				
 				visible = false;
@@ -445,12 +450,19 @@ public class MainMenu implements Screen {
 				
 				if(!visible) {
 					if(uiAnimation != null) uiAnimation.kill();
-					
-					uiAnimation = ActorAccessor.createFadeGroupTween(stage.getRoot(), 1f*(1f-stage.getRoot().getColor().a), 0f, 1f);
+
+					AnimationParallel parr = new Timeline().beginParallel();
+
+					for(Actor actor : stage.getActors()) {
+						if(!list2.contains(actor))
+							parr.push(ActorAccessor.createFadeTween(actor, 1f*(1f-actor.getColor().a), 0f, 1f));
+					}
+					uiAnimation = parr.end();
+
 					uiAnimation.start(Instance.getAnimationManager());
 					
-					darknessGlider.glide(1.5f, (1f-stage.getRoot().getColor().a));
-					alphaGlider.glide(0.1f, (1f-stage.getRoot().getColor().a));
+					darknessGlider.glide(1.5f, (1f - stage.getRoot().getColor().a));
+					alphaGlider.glide(0.1f, (1f - stage.getRoot().getColor().a));
 				}
 				
 				countDown = COUNT;
@@ -460,7 +472,7 @@ public class MainMenu implements Screen {
 			
 			blurEffect.setDarkness(darknessGlider.getValue());
 			
-			rank.setPosition(stage.getWidth()-300, stage.getHeight() - music.getHeight() - 5 - rank.getHeight());
+			rank.setPosition(stage.getWidth() - 300, stage.getHeight() - music.getHeight() - 5 - rank.getHeight());
 			
 			delta0 = 0;
 		}
@@ -491,7 +503,7 @@ public class MainMenu implements Screen {
 
 		shapeRenderer.setColor(CurrentMap.gameProperties.walls.r, CurrentMap.gameProperties.walls.g, CurrentMap.gameProperties.walls.b, alphaGlider.getValue());
 		float g = stage.getHeight()/40f;
-		for(int i=0;i<40;i++){
+		for(int i = 0; i < 40; i++){
 			shapeRenderer.rect(0, i*g, dfg[i], g-1);
 			shapeRenderer.rect(stage.getWidth()-dfg[i], stage.getHeight()-g-i*g, dfg[i], g-1);
 		}
@@ -502,15 +514,15 @@ public class MainMenu implements Screen {
 		stage.act(delta);
 		stage.draw();
 		
-		stage2.act(delta);
-		stage2.draw();
+		//stage2.act(delta);
+		//stage2.draw();
 		
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		stage2.getViewport().update(width, height, true);
+		//stage2.getViewport().update(width, height, true);
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 7);
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		
@@ -551,7 +563,7 @@ public class MainMenu implements Screen {
 		currentIndex = index;
 		SoundManager.playSound("click");
 		list.get(currentIndex).select(true);
-		float x=(currentIndex==0?stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
+		float x = (currentIndex == 0 ? stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 		ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x - 20, 0f));
 	}
 	

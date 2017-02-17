@@ -51,10 +51,12 @@ public class Slider extends Element<Integer> {
 		slider.addListener(stopTouchDown);
 
 		slider.setValue(value);
-		add(slider).fillX().padRight(5);
+
+		//slider.setFillParent(true);
 		valueLabel = new Label(Integer.toString(value), GUIHelper.getLabelStyle(Color.WHITE, 10));
 		valueLabel.setAlignment(Align.center);
-		add(valueLabel).width(45).padRight(2);
+		add(slider).width(512 - 13 - 10 - 2 - 2 - 5 - nameLabel.getWidth() - 45);
+		add(valueLabel).width(45).padLeft(5).padRight(2).right();
 
 		slider.addListener(new ChangeListener() {
 			@Override
