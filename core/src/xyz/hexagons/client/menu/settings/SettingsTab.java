@@ -1,6 +1,5 @@
 package xyz.hexagons.client.menu.settings;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import me.wieku.animation.animations.Animation;
@@ -93,13 +91,12 @@ public class SettingsTab extends Table{
 		add(field).center().fillX().height(30).padTop(30).padBottom(5).expandX().row();
 
 		chld = new Table();
-		chld.top().left();//.setFillParent(true);
-		//Conf.init();
+		chld.top().left();
 
 		scr = new ScrollPane(chld, GUIHelper.getScrollPaneStyle(Color.BLACK, Color.WHITE));
 		scr.setScrollingDisabled(true, false);
 
-		add(scr).top().fillY().fillX()/*.height(768-115)*/.row();
+		add(scr).top().fillY().fillX().row();
 
 		add(button = new TextButton("Back", GUIHelper.getTextButtonStyle(Color.WHITE, 20))).right().padRight(5).bottom().height(40).padTop(10).expandY().expandX();
 		button.addListener(new ClickListener(Buttons.LEFT){
@@ -172,7 +169,6 @@ public class SettingsTab extends Table{
 	public void build(String phrase){
 		chld.clear();
 
-		//Tree mainTree = new Tree(style);
 		Table mainTable = new Table();
 
 		for(Entry<String, HashMap<String, ArrayList<Element<?>>>> sec : ConfigEngine.searchMap(phrase).entrySet()){
@@ -197,8 +193,6 @@ public class SettingsTab extends Table{
 
 			tab1.add(image2).fillX();
 
-			//Node node = new Node(tab1);
-
 			mainTable.add(tab1).fillX().row();
 
 			for(Entry<String, ArrayList<Element<?>>> subsec : sec.getValue().entrySet()){
@@ -211,41 +205,29 @@ public class SettingsTab extends Table{
 
 				subTable.left();
 				subTable.add(new Label(subsec.getKey().toUpperCase(), GUIHelper.getLabelStyle(Color.WHITE, 14))).padBottom(10).padLeft(5).left().expandX().row();
-				//
 
 				for(Element<?> el : subsec.getValue()){
 
 					Table tab = new Table(){
 						public void draw(Batch arg0, float arg1) {
 							setWidth(scr.getWidth()-getX());
-							//getCells().get(1).width(getWidth()/2.5f);
 							layout();
 							super.draw(arg0, arg1);
 						}
 					};
 					tab.left();
-					//tab.add(new Label(el.getName(), GUIHelper.getLabelStyle(Color.WHITE, 16))).uniform().left();
 
-					tab.add(el).fillX();//right().padRight(10).expandX().uniform();
+					tab.add(el).fillX();
 
-					/*subNode.add(new Node(tab));*/
 					subTable.add(tab).padLeft(5).fillX().row();
 				}
 
 				table.add(subTable).fillX().row();
 
 				mainTable.add(table).pad(5).fillX().row();
-				//subNode.expandAll();
-				//node.add(subNode);
-
 			}
-			//node.expandAll();
-			//mainTree.add(node);
-
 		}
 
-		//mainTree.expandAll();
-		//chld.add(mainTree);
 		chld.add(mainTable);
 	}
 
