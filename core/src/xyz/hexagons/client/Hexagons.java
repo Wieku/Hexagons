@@ -90,7 +90,7 @@ public class Hexagons extends Game {
 		notifyTable = GUIHelper.getTable(new Color(0,0,0,0.8f));
 		notifyLabel = GUIHelper.text("", Color.WHITE, 20);
 		notifyLabel.setAlignment(Align.center);
-		notifyTable.add(notifyLabel).fill();
+		notifyTable.add(notifyLabel).expand();
 		notifyTable.pack();
 		notifyTable.setWidth(stage.getWidth());
 		notifyTable.setPosition(0, 1f/3 * 768);
@@ -141,7 +141,8 @@ public class Hexagons extends Game {
 		Instance.getAnimationManager().update(Gdx.graphics.getDeltaTime());
 		super.render();
 		if(!(getScreen() instanceof Splash)) {
-			notifyTable.setWidth(width);
+			notifyTable.setWidth(stage.getWidth());
+			notifyTable.layout();
 			stage.act();
 			stage.draw();
 		}
@@ -160,7 +161,7 @@ public class Hexagons extends Game {
 	}
 
 
-	int x, y, windowWidth, windowHeight;
+	int x=-1, y=-1, windowWidth = 1024, windowHeight = 768;
 	@Subscribe
 	public void settingsChanged(SettingsChanged e) {
 		if(e.getElement().getId().equals("fullscreen")) {
@@ -171,6 +172,11 @@ public class Hexagons extends Game {
 				windowHeight = Display.getHeight();
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 			} else {
+				if(x==-1) {
+					x = (Display.getWidth()-windowWidth)/2;
+					y = (Display.getHeight()-windowHeight)/2;
+				}
+
 				Gdx.graphics.setWindowedMode(windowWidth, windowHeight);
 				Display.setLocation(x, y);
 			}
