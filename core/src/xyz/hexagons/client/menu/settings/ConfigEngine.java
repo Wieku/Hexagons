@@ -1,5 +1,6 @@
 package xyz.hexagons.client.menu.settings;
 
+import xyz.hexagons.client.menu.settings.elements.Account;
 import xyz.hexagons.client.menu.settings.elements.Combo;
 import xyz.hexagons.client.menu.settings.elements.Element;
 import xyz.hexagons.client.menu.settings.elements.Slider;
@@ -7,17 +8,17 @@ import xyz.hexagons.client.menu.settings.elements.Slider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 public class ConfigEngine {
 
 	private static ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> elements = new ArrayList<>();
+	private static HashMap<String, Integer> orders = new HashMap<>();
 
-	public static HashMap<String,HashMap<String,ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>> searchMap(String phrase){
 
-		HashMap<String,HashMap<String,ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>> map = new HashMap<>();
+	public static Map<String,HashMap<String,ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>> searchMap(String phrase){
+
+		Map<String,HashMap<String,ArrayList<Element<?>>>> map = new TreeMap<>((o1, o2) -> orders.get(o1).compareTo(orders.get(o2)));
 
 		phrase = phrase.toLowerCase();
 
@@ -28,14 +29,14 @@ public class ConfigEngine {
 				HashMap<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>> sec = map.get(el.getSection());
 
 				if (sec == null) {
-					sec = new HashMap<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>();
+					sec = new HashMap<String, ArrayList<Element<?>>>();
 					map.put(el.getSection(), sec);
 				}
 
 				ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> sub = sec.get("MAIN");
 
 				if (sub == null) {
-					sub = new ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>();
+					sub = new ArrayList<Element<?>>();
 					sec.put("MAIN", sub);
 				}
 
@@ -92,6 +93,7 @@ public class ConfigEngine {
 				try {
 					Object fieldParent = f.get(Settings.instance);
 					Section sec = fieldParent.getClass().getAnnotation(Section.class);
+					orders.put(sec.enName(), sec.order());
 					for(Field f1 : fieldParent.getClass().getFields()) {
 						if(f1.getAnnotations().length > 0) {
 							Annotation an = f1.getAnnotations()[0];
@@ -104,6 +106,9 @@ public class ConfigEngine {
 							} else if (an instanceof Section.Combo) {
 								Section.Combo sl = (Section.Combo) an;
 								elements.add(new Combo(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model(), sl.def(), sl.order()));
+							}  else if (an instanceof Section.Account) {
+								Section.Account sl = (Section.Account) an;
+								elements.add(new Account(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.order()));
 							}
 						}
 					}

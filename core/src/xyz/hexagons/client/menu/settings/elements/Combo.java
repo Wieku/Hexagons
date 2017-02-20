@@ -34,7 +34,7 @@ public class Combo extends Element<String> {
 		combo.setItems(model);
 		combo.setSelected(value);
 
-		add(combo).width(512 - 13 - 10 - 2 - nameLabel.getWidth());
+		add(combo).width(512 - 13 - 10 - 2 - 5 - nameLabel.getWidth());
 
 		combo.addListener(new ChangeListener() {
 			@Override

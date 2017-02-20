@@ -30,7 +30,7 @@ public class State extends Element<Boolean> {
 		box = new CheckBox("", GUIHelper.getCheckBoxStyle(Color.WHITE, Color.WHITE, 10));
 
 		box.setChecked(value);
-		add(box).left().padRight(5);
+		add(box).left().padLeft(2).padRight(5);
 		add(nameLabel).left().width(512 - 5 - box.getWidth());
 		nameLabel.addListener(new ClickListener(){
 			@Override

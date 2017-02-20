@@ -135,8 +135,8 @@ public class GUIHelper{
 		TextButtonStyle stl = new TextButtonStyle();
 		stl.font =  FontManager.getFont(FontManager.MAIN, size);
 		stl.up = getTxRegion(background);
-		stl.over = getTxRegion(background.lerp(Color.WHITE, 0.05f));
-		stl.down = getTxRegion(background.lerp(Color.LIGHT_GRAY, 0.05f));
+		stl.over = getTxRegion(background.cpy().lerp(Color.WHITE, 0.05f));
+		stl.down = getTxRegion(background.cpy().lerp(Color.LIGHT_GRAY, 0.05f));
 		stl.fontColor = color;
 		return stl;
 	}

@@ -1,5 +1,6 @@
 package xyz.hexagons.client.menu.settings;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -19,6 +20,7 @@ import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.menu.ActorAccessor;
 import xyz.hexagons.client.utils.GUIHelper;
+import xyz.hexagons.client.menu.settings.elements.Element;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,6 +136,7 @@ public class SettingsTab extends Table{
 		button.setDisabled(false);
 		field.setVisible(true);
 		field.setDisabled(false);
+		getStage().setScrollFocus(scr);
 		if(hidingTween != null && !hidingTween.isFinished()){
 			hidingTween.kill();
 		}
@@ -155,6 +158,7 @@ public class SettingsTab extends Table{
 
 	public void hide(){
 		if(button.isDisabled()) return;
+		getStage().setScrollFocus(null);
 		field.setDisabled(true);
 		button.setDisabled(true);
 		if(showingTween != null && !showingTween.isFinished()){
@@ -178,7 +182,7 @@ public class SettingsTab extends Table{
 
 		Table mainTable = new Table();
 
-		for(Entry<String, HashMap<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>> sec : ConfigEngine.searchMap(phrase).entrySet()){
+		for(Entry<String, HashMap<String, ArrayList<Element<?>>>> sec : ConfigEngine.searchMap(phrase).entrySet()){
 
 			Table tab1 = new Table(){
 				public void draw(Batch arg0, float arg1) {
@@ -202,7 +206,7 @@ public class SettingsTab extends Table{
 
 			mainTable.add(tab1).fillX().row();
 
-			for(Entry<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>> subsec : sec.getValue().entrySet()){
+			for(Entry<String, ArrayList<Element<?>>> subsec : sec.getValue().entrySet()){
 
 				Table table = new Table();
 				table.left();
@@ -213,7 +217,7 @@ public class SettingsTab extends Table{
 				subTable.left();
 				subTable.add(new Label(subsec.getKey().toUpperCase(), GUIHelper.getLabelStyle(Color.WHITE, 14))).padBottom(10).padLeft(5).left().expandX().row();
 
-				for(xyz.hexagons.client.menu.settings.elements.Element<?> el : subsec.getValue()){
+				for(Element<?> el : subsec.getValue()){
 
 					Table tab = new Table(){
 						public void draw(Batch arg0, float arg1) {

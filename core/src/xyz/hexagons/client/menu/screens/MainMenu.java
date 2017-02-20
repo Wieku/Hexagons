@@ -135,12 +135,6 @@ public class MainMenu implements Screen {
 						Gdx.app.exit();
 					}
 				}
-				if(keycode == Keys.L) {
-					Instance.currentAccount = Instance.accountManager.loginGoogle();
-				}
-				if(keycode == Keys.K) {
-					Instance.currentAccount = Instance.accountManager.loginSteam();
-				}
 
 				if(keycode == Keys.ESCAPE || keycode == Keys.BACK)
 					escclick = true;
