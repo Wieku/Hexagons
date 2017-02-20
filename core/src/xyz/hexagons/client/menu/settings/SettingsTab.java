@@ -105,7 +105,7 @@ public class SettingsTab extends Table{
 				hide();
 			}
 		});
-
+		button.setColor(1,1,1,0);
 		button.setVisible(false);
 
 		build("");
@@ -131,6 +131,7 @@ public class SettingsTab extends Table{
 
 	public void show(){
 		button.setVisible(true);
+		button.setDisabled(false);
 		field.setVisible(true);
 		field.setDisabled(false);
 		if(hidingTween != null && !hidingTween.isFinished()){
@@ -139,9 +140,11 @@ public class SettingsTab extends Table{
 
 		showed = true;
 		hidden = false;
-		showingTween = new Timeline().beginParallel().push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEX, 1.0f, 512, 0)).push(ActorAccessor.createFadeTween(this, 1.0f, 0, 1.0f))
+		showingTween = new Timeline().beginParallel().push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEX, 1.0f-(getWidth()/512f), 512, 0))
+				.push(ActorAccessor.createFadeTween(this, 1.0f, 0, 1.0f))
 				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0, 1.0f))
 				.push(ActorAccessor.createFadeTween(field, 1.0f, 0, 1.0f))
+				.push(ActorAccessor.createFadeTween(button, 1.0f, 0.4f, 1.0f))
 				.end().setCallback((b)->{showd=true;});
 		showingTween.start(Instance.getAnimationManager());
 	}
@@ -151,15 +154,19 @@ public class SettingsTab extends Table{
 	}
 
 	public void hide(){
+		if(button.isDisabled()) return;
 		field.setDisabled(true);
+		button.setDisabled(true);
 		if(showingTween != null && !showingTween.isFinished()){
 			showingTween.kill();
 		}
 		showd=false;
 		showed = false;
-		hidingTween = new Timeline().beginParallel().push(ActorAccessor.createQuadTween(this, ActorAccessor.SIZEX, 1.0f, 0, 0)).push(ActorAccessor.createFadeTween(this, 1.0f, 0, 0.0f))
-				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0, 0.0f))
-				.push(ActorAccessor.createFadeTween(field, 1.0f, 0, 0.0f))
+		hidingTween = new Timeline().beginParallel().push(ActorAccessor.createQuadTween(this, ActorAccessor.SIZEX, (getWidth()/512f) * 1.0f, 0, 0f))
+				.push(ActorAccessor.createFadeTween(this, 1.0f, 0f, 0f))
+				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0f, 0f))
+				.push(ActorAccessor.createFadeTween(field, 1.0f, 0f, 0f))
+				.push(ActorAccessor.createFadeTween(button, 0.4f, 0, 0f))
 				.end()
 				.setCallback((s)->hidden = true);
 
@@ -171,7 +178,7 @@ public class SettingsTab extends Table{
 
 		Table mainTable = new Table();
 
-		for(Entry<String, HashMap<String, ArrayList<Element<?>>>> sec : ConfigEngine.searchMap(phrase).entrySet()){
+		for(Entry<String, HashMap<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>> sec : ConfigEngine.searchMap(phrase).entrySet()){
 
 			Table tab1 = new Table(){
 				public void draw(Batch arg0, float arg1) {
@@ -195,7 +202,7 @@ public class SettingsTab extends Table{
 
 			mainTable.add(tab1).fillX().row();
 
-			for(Entry<String, ArrayList<Element<?>>> subsec : sec.getValue().entrySet()){
+			for(Entry<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>> subsec : sec.getValue().entrySet()){
 
 				Table table = new Table();
 				table.left();
@@ -206,7 +213,7 @@ public class SettingsTab extends Table{
 				subTable.left();
 				subTable.add(new Label(subsec.getKey().toUpperCase(), GUIHelper.getLabelStyle(Color.WHITE, 14))).padBottom(10).padLeft(5).left().expandX().row();
 
-				for(Element<?> el : subsec.getValue()){
+				for(xyz.hexagons.client.menu.settings.elements.Element<?> el : subsec.getValue()){
 
 					Table tab = new Table(){
 						public void draw(Batch arg0, float arg1) {

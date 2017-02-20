@@ -1,4 +1,4 @@
-package xyz.hexagons.client.menu.settings;
+package xyz.hexagons.client.menu.settings.elements;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;

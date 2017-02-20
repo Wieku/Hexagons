@@ -15,6 +15,15 @@ public class Settings implements Serializable {
 	public GamePlay gameplay = new GamePlay();
 	public Ranking ranking = new Ranking();
 
+	@Section(name="ranking", enName="Ranking", order=4)
+	public class Ranking {
+
+
+
+		public String server = "https://rankserv.hexagons.xyz";
+		public String authToken = null;
+	}
+
 	@Section(name="graphics", enName="Graphics", order=0)
 	public class Graphics {
 		@Section.Switch(name="vSync", enName="VSync", def = false, order=0)
@@ -56,10 +65,4 @@ public class Settings implements Serializable {
 		public boolean hideUi = false;
 	}
 
-	@Section(name="ranking", enName="Ranking", order=4)
-	public class Ranking {
-		public String server = "https://rankserv.hexagons.xyz";
-
-		public String authToken = null;
-	}
 }

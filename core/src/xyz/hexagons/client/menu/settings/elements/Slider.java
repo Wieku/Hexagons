@@ -1,4 +1,4 @@
-package xyz.hexagons.client.menu.settings;
+package xyz.hexagons.client.menu.settings.elements;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.utils.GUIHelper;
 
 /**
@@ -55,6 +56,7 @@ public class Slider extends Element<Integer> {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				value = (int) slider.getValue();
+				SoundManager.playSound("change");
 				writeValue(value);
 				valueLabel.setText(Integer.toString(value));
 			}

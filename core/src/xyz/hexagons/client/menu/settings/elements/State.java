@@ -1,16 +1,11 @@
-package xyz.hexagons.client.menu.settings;
+package xyz.hexagons.client.menu.settings.elements;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.utils.GUIHelper;
 
@@ -48,6 +43,7 @@ public class State extends Element<Boolean> {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				value = box.isChecked();
+				SoundManager.playSound("change");
 				writeValue(value);
 			}
 		});

@@ -41,4 +41,12 @@ public @interface Section {
 		int order();
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	@interface Info{
+		String name();
+		String enName();
+		int order();
+	}
+
 }

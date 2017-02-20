@@ -96,7 +96,10 @@ public class AndroidLauncher extends AndroidApplication {
 			}
 		};
 
-		config.numSamples = Settings.instance.graphics.msaa;
+		String sam = Settings.instance.graphics.msaa;
+		if(!sam.contains("x") && !sam.equals("OFF")) Settings.instance.graphics.msaa = sam += "x";
+		config.numSamples = (sam.equals("OFF")?0:Integer.parseInt(sam.substring(0, sam.length()-1)));
+
 		config.hideStatusBar = true;
 		config.useWakelock = true;
 		initialize(new Hexagons(), config);

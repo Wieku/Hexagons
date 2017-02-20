@@ -64,10 +64,6 @@ public class MainMenu implements Screen {
 	private Label title;
 	private boolean escclick = false;
 
-	private Table motdTable = GUIHelper.getTable(new Color(0,0,0,0.8f));
-	private Label motdLabel;
-	private Timeline motdAnimation;
-
 	private float[] dfg = new float[60];
 
 	public boolean optionsShowed;
@@ -131,11 +127,8 @@ public class MainMenu implements Screen {
 					if(currentIndex == 1) {
 						optionsShowed = true;
 
-						if(sTab.isShowed())
-							sTab.hide();
-						else
+						if(!sTab.isShowed())
 							sTab.show();
-						/*Main.getInstance().setScreen(options);*/
 					}
 
 					if(currentIndex == 2){
@@ -181,10 +174,8 @@ public class MainMenu implements Screen {
 						
 						if(currentIndex == 1) {
 							optionsShowed = true;
-							
-							if(sTab.isShowed())
-								sTab.hide();
-							else
+
+							if(!sTab.isShowed())
 								sTab.show();
 						}
 						
@@ -264,18 +255,9 @@ public class MainMenu implements Screen {
 		stage.addActor(rank);
 		
 		CurrentMap.reset();
-
-		motdLabel = GUIHelper.text(MotdApi.instance.getMotd().getText(), Color.WHITE, 20);
-		motdTable.add(motdLabel).center();
-		motdTable.pack();
-		motdTable.setWidth(stage.getWidth());
-		motdTable.setPosition(0, 1f/3 * 768);
-		motdTable.setTouchable(Touchable.disabled);
-
-		list2.add(motdTable);
-		stage.addActor(motdTable);
 		
 		Instance.accountManager.loginSaved();
+		Instance.game.showNotify(MotdApi.instance.getMotd().getText(), 5f);
 	}
 
 	private boolean first = false;
@@ -291,10 +273,7 @@ public class MainMenu implements Screen {
 		Instance.setForegroundFps.accept(0);
 		if(!first){
 			MenuPlaylist.start();
-			motdTable.setColor(1, 1, 1, 0f);
-			motdAnimation = new Timeline().beginSequence().push(ActorAccessor.createFadeTableTween(motdTable, 2f, 0, 1f))
-					.pushPause(5).push(ActorAccessor.createFadeTableTween(motdTable, 2f, 0, 0f)).end();
-			motdAnimation.start(Instance.getAnimationManager());
+
 			first = true;
 			if(Instance.maps.isEmpty()) {
 				CurrentMap.gameProperties.backgroundColors.add(new HColor(36f/255, 36f/255, 36f/255, 1f).addPulse(20f / 255, 20f / 255, 20f / 255, 0f));
@@ -375,9 +354,6 @@ public class MainMenu implements Screen {
 				}
 			} else title.setText("No maps available");
 			music.pack();
-			
-			motdTable.setWidth(stage.getWidth());
-			motdTable.layout();
 
 			music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
 			

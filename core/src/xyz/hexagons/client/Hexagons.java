@@ -5,12 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.google.common.eventbus.Subscribe;
 import me.wieku.animation.animations.Animation;
+import me.wieku.animation.timeline.Timeline;
+import org.lwjgl.opengl.Display;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.audio.SoundManager;
-import xyz.hexagons.client.engine.lua.LuaInit;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapLoader;
 import xyz.hexagons.client.menu.ActorAccessor;
@@ -18,16 +23,14 @@ import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.menu.screens.Splash;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.menu.settings.SettingsManager;
+import xyz.hexagons.client.menu.settings.event.SettingsChanged;
 import xyz.hexagons.client.resources.FontManager;
 import xyz.hexagons.client.utils.FpsCounter;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.utils.PathUtil;
 
 import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static xyz.hexagons.client.audio.MenuPlaylist.update;
@@ -43,8 +46,13 @@ public class Hexagons extends Game {
 	int width, height;
 	private Queue<Runnable> taskList = new ConcurrentLinkedQueue<>();
 
+	private Table notifyTable;
+	private Label notifyLabel;
+	private Timeline notifyAnimation;
+
 	public Hexagons() {
 		Instance.game = this;
+		Instance.eventBus.register(this);
 	}
 
 	@Override
@@ -59,6 +67,7 @@ public class Hexagons extends Game {
 		SoundManager.registerSound("swap", PathUtil.getPathForFile("sound/swap.ogg"), true);
 		SoundManager.registerSound("beep", PathUtil.getPathForFile("sound/beep.ogg"), true);
 		SoundManager.registerSound("click", PathUtil.getPathForFile("sound/menuclick.ogg"), true);
+		SoundManager.registerSound("change", PathUtil.getPathForFile("sound/menuhit.ogg"), true);
 		SoundManager.registerSound("levelup", PathUtil.getPathForFile("sound/levelUp.ogg"), true);
 
 		setScreen(Splash.instance);
@@ -78,6 +87,17 @@ public class Hexagons extends Game {
 		fps.setX(2);
 		stage.addActor(fps);
 
+		notifyTable = GUIHelper.getTable(new Color(0,0,0,0.8f));
+		notifyLabel = GUIHelper.text("", Color.WHITE, 20);
+		notifyLabel.setAlignment(Align.center);
+		notifyTable.add(notifyLabel).fill();
+		notifyTable.pack();
+		notifyTable.setWidth(stage.getWidth());
+		notifyTable.setPosition(0, 1f/3 * 768);
+		notifyTable.setTouchable(Touchable.disabled);
+		notifyTable.setColor(1, 1, 1, 0f);
+
+		stage.addActor(notifyTable);
 	}
 
 	@Override
@@ -121,6 +141,7 @@ public class Hexagons extends Game {
 		Instance.getAnimationManager().update(Gdx.graphics.getDeltaTime());
 		super.render();
 		if(!(getScreen() instanceof Splash)) {
+			notifyTable.setWidth(width);
 			stage.act();
 			stage.draw();
 		}
@@ -136,6 +157,39 @@ public class Hexagons extends Game {
 		}
 
 		SettingsManager.saveSettings();
+	}
+
+
+	int x, y, windowWidth, windowHeight;
+	@Subscribe
+	public void settingsChanged(SettingsChanged e) {
+		if(e.getElement().getId().equals("fullscreen")) {
+			if(Settings.instance.graphics.fullscreen){
+				x = Display.getX();
+				y = Display.getY();
+				windowWidth = Display.getWidth();
+				windowHeight = Display.getHeight();
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+			} else {
+				Gdx.graphics.setWindowedMode(windowWidth, windowHeight);
+				Display.setLocation(x, y);
+			}
+		} else if(e.getElement().getId().equals("vSync")) {
+			Display.setVSyncEnabled(Settings.instance.graphics.vSync);
+		} else if(e.getElement().getId().equals("msaa")) {
+			String sam = Settings.instance.graphics.msaa;
+			Instance.setSamples.accept(sam.equals("OFF")?0:Integer.parseInt(sam.substring(0, sam.length()-1)));
+			showNotify("You need to restart the game\nto see MSAA changes", 3f);
+		}
+	}
+
+	public void showNotify(String notify, float time) {
+		notifyLabel.setText(notify);
+		if(notifyAnimation != null) notifyAnimation.kill();
+		notifyTable.pack();
+		notifyAnimation = new Timeline().beginSequence().push(ActorAccessor.createFadeTableTween(notifyTable, 2f, 0, 1f))
+				.pushPause(time).push(ActorAccessor.createFadeTableTween(notifyTable, 2f, 0, 0f)).end();
+		notifyAnimation.start(Instance.getAnimationManager());
 	}
 
 }
