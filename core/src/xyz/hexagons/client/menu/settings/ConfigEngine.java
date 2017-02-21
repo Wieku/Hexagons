@@ -1,9 +1,6 @@
 package xyz.hexagons.client.menu.settings;
 
-import xyz.hexagons.client.menu.settings.elements.Account;
-import xyz.hexagons.client.menu.settings.elements.Combo;
-import xyz.hexagons.client.menu.settings.elements.Element;
-import xyz.hexagons.client.menu.settings.elements.Slider;
+import xyz.hexagons.client.menu.settings.elements.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -12,33 +9,28 @@ import java.util.*;
 
 public class ConfigEngine {
 
-	private static ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> elements = new ArrayList<>();
+	private static ArrayList<Element<?>> elements = new ArrayList<>();
 	private static HashMap<String, Integer> orders = new HashMap<>();
 
-
-	public static Map<String,HashMap<String,ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>>> searchMap(String phrase){
+	public static Map<String,HashMap<String,ArrayList<Element<?>>>> searchMap(String phrase){
 
 		Map<String,HashMap<String,ArrayList<Element<?>>>> map = new TreeMap<>((o1, o2) -> orders.get(o1).compareTo(orders.get(o2)));
 
 		phrase = phrase.toLowerCase();
 
-		for(xyz.hexagons.client.menu.settings.elements.Element<?> el : elements) {
+		for(Element<?> el : elements) {
 
 			if (el.match(phrase)) {
 
-				HashMap<String, ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>> sec = map.get(el.getSection());
+				HashMap<String, ArrayList<Element<?>>> sec = map.get(el.getSection());
 
-				if (sec == null) {
-					sec = new HashMap<String, ArrayList<Element<?>>>();
-					map.put(el.getSection(), sec);
-				}
+				if (sec == null)
+					map.put(el.getSection(), sec = new HashMap<>());
 
-				ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> sub = sec.get("MAIN");
+				ArrayList<Element<?>> sub = sec.get("MAIN");
 
-				if (sub == null) {
-					sub = new ArrayList<Element<?>>();
-					sec.put("MAIN", sub);
-				}
+				if (sub == null)
+					sec.put("MAIN", sub = new ArrayList<>());
 
 				sub.add(el);
 
@@ -49,40 +41,22 @@ public class ConfigEngine {
 		return map;
 	}
 
-	public static ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> searchList(String phrase){
+	public static ArrayList<Element<?>> searchList(String phrase){
+		ArrayList<Element<?>> arr = new ArrayList<>();
 
-		ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> arr = new ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>>();
-
-		phrase = phrase.toLowerCase();
-
-		for(xyz.hexagons.client.menu.settings.elements.Element<?> el : elements){
-			if(el.match(phrase)){
+		for(Element<?> el : elements)
+			if(el.match(phrase))
 				arr.add(el);
-			}
-		}
 
 		return arr;
 	}
 
-	public static ArrayList<xyz.hexagons.client.menu.settings.elements.Element<?>> getElements(){
-		return elements;
-	}
-
-	public static void addElement(xyz.hexagons.client.menu.settings.elements.Element<?> el){
-		elements.add(el);
-	}
-
 	public static int matches(String phrase){
-		phrase = phrase.toLowerCase();
 		int i=0;
 
-		for(xyz.hexagons.client.menu.settings.elements.Element<?> el : elements){
-
-			if(el.match(phrase)){
+		for(Element<?> el : elements)
+			if(el.match(phrase))
 				++i;
-			}
-
-		}
 
 		return i;
 	}
@@ -102,7 +76,7 @@ public class ConfigEngine {
 								elements.add(new Slider(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model()[0], sl.model()[1], sl.model()[2], sl.model()[3], sl.order()));
 							} else if (an instanceof Section.Switch) {
 								Section.Switch sl = (Section.Switch) an;
-								elements.add(new xyz.hexagons.client.menu.settings.elements.State(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.def(), sl.order()));
+								elements.add(new State(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.def(), sl.order()));
 							} else if (an instanceof Section.Combo) {
 								Section.Combo sl = (Section.Combo) an;
 								elements.add(new Combo(sec.name(), sec.enName(), sl.name(), sl.enName(), sl.model(), sl.def(), sl.order()));

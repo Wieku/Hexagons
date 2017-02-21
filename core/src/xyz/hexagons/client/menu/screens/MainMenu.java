@@ -65,8 +65,6 @@ public class MainMenu implements Screen {
 	private boolean escclick = false;
 
 	private float[] dfg = new float[60];
-
-	public boolean optionsShowed;
 	
 	private static float COUNT = 10f;
 	private float countDown = COUNT;
@@ -79,7 +77,7 @@ public class MainMenu implements Screen {
 	PlayerRank rank;
 
 	public MapSelect sl;
-	FpsCounter cd = new FpsCounter(60);
+
 	public MainMenu(){
 		stage = new Stage(new ExtendViewport(1024, 768));
 		stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
@@ -97,6 +95,7 @@ public class MainMenu implements Screen {
 		sTab = SettingsTab.getInstance();
 
 		stage.addListener(new InputListener() {
+
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.UP) {
@@ -120,20 +119,15 @@ public class MainMenu implements Screen {
 				}
 				
 				if(keycode == Keys.ENTER){
-					if(currentIndex == 0){
+					if(currentIndex == 0)
 						Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps))));
-					}
 
-					if(currentIndex == 1) {
-						optionsShowed = true;
+					if(currentIndex == 1 && !sTab.isShowed())
+						sTab.show();
 
-						if(!sTab.isShowed())
-							sTab.show();
-					}
-
-					if(currentIndex == 2){
+					if(currentIndex == 2)
 						Gdx.app.exit();
-					}
+
 				}
 
 				if(keycode == Keys.ESCAPE || keycode == Keys.BACK)
@@ -147,7 +141,7 @@ public class MainMenu implements Screen {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if(keycode == Keys.ESCAPE || keycode == Keys.BACK){
-					if(escclick == true) {
+					if(escclick) {
 						Gdx.app.exit();
 					}
 					escclick = false;
@@ -162,21 +156,16 @@ public class MainMenu implements Screen {
 					if(list.get(i).isPressed()) {
 						selectIndex(i);
 						list.get(i).getClickListener().touchUp(event, x, y, pointer, button);
-						if(currentIndex == 0){
-							Instance.scheduleOnMain.accept(()->Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps)))));
-						}
-						
-						if(currentIndex == 1) {
-							optionsShowed = true;
 
-							if(!sTab.isShowed())
+						if(currentIndex == 0)
+							Instance.scheduleOnMain.accept(()->Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps)))));
+						
+						if(currentIndex == 1 && !sTab.isShowed())
 								sTab.show();
-						}
 						
-						if(currentIndex == 2){
+						if(currentIndex == 2)
 							Gdx.app.exit();
-						}
-						
+
 					}
 				}
 				activity = true;
@@ -187,6 +176,12 @@ public class MainMenu implements Screen {
 			public boolean mouseMoved(InputEvent event, float x, float y) {
 				activity = true;
 				return super.mouseMoved(event, x, y);
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y, int pointer) {
+				activity = true;
+				super.touchDragged(event, x, y, pointer);
 			}
 		});
 
@@ -221,11 +216,9 @@ public class MainMenu implements Screen {
 		stage.addActor(beatIHigh);
 		stage.addActor(beatILow);
 
+		music = GUIHelper.getTable(new Color(0.1f, 0.1f, 0.1f, 0.5f));
 
-		music = new Table();
-		music.setBackground(GUIHelper.getTxRegion(new Color(0.1f, 0.1f, 0.1f, 0.5f)));
-
-		music.add(title = new Label("", GUIHelper.getLabelStyle(new Color(0xa0a0a0ff), 12))).pad(5).row();
+		music.add(title = GUIHelper.text("", new Color(0xa0a0a0ff), 12)).pad(5).row();
 		//music.add(bar = new ProgressBar(0f, 100f, 1f, false, GUIHelper.getProgressBarStyle(Color.DARK_GRAY, new Color(0x02eafaff), 10)));
 		music.pack();
 
@@ -302,7 +295,7 @@ public class MainMenu implements Screen {
 	private Timeline beatHigh;
 	private Timeline beatLow;
 	private float delta0 = 0;
-	private float delta1 = 0;
+
 
 	private boolean lo = false;
 	
@@ -318,12 +311,11 @@ public class MainMenu implements Screen {
 		camera.rotate(CurrentMap.gameProperties.rotationSpeed * 360f * delta);
 		camera.update(delta);
 		if((delta0 += delta)>=1f/60) {
-			cd.update(delta);
-			
+
 			darknessGlider.update(1f/60);
 			alphaGlider.update(1f/60);
 			
-			CurrentMap.gameProperties.walls.update(delta0);
+			CurrentMap.gameProperties.walls.update(1f/60);
 			CurrentMap.gameProperties.skew = 1f;
 			CurrentMap.setMinSkew(0.9999f);
 			CurrentMap.setMaxSkew(1);
@@ -347,8 +339,8 @@ public class MainMenu implements Screen {
 					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50 * (1.5f/darknessGlider.getValue()), dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
 				}
 			} else title.setText("No maps available");
-			music.pack();
 
+			music.pack();
 			music.setPosition(stage.getWidth() - music.getWidth(), stage.getHeight() - music.getHeight());
 			
 			boolean cd = false;
@@ -359,38 +351,27 @@ public class MainMenu implements Screen {
 				}
 			}
 			if(!cd && Gdx.app.getType() == ApplicationType.Android) selectIndex(-1);
-			if(MenuPlaylist.getCurrentPlayer() != null) {
-				if(!lo && MenuPlaylist.getCurrentPlayer().isOnset()/*beatLow == null || beatLow.isFinished()*/){
-					lo=true;
-					if(beatLow != null) beatLow.kill();
-					beatLow = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.1f*(1.025f/beatILow.getScaleX()), 1.025f, 0))
-							.push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.2f, 1f, 0)).end();
-					beatLow.start(Instance.getAnimationManager());
 
-					if(beatHigh != null) beatHigh.kill();
+			boolean isNull = MenuPlaylist.getCurrentPlayer() == null;
+			if((!isNull && !lo && MenuPlaylist.getCurrentPlayer().isOnset()) || (isNull && (beatLow == null || beatLow.isFinished()))){
+				lo=true;
 
-					beatHigh = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.1f/2*(0.96f/ beatIHigh.getScaleX()), 0.96f, 0))
-							.push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.2f, 1f, 0)).end();
-					beatHigh.start(Instance.getAnimationManager());
+				float duration = (MenuPlaylist.getCurrentPlayer() != null?0.2f:1f);
 
-				}
+				if(beatLow != null) beatLow.kill();
+				beatLow = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.1f*(1.025f/beatILow.getScaleX()), 1.025f, 0))
+						.push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, duration, 1f, 0)).end();
+				beatLow.start(Instance.getAnimationManager());
 
-				if(!MenuPlaylist.getCurrentPlayer().isOnset()) lo = false;
+				if(beatHigh != null) beatHigh.kill();
 
-			} else {
-				if(beatLow == null || beatLow.isFinished()) {
-					if(beatLow != null) beatLow.kill();
-					beatLow = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 0.1f*(1.025f/beatILow.getScaleX()), 1.025f, 0))
-							.push(ActorAccessor.createSineTween(beatILow, ActorAccessor.SIZEC, 1f, 1f, 0)).end();
-					beatLow.start(Instance.getAnimationManager());
+				beatHigh = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.1f/2*(0.96f/ beatIHigh.getScaleX()), 0.96f, 0))
+						.push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, duration, 1f, 0)).end();
+				beatHigh.start(Instance.getAnimationManager());
 
-					if(beatHigh != null) beatHigh.kill();
-
-					beatHigh = new Timeline().beginSequence().push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 0.1f/2*(0.96f/ beatIHigh.getScaleX()), 0.96f, 0))
-							.push(ActorAccessor.createSineTween(beatIHigh, ActorAccessor.SIZEC, 1f, 1f, 0)).end();
-					beatHigh.start(Instance.getAnimationManager());
-				}
 			}
+
+			if(isNull || !MenuPlaylist.getCurrentPlayer().isOnset()) lo = false;
 
 			countDown -= 1f/60;
 			
@@ -405,7 +386,6 @@ public class MainMenu implements Screen {
 						parr.push(ActorAccessor.createFadeTween(actor, 5f, 0f, 0f));
 				}
 				uiAnimation = parr.end();
-
 				uiAnimation.start(Instance.getAnimationManager());
 				
 				visible = false;
@@ -428,7 +408,6 @@ public class MainMenu implements Screen {
 							parr.push(ActorAccessor.createFadeTween(actor, 1f*(1f-actor.getColor().a), 0f, 1f));
 					}
 					uiAnimation = parr.end();
-
 					uiAnimation.start(Instance.getAnimationManager());
 					
 					darknessGlider.glide(1.5f, (1f - stage.getRoot().getColor().a));
@@ -444,11 +423,7 @@ public class MainMenu implements Screen {
 			
 			rank.setPosition(stage.getWidth() - 300, stage.getHeight() - music.getHeight() - 5 - rank.getHeight());
 			
-			delta0 = 0;
-		}
-
-		if((delta1 += delta)>=1f) {
-			delta1=0;
+			delta0 -= 1f/60;
 		}
 
 		blurEffect.bind();
@@ -484,15 +459,12 @@ public class MainMenu implements Screen {
 		stage.act(delta);
 		stage.draw();
 		
-		//stage2.act(delta);
-		//stage2.draw();
-		
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		//stage2.getViewport().update(width, height, true);
+
 		version.setPosition(5, stage.getHeight() - version.getHeight() - 7);
 		copyright.setPosition(stage.getWidth() - copyright.getWidth() - 5, 5);
 		
@@ -514,25 +486,17 @@ public class MainMenu implements Screen {
 
 	private void selectIndex(int index){
 		if(currentIndex == index) return;
-		
-		if(index == -1) {
-			currentIndex = index;
-			for (int i = 0; i < list.size(); i++) {
-				list.get(i).select(false);
-				float x=(i==0?stage.getWidth() - 328:i==1?stage.getWidth() - 394:stage.getWidth() - 460);
-				
-				ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(i), ActorAccessor.SLIDEX, 0.5f, x , 0f));
-			}
-			return;
-		} else if (currentIndex != -1) {
-			list.get(currentIndex).select(false);
-			float x=(currentIndex==0?stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 
-			ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x , 0f));
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).select(i==index);
+			float x=(i==0?stage.getWidth() - 328:i==1?stage.getWidth() - 394:stage.getWidth() - 460);
+			ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(i), ActorAccessor.SLIDEX, 0.5f, x , 0f));
 		}
-		currentIndex = index;
+
+		if((currentIndex = index) == -1) return;
+
 		SoundManager.playSound("click");
-		list.get(currentIndex).select(true);
+
 		float x = (currentIndex == 0 ? stage.getWidth() - 328:currentIndex==1?stage.getWidth() - 394:stage.getWidth() - 460);
 		ActorAccessor.startTween(ActorAccessor.createCircleOutTween(list.get(currentIndex), ActorAccessor.SLIDEX, 0.5f, x - 20, 0f));
 	}
