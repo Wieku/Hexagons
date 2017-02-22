@@ -2,6 +2,7 @@ package xyz.hexagons.client.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,18 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.google.common.io.CharStreams;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.Version;
 import xyz.hexagons.client.api.CurrentMap;
+import xyz.hexagons.client.api.MapEventHandler;
 import xyz.hexagons.client.audio.MenuPlaylist;
 import xyz.hexagons.client.audio.SoundManager;
 import xyz.hexagons.client.engine.camera.SkewCamera;
@@ -29,20 +22,13 @@ import xyz.hexagons.client.menu.screens.MapSelect;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.engine.render.MapRenderer;
 import xyz.hexagons.client.engine.render.ObjRender;
-//import xyz.hexagons.client.engine.render.Renderer;
 import xyz.hexagons.client.menu.widgets.HProgressBar;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.rankserv.RankApi;
 import xyz.hexagons.client.utils.GUIHelper;
 import xyz.hexagons.client.utils.Utils;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -105,6 +91,7 @@ public class Game implements Screen {
 		stage.addActor(next);
 
 		MenuPlaylist.setLooping(true);
+		Gdx.input.setInputProcessor(new GameInputProcessor(map.script.getEventHandlers()));
 		start(map.info.startTimes[0]);
 	}
 
@@ -168,7 +155,7 @@ public class Game implements Screen {
 		MenuPlaylist.play();
 		MenuPlaylist.setPosition(startTime);
 
-		map.script.onInit();
+		map.script.init();
 		map.script.initColors();
 		map.script.initEvents();
 
@@ -231,7 +218,8 @@ public class Game implements Screen {
 				restart();
 			}
 
-			if((Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) && !escClick){
+			if((Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) && !escClick) {
+				Gdx.input.setInputProcessor(null);
 				Instance.game.setScreen(MapSelect.getInstance());
 			}
 
@@ -401,6 +389,60 @@ public class Game implements Screen {
 		delta5 -= delta * 60;
 		delta6 -= delta * 60;
 
+	}
+
+	private class GameInputProcessor implements InputProcessor {
+		private final MapEventHandler eventHandler;
+
+		public GameInputProcessor(MapEventHandler eventHandler) {
+			this.eventHandler = eventHandler;
+		}
+
+		@Override
+		public boolean keyDown(int keycode) {
+			eventHandler.keyDown(keycode);
+			return false;
+		}
+
+		@Override
+		public boolean keyUp(int keycode) {
+			eventHandler.keyUp(keycode);
+			return false;
+		}
+
+		@Override
+		public boolean keyTyped(char character) {
+			return false;
+		}
+
+		@Override
+		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+			eventHandler.mouseDown((float) screenX / (float)  Gdx.graphics.getWidth(), (float) screenY / (float)  Gdx.graphics.getHeight(), pointer, button);
+			return false;
+		}
+
+		@Override
+		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			eventHandler.mouseUp((float) screenX / (float)  Gdx.graphics.getWidth(), (float) screenY / (float)  Gdx.graphics.getHeight(), pointer, button);
+			return false;
+		}
+
+		@Override
+		public boolean touchDragged(int screenX, int screenY, int pointer) {
+			eventHandler.mouseMove((float) screenX / (float)  Gdx.graphics.getWidth(), (float) screenY / (float)  Gdx.graphics.getHeight(), pointer);
+			return false;
+		}
+
+		@Override
+		public boolean mouseMoved(int screenX, int screenY) {
+			eventHandler.mouseMove((float) screenX / (float)  Gdx.graphics.getWidth(), (float) screenY / (float)  Gdx.graphics.getHeight(), 0);
+			return false;
+		}
+
+		@Override
+		public boolean scrolled(int amount) {
+			return false;
+		}
 	}
 
 }

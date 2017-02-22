@@ -18,6 +18,8 @@ site/project/target/
 site/server/logs/
 site/server/target/
 site/server/test/
+site/jsUtils/target/
+site/mapRegister/target/
 site/target/
 core/.classpath
 launcher/.hexagons/

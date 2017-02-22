@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.luaj.vm2.*;
 import xyz.hexagons.client.Instance;
+import xyz.hexagons.client.engine.lua.LuaMapScript;
 import xyz.hexagons.client.utils.Holder;
 import xyz.hexagons.client.utils.LFAgonisticInputStream;
 
@@ -130,7 +131,7 @@ public class MapLoader {
 
 				File data = new File(new File(DATA_PATH), m.uuid + ".hxd");
 
-				maps.add(new Map(new xyz.hexagons.client.engine.lua.LuaMap(callbacks), m, mapFile, data, rankedInfo));
+				maps.add(new Map(new LuaMapScript(callbacks), m, mapFile, data, rankedInfo));
 
 				System.out.println("Map " + m.name + " Has been loaded!");
 			}

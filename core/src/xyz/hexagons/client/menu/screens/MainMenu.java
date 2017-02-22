@@ -17,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.google.common.eventbus.Subscribe;
-import me.wieku.animation.animations.Animation;
 import me.wieku.animation.timeline.AnimationParallel;
 import me.wieku.animation.timeline.Timeline;
 import xyz.hexagons.client.Instance;
@@ -272,7 +271,7 @@ public class MainMenu implements Screen {
 			try {
 				CurrentMap.reset();
 				MenuPlaylist.getCurrent().script.initColors();
-				MenuPlaylist.getCurrent().script.onInit();
+				MenuPlaylist.getCurrent().script.init();
 			} catch (Exception e) {
 				System.err.println("MAP INIT FAILED:");
 				e.printStackTrace();
@@ -327,7 +326,7 @@ public class MainMenu implements Screen {
 				if(!Instance.maps.isEmpty()){
 					CurrentMap.reset();
 					MenuPlaylist.getCurrent().script.initColors();
-					MenuPlaylist.getCurrent().script.onInit();
+					MenuPlaylist.getCurrent().script.init();
 					camera.reset();
 				}
 			}

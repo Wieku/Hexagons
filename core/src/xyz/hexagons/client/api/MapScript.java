@@ -1,15 +1,14 @@
 package xyz.hexagons.client.api;
 
-import java.util.Random;
-
 /**
  * @author Sebastian Krajewski on 21.03.15.
  */
 public interface MapScript {
-	public void onInit();
-	public void initEvents();
-	public void nextLevel(int levelNum);
-	public void nextPattern();
-	public void update(float delta);
-	public void initColors();
+	void init();
+	void nextLevel(int levelNum); //TODO: Idea says it may not be called
+	void nextPattern();
+	void update(float delta);
+	void initColors();
+	void initEvents();
+	MapEventHandler getEventHandlers();
 }
