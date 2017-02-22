@@ -18,6 +18,8 @@ GET     /login/google               controllers.Account.loginGoogle
 GET     /login/steam                controllers.Account.loginSteam
 GET     /login/rankserv/:token/*n   controllers.Account.loginRankserv(token: String, n: String)
 
+GET     /creator/map/register       controllers.Creator.mapRegister
+GET     /creator/api/map/info       controllers.Creator.getMapInfo(uuid: java.util.UUID)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

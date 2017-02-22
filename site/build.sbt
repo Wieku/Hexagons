@@ -13,7 +13,7 @@ def commonSettings(pname: String) = Seq(
 //////////////////////////
 // SERVER
 
-lazy val clients = Seq(client)
+lazy val clients = Seq(client, mapRegister)
 lazy val server = (project in file("server")).settings(commonSettings("server"): _*).settings(
   scalaJSProjects := clients,
   pipelineStages := Seq(scalaJSProd, gzip),
@@ -22,10 +22,10 @@ lazy val server = (project in file("server")).settings(commonSettings("server"):
   libraryDependencies ++= Seq(
   	"com.vmunier" %% "play-scalajs-scripts" % "0.3.0",
     "org.webjars" % "jquery" % "1.11.1",
+    "org.webjars" % "jszip" % "2.4.0",
     "com.nimbusds" % "nimbus-jose-jwt" % "4.23",
     "com.google.guava" % "guava" % "19.0",
     "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
-    //"me.chrons" %% "boopickle" % "1.1.0",
     cache,
     ws,
     jdbc,
@@ -49,7 +49,31 @@ lazy val client = (project in file("client")).settings(commonSettings("client"):
   emitSourceMaps in fullOptJS := development,
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.8.0"
-    //"me.chrons" %%% "boopickle" % "1.1.0"
+  )
+).enablePlugins(ScalaJSPlugin, ScalaJSPlay)
+  .dependsOn(commonJs)
+
+//////////////////////////
+// CREATOR - MAP
+
+lazy val mapRegister = (project in file("mapRegister")).settings(commonSettings("mapRegister"): _*).settings(
+  persistLauncher := true,
+  persistLauncher in Test := false,
+  emitSourceMaps in fullOptJS := development,
+  libraryDependencies ++= Seq(
+    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+  )
+).enablePlugins(ScalaJSPlugin, ScalaJSPlay)
+  .dependsOn(commonJs)
+  .dependsOn(jsUtils)
+
+//////////////////////////
+// JSUtil
+
+lazy val jsUtils = (project in file("jsUtils")).settings(commonSettings("jsUtils"): _*).settings(
+  emitSourceMaps in fullOptJS := development,
+  libraryDependencies ++= Seq(
+    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
   )
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .dependsOn(commonJs)

@@ -1,0 +1,28 @@
+@(user: models.Profile)
+
+@usermain(user.name + " - Hexagons", user.ownName) {
+    <script>
+        config = {
+            uid: @user.id
+        };
+    </script>
+    <div class="user-dark"></div>
+    <div class="profile-root">
+        <div class="register-root">
+            <p class="register-head">Register a map</p>
+            <div class="register-content">
+                <p>Map zip file:</p>
+                <div class="register-input register-button-bg">
+                    <form>
+                        <input type="file" id="register-file" class="register-file" accept="application/zip,application/x-zip,application/x-zip-compressed">
+                        <label for="register-file" class="register-file-label">Choose level .zip</label>
+                    </form>
+                </div>
+                <p><input class="register-button" type="submit" value="Next!"/></p>
+            </div>
+        </div>
+    </div>
+    <script src="@routes.Assets.versioned("lib/jszip/jszip.js")"></script>
+    @playscalajs.html.selectScript("mapRegister")
+    @playscalajs.html.launcher("mapRegister")
+}

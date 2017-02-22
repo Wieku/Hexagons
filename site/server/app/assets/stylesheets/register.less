@@ -41,3 +41,34 @@
         height: 256px;
     }
 }
+
+// Creator only
+
+.register-file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.register-file + label {
+    border: none;
+    color: #a0a0a0;
+    font-size: 1.5em;
+    padding: 0.2em 0.5em;
+    cursor: pointer;
+    background: #202020;
+    display: inline-block;
+    border-bottom: solid 1px #02eafa;
+}
+
+.register-file:focus + label,
+.register-file + label:hover {
+
+}
+
+.register-bright {
+    color: #f0f0f0;
+}

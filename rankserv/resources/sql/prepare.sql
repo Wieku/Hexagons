@@ -23,7 +23,9 @@ CREATE TABLE IF NOT EXISTS user_auth( user_id INTEGER,
 CREATE TABLE IF NOT EXISTS maps( id SERIAL,
                                  uuid UUID,
                                  name VARCHAR(128),
-                                 PRIMARY KEY(id));
+                                 owner INTEGER,
+                                 PRIMARY KEY(id),
+                                 FOREIGN KEY(owner) REFERENCES users(id));
 
 CREATE TABLE IF NOT EXISTS ranked_maps( id SERIAL,
                                         map_id INTEGER,
