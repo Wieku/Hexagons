@@ -60,6 +60,8 @@ public class GameProperties extends Properties {
     public float colorPulseInc = 1f;
     public int colorOffset = 0;
     public float colorSwitch = 1f;
+    public int colorPingPongF = 0;
+    public int colorPingPongR = 0;
     public HColor walls = new HColor(1, 1, 1, 1);
     public DynamicColor shadow = new DynamicColor() {
         @Override
@@ -131,6 +133,8 @@ public class GameProperties extends Properties {
         registerFloat("color.pulseIncrement", f -> colorPulseInc = f, () -> LuaValue.valueOf(colorPulseInc));
         registerInteger("color.offset", i -> colorOffset = i, () -> LuaValue.valueOf(colorOffset));
         registerFloat("color.switch", f -> colorSwitch = f, () -> LuaValue.valueOf(colorSwitch));
+        registerInteger("color.pingPongF", i -> colorPingPongF = i, () -> LuaValue.valueOf(colorPingPongF));
+        registerInteger("color.pingPongR", i -> colorPingPongR = i, () -> LuaValue.valueOf(colorPingPongR));
         registerHColor("color.walls", c -> walls = c, () -> walls);
         registerDynamicColor("color.shadow", c -> shadow = c, () -> shadow);
 
