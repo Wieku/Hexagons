@@ -99,7 +99,7 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 			case FADEGROUP:
 				Group group = (Group) target;
 				Color colt = group.getColor();
-				group.setColor(colt.r, colt.g, colt.b, newValues[0]);
+				//group.setColor(colt.r, colt.g, colt.b, newValues[0]);
 				for (Actor child : group.getChildren()) {
 					colt = child.getColor();
 					child.setColor(colt.r, colt.g, colt.b, newValues[0]);

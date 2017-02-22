@@ -1,10 +1,8 @@
-package xyz.hexagons.client.menu.settings;
+package xyz.hexagons.client.menu.settings.elements;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -18,10 +16,9 @@ import xyz.hexagons.client.utils.GUIHelper;
 public class Slider extends Element<Integer> {
 
 
-	Label valueLabel;
-	String select = "";
-	int value, min, max, jump;
-	com.badlogic.gdx.scenes.scene2d.ui.Slider slider;
+	private Label valueLabel;
+	private int value, min, max, jump;
+	private com.badlogic.gdx.scenes.scene2d.ui.Slider slider;
 
 
 	public Slider(String section, String sectionI18n, String name, String nameI18n, int min, int max, int jump, int def, int order){
@@ -33,8 +30,6 @@ public class Slider extends Element<Integer> {
 
 		value = loadValue();
 		if(value < min || value > max) value = def;
-
-		//System.out.println(value);
 
 		slider = new com.badlogic.gdx.scenes.scene2d.ui.Slider(min, max, jump, false, GUIHelper.getSliderStyle());
 		InputListener stopTouchDown = new InputListener() {
@@ -51,44 +46,25 @@ public class Slider extends Element<Integer> {
 		slider.addListener(stopTouchDown);
 
 		slider.setValue(value);
-		add(slider).fillX().padRight(5);
+
 		valueLabel = new Label(Integer.toString(value), GUIHelper.getLabelStyle(Color.WHITE, 10));
 		valueLabel.setAlignment(Align.center);
-		add(valueLabel).width(45).padRight(2);
+		add(slider).width(512 - 13 - 10 - 2 - 2 - 5 - nameLabel.getWidth() - 45);
+		add(valueLabel).width(45).padLeft(5).padRight(2).right();
 
 		slider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				value = (int) slider.getValue();
+				SoundManager.playSound("change");
 				writeValue(value);
 				valueLabel.setText(Integer.toString(value));
 			}
 		});
 	}
 
-	public void action(){}
-
 	public void onEvent(InputEvent e){
-		if(e.getType() == Type.keyTyped){
 
-			if(e.getKeyCode() == Keys.LEFT){
-				value = Math.max(min, value - jump);
-				valueLabel.setText(Integer.toString(value));
-				writeValue(value);
-				SoundManager.playSound("beep");
-			}
-
-			if(e.getKeyCode() == Keys.RIGHT){
-				value = Math.min(max, value + jump);
-				valueLabel.setText(Integer.toString(value));
-				writeValue(value);
-				SoundManager.playSound("beep");
-			}
-		}
 	}
 
-	public void select(boolean state){
-		select = (state?">":"");
-		nameLabel.setText(select+nameI18n);
-	}
 }

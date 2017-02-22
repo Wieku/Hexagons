@@ -80,6 +80,7 @@ public class OpenALPlayer extends OpenALMusic {
 	}
 	
 	float length;
+	boolean stop = true;
 	
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
@@ -127,11 +128,14 @@ public class OpenALPlayer extends OpenALMusic {
 			alSourcePlay(sourceID);
 			isPlaying = true;
 		}
+		stop = false;
 	}
 	
 	public void stop () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
+		if (stop) return;
+		stop = true;
 		//audio.music.removeValue(this, true);
 		reset();
 		//audio.freeSource(sourceID);
@@ -302,7 +306,7 @@ public class OpenALPlayer extends OpenALMusic {
 		stop();
 		if (audio.noDevice) return;
 		if (buffers == null) return;
-		alSourceUnqueueBuffers(sourceID, buffers);
+		//alSourceUnqueueBuffers(sourceID, buffers);
 		//audio.freeSource(sourceID);
 		//sourceID=-1;
 		//alDeleteBuffers(buffers);

@@ -15,7 +15,17 @@ public class Settings implements Serializable {
 	public GamePlay gameplay = new GamePlay();
 	public Ranking ranking = new Ranking();
 
-	@Section(name="graphics", enName="Graphics", order=0)
+	@Section(name="ranking", enName="Account", order=0)
+	public class Ranking {
+
+		@Section.Account(name="login", enName="Login", order=0)
+		public transient String acc;
+
+		public String server = "https://rankserv.hexagons.xyz";
+		public String authToken = null;
+	}
+
+	@Section(name="graphics", enName="Graphics", order=1)
 	public class Graphics {
 		@Section.Switch(name="vSync", enName="VSync", def = false, order=0)
 		public boolean vSync = false;
@@ -26,13 +36,21 @@ public class Settings implements Serializable {
 		@Section.Switch(name="fixedratio", enName="Fixed aspect ratio (4:3)", def = false, order=2)
 		public boolean fixedratio = false;
 
-		@Section.Slider(name="msaa", enName="MSAA", model={0, 4, 1, 4}, order=3)
-		public int msaa = 4;
+		@Section.Combo(name="msaa", enName="MSAA", model={"OFF", "2x", "4x", "8x", "16x"}, def = "4x", order=3)
+		public String msaa = "4x";
 	}
 
+	@Section(name="gameplay", enName="Gameplay", order=2)
+	public class GamePlay {
+		@Section.Switch(name="invincibility", enName="Invincibility", def = false, order=0)
+		public boolean invincibility = false;
+
+		@Section.Switch(name="hideUi", enName="Hide UI when in game", def = false, order=1)
+		public boolean hideUi = false;
+	}
 
 	//@Slider(0, 100, 1, 100, "Sound", "General", "Volume", e -> doSomething())
-	@Section(name="audio", enName="Audio", order=1)
+	@Section(name="audio", enName="Audio", order=3)
 	public class Audio {
 		@Section.Slider(name="masterVolume", enName="Master Volume", model={0, 100, 5, 100}, order=0)
 		public int masterVolume = 100;
@@ -47,19 +65,4 @@ public class Settings implements Serializable {
 		public int menuMusicVolume = 100;
 	}
 
-	@Section(name="gameplay", enName="Gameplay", order=3)
-	public class GamePlay {
-		@Section.Switch(name="invincibility", enName="Invincibility", def = false, order=0)
-		public boolean invincibility = false;
-
-		@Section.Switch(name="hideUi", enName="Hide UI when in game", def = false, order=1)
-		public boolean hideUi = false;
-	}
-
-	@Section(name="ranking", enName="Ranking", order=4)
-	public class Ranking {
-		public String server = "https://rankserv.hexagons.xyz";
-
-		public String authToken = null;
-	}
 }

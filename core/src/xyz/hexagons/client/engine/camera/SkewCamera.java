@@ -50,7 +50,10 @@ public class SkewCamera extends PerspectiveCamera {
 			rumbleZ = 0;
 		}
 
-		position.set(0, 1200f, 0).rotate(Vector3.X, MathUtils.clamp(50f * CurrentMap.gameProperties.skew, 0.00001f, 50f)).rotate(Vector3.Y, currentRotation);
+		if(CurrentMap.gameProperties.skew>=0f)
+			position.set(0, 1200f, 0).rotate(Vector3.X, MathUtils.clamp(50f * CurrentMap.gameProperties.skew, 0.00001f, 180f)).rotate(Vector3.Y, currentRotation);
+		else
+			position.set(0, 1200f, 0).rotate(Vector3.X, MathUtils.clamp(50f * CurrentMap.gameProperties.skew, -180f, -0.00001f)).rotate(Vector3.Y, currentRotation);
 
 		lookAt(0, 0, 0);
 		up.set( 0, (CurrentMap.gameProperties.skew >= 0 ? 1 : -1), 0);

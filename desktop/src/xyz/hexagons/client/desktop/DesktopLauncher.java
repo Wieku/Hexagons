@@ -53,7 +53,13 @@ public class DesktopLauncher {
 		config.title = "Hexagons! " + Version.version;
 		config.foregroundFPS = 120;
 		config.addIcon("assets/hexlogo.png", Files.FileType.Internal);
-		config.samples = Settings.instance.graphics.msaa;
+
+		String sam = Settings.instance.graphics.msaa;
+		if(!sam.contains("x") && !sam.equals("OFF")) Settings.instance.graphics.msaa = sam += "x";
+		config.samples = (sam.equals("OFF")?0:Integer.parseInt(sam.substring(0, sam.length()-1)));
+
+		Instance.setSamples = samples -> config.samples = samples;
+
 		config.vSyncEnabled = Settings.instance.graphics.vSync;
 		app = new LwjglApplication(new Hexagons(), config);
 	}

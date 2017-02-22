@@ -1,10 +1,13 @@
-package xyz.hexagons.client.menu.settings;
+package xyz.hexagons.client.menu.settings.elements;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import xyz.hexagons.client.Instance;
+import xyz.hexagons.client.menu.settings.Settings;
+import xyz.hexagons.client.menu.settings.event.SettingsChanged;
 import xyz.hexagons.client.utils.GUIHelper;
 
 import java.lang.reflect.Field;
@@ -55,9 +58,11 @@ public abstract class Element<T> extends Table {
 				}
 			}
 		}
+
 		left();
 		nameLabel = new Label(nameI18n, GUIHelper.getLabelStyle(Color.WHITE, 10));
-		add(nameLabel).left().padLeft(2).expandX();
+		nameLabel.pack();
+		add(nameLabel).left().padLeft(2).padRight(10);
 	}
 
 	@Override
@@ -71,11 +76,13 @@ public abstract class Element<T> extends Table {
 	public void writeValue(T value) {
 		try {
 			valReflection.set(fieldParent, value);
+			Instance.eventBus.post((SettingsChanged) () -> Element.this);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			throw new IllegalStateException(e);
 		}
 	}
+
 	public T loadValue() {
 		try {
 			return (T)valReflection.get(fieldParent);
@@ -87,6 +94,10 @@ public abstract class Element<T> extends Table {
 
 	public String getSection() {
 		return sectionI18n;
+	}
+
+	public String getId() {
+		return name;
 	}
 
 	public String getName() {
@@ -102,6 +113,4 @@ public abstract class Element<T> extends Table {
 		return sectionI18n.toLowerCase().contains(phrase) || nameI18n.toLowerCase().contains(phrase);
 	}
 
-	public abstract void action();
-	public abstract void select(boolean state);
 }

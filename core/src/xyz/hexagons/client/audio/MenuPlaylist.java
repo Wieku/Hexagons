@@ -4,10 +4,12 @@ package xyz.hexagons.client.audio;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.google.common.eventbus.Subscribe;
 import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.menu.settings.Settings;
 import xyz.hexagons.client.map.Map;
 import xyz.hexagons.client.map.MapJson;
+import xyz.hexagons.client.menu.settings.event.SettingsChanged;
 import xyz.hexagons.client.resources.ArchiveFileHandle;
 
 
@@ -208,5 +210,16 @@ public class MenuPlaylist {
 
 	public static boolean isPaused() {
 		return player == null || player.isPaused();
+	}
+
+	@Subscribe
+	public void onVolumeChange(SettingsChanged e) {
+		if(e.getElement().getId().contains("Volume")) {
+			MenuPlaylist.setVolume((float) Settings.instance.audio.masterVolume * (float) Settings.instance.audio.menuMusicVolume / 10000f);
+		}
+	}
+
+	static {
+		Instance.eventBus.register(new MenuPlaylist());
 	}
 }

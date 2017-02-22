@@ -36,6 +36,7 @@ public class Instance {
     public static boolean noupdate = false;
 
     public static Consumer<Integer> setForegroundFps = null;
+    public static Consumer<Integer> setSamples = null;
 
     public static AccountManager accountManager = null;
     public static AccountManager.Account currentAccount = null;
@@ -43,7 +44,7 @@ public class Instance {
 
     public static Function<String, File> cacheFile; //Android only for now
 
-    public static AnimationManager getAnimationManager() {
+	public static AnimationManager getAnimationManager() {
         return animationManager;
     }
 }

@@ -308,12 +308,14 @@ public class Game implements Screen {
 
 	private float delta2;
 	private void updateSkew(float delta) {
-		inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.gameProperties.skewTime ? -1 : inc));
-		delta2 += delta * inc;
-		delta2 = MathUtils.clamp(delta2, 0, CurrentMap.gameProperties.skewTime);
+		if(CurrentMap.gameProperties.skewTime > 0f) {
+			inc = (delta2 == 0 ? 1 : (delta2 == CurrentMap.gameProperties.skewTime ? -1 : inc));
+			delta2 += delta * inc;
+			delta2 = MathUtils.clamp(delta2, 0, CurrentMap.gameProperties.skewTime);
 
-		float percent = delta2 / CurrentMap.gameProperties.skewTime;
-		CurrentMap.gameProperties.skew = CurrentMap.gameProperties.minSkew + (CurrentMap.gameProperties.maxSkew - CurrentMap.gameProperties.minSkew) * percent;
+			float percent = delta2 / CurrentMap.gameProperties.skewTime;
+			CurrentMap.gameProperties.skew = CurrentMap.gameProperties.minSkew + (CurrentMap.gameProperties.maxSkew - CurrentMap.gameProperties.minSkew) * percent;
+		}
 	}
 
 	private float delta3;

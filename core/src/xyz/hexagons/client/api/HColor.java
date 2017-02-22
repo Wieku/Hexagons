@@ -85,21 +85,22 @@ public class HColor {
 
 	float delta0;
 	float percent;
+	int incdir = 1;
 	public void update (float delta) {
 
 		float gr = fr, gg = fg, gb = fb;
 
 		if(pulse){
 
-			delta0 += delta * 60 * CurrentMap.gameProperties.colorPulseInc;
+			delta0 += delta * 60 * CurrentMap.gameProperties.colorPulseInc * incdir;
 
 			if(delta0 < CurrentMap.gameProperties.colorPulseMin){
 				delta0 = CurrentMap.gameProperties.colorPulseMin;
-				CurrentMap.gameProperties.colorPulseInc *= -1f;
+				incdir = 1;
 			}
 			if(delta0 > CurrentMap.gameProperties.colorPulseMax){
 				delta0 = CurrentMap.gameProperties.colorPulseMax;
-				CurrentMap.gameProperties.colorPulseInc *= -1f;
+				incdir = -1;
 			}
 
 			percent = delta0 / CurrentMap.gameProperties.colorPulseMax;

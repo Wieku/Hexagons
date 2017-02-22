@@ -46,16 +46,33 @@ public class MapRenderer {
 
 
 	private float delta1;
+	private int offset = 0;
+	private int offsetDir = 1;
 	public void renderBackground(ShapeRenderer renderer, float delta, boolean shadows, int shadLev) {
 
 		for(HColor o: CurrentMap.gameProperties.backgroundColors) o.update(delta);
 
 		if((delta1 += delta) >= CurrentMap.gameProperties.colorSwitch){
 
-			++CurrentMap.gameProperties.colorOffset;
+			CurrentMap.gameProperties.colorOffset += offsetDir;
+			offset += offsetDir;
+
+			if (CurrentMap.gameProperties.colorPingPongR > 0 && offset == -CurrentMap.gameProperties.colorPingPongR) {
+				offsetDir = 1;
+				offset = 0;
+			}
+
+
+			if(CurrentMap.gameProperties.colorPingPongF > 0 && offset == CurrentMap.gameProperties.colorPingPongF) {
+				offsetDir = -1;
+				offset = 0;
+			}
+
 
 			if(CurrentMap.gameProperties.colorOffset == CurrentMap.gameProperties.backgroundColors.size()){
 				CurrentMap.gameProperties.colorOffset = 0;
+			} else if (CurrentMap.gameProperties.colorOffset < 0) {
+				CurrentMap.gameProperties.colorOffset = CurrentMap.gameProperties.backgroundColors.size() - 1;
 			}
 
 			delta1 = 0;

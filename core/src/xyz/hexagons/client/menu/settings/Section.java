@@ -31,4 +31,30 @@ public @interface Section {
 		int order();
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	@interface Combo{
+		String name();
+		String enName();
+		String[] model();
+		String def();
+		int order();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	@interface Info{
+		String name();
+		String enName();
+		int order();
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	@interface Account{
+		String name();
+		String enName();
+		int order();
+	}
+
 }

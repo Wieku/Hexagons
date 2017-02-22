@@ -101,26 +101,14 @@ public enum FontManager{
 
 		for (FontManager val : values()) {
 			FileHandle file = Gdx.files.internal(asset+"fonts/" + val.name + ".ttf");
-			String chars = "";
-			try {
-				/*Font font = Font.createFont(Font.TRUETYPE_FONT, new BufferedInputStream(file.read()));
 
-				for (int c = 0; c <= Character.MAX_CODE_POINT; c++) {
-					if (font.canDisplay(c)) {
-						chars += (char) c;
-					}
-				}
-				System.out.println(chars);*/
+			try {
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
 				FreeTypeFontParameter pam = new FreeTypeFontParameter();
 				pam.size = val.genSize;
 				pam.genMipMaps = true;
-				//pam.borderColor = Color.BLACK;//new Color(0.5f, 0.5f, 0.5f, 1f);
-				//pam.shadowColor = new Color(0.5f, 0.5f, 0.5f, 1f);
 				pam.borderWidth = 1.5f;
-				pam.borderColor = new Color(/*0.5f, 0.5f, 0.5f*/0,0,0, 1f);
-				//pam.shadowOffsetX = 3;
-				//pam.shadowOffsetY = 3;
+				pam.borderColor = new Color(0,0,0, 1f);
 				pam.hinting = Hinting.Full;
 				pam.magFilter = TextureFilter.Linear;
 				pam.minFilter = TextureFilter.MipMapLinearLinear;
