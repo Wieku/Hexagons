@@ -54,9 +54,9 @@ public class DesktopLauncher {
 		config.foregroundFPS = 120;
 		config.addIcon("assets/hexlogo.png", Files.FileType.Internal);
 
-		String sam = Settings.instance.graphics.msaa;
-		if(!sam.contains("x") && !sam.equals("OFF")) Settings.instance.graphics.msaa = sam += "x";
-		config.samples = (sam.equals("OFF")?0:Integer.parseInt(sam.substring(0, sam.length()-1)));
+		String msaaSamples = Settings.instance.graphics.msaa;
+		if(!msaaSamples.contains("x") && !msaaSamples.equals("OFF")) Settings.instance.graphics.msaa = msaaSamples += "x";
+		config.samples = (msaaSamples.equals("OFF")?0:Integer.parseInt(msaaSamples.substring(0, msaaSamples.length()-1)));
 
 		Instance.setSamples = samples -> config.samples = samples;
 

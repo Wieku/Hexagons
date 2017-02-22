@@ -378,7 +378,7 @@ public class MapSelect implements Screen {
 			Map map = maps.get(index);
 			CurrentMap.reset();
 			maps.get(mapIndex).script.initColors();
-			maps.get(mapIndex).script.onInit();
+			maps.get(mapIndex).script.init();
 			camera.reset();
 
 			if(MenuPlaylist.getCurrent() == null || !MenuPlaylist.getCurrent().equals(map)){
@@ -411,7 +411,7 @@ public class MapSelect implements Screen {
 					GUIHelper.cacheFonts(scoreTable);
 					scoreTable.clear();
 					tnumber = 1;
-					if(lb == null) {
+					if(lb == null || lb.list == null) {
 						Table tb1 = GUIHelper.getTable(new Color(0,0,0,0.5f));
 						tb1.center().setFillParent(true);
 						tb1.add(GUIHelper.text("No scores available", Color.WHITE, 14));
