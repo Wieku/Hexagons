@@ -43,6 +43,8 @@ Property path                          | Type     | Description
 `color.offset                        ` | Int      |
 `color.switch                        ` | Float    | How often(seconds) to switch background colors.
 `color.walls                         ` | Color    | Wall colors
+`color.pingPongForward               ` | Int      | 
+`color.pingPongReverse               ` | Int      | 
 `color.shadow                        ` | SColor   | Shadow color. Note that it's simple color, so only rgba can be set
 `view.layers                         ` | Int      | Shadow layer count
 `view.depth                          ` | Float    | Shadow depth

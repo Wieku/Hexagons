@@ -36,7 +36,7 @@ end
 
 # Event notification system
 
-There is second event system that is used to notify script of certain actions such as key pressed.
+There is second event system that is used to notify scripts of certain actions such as key pressed.
 Events are delivered using callback functions defined in global `event` table.
 
 ```lua

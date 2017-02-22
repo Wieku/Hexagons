@@ -8,7 +8,6 @@ import xyz.hexagons.client.Instance;
 import xyz.hexagons.client.api.CurrentMap;
 import xyz.hexagons.client.api.HColor;
 import xyz.hexagons.client.api.Wall;
-import xyz.hexagons.client.engine.Game;
 import xyz.hexagons.client.engine.Player;
 import xyz.hexagons.client.engine.camera.SkewCamera;
 
@@ -57,13 +56,13 @@ public class MapRenderer {
 			CurrentMap.gameProperties.colorOffset += offsetDir;
 			offset += offsetDir;
 
-			if (CurrentMap.gameProperties.colorPingPongR > 0 && offset == -CurrentMap.gameProperties.colorPingPongR) {
+			if (CurrentMap.gameProperties.colorPingPongReverse > 0 && offset == -CurrentMap.gameProperties.colorPingPongReverse) {
 				offsetDir = 1;
 				offset = 0;
 			}
 
 
-			if(CurrentMap.gameProperties.colorPingPongF > 0 && offset == CurrentMap.gameProperties.colorPingPongF) {
+			if(CurrentMap.gameProperties.colorPingPongForward > 0 && offset == CurrentMap.gameProperties.colorPingPongForward) {
 				offsetDir = -1;
 				offset = 0;
 			}
