@@ -47,6 +47,7 @@ To run the game, follow these steps:
        * If still broken, ensure that you have only 1 java version installed and that it's fairly recent Java 8
        * Uninstall all java versions, install 1 from official website.
    * Linux
+     * If you use OpenJDK you may need `openjfx` package if it's not bundled with `openjdk` in your distro
      * Try running in terminal
 
 If those steps didn't help contact us for help.
