@@ -157,7 +157,7 @@ public class SettingsTab extends Table{
 	}
 
 	public void hide(){
-		if(button.isDisabled()) return;
+		if(hidden || button.isDisabled()) return;
 		getStage().setScrollFocus(null);
 		field.setDisabled(true);
 		button.setDisabled(true);
