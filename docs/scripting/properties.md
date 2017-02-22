@@ -43,7 +43,7 @@ Property path                          | Type     | Description
 `color.offset                        ` | Int      |
 `color.switch                        ` | Float    | How often(seconds) to switch background colors.
 `color.walls                         ` | Color    | Wall colors
-`color.shadow                        ` | SColor   | Shadow color. Note that it's sumple color, so only rgba can be set 
+`color.shadow                        ` | SColor   | Shadow color. Note that it's simple color, so only rgba can be set
 `view.layers                         ` | Int      | Shadow layer count
 `view.depth                          ` | Float    | Shadow depth
 `view.skew                           ` | Float    | Camera skew
