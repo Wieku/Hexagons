@@ -10,4 +10,5 @@ pages:
       - Properties: scripting/properties.md
       - Built-in patterns: scripting/standardPatterns.md
       - Pattern components: scripting/componentPatterns.md
+      - KeyCode table: scripting/keys.md
 theme: readthedocs
