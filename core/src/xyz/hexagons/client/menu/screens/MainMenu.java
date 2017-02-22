@@ -135,7 +135,7 @@ public class MainMenu implements Screen {
 				
 				
 				activity = true;
-				return false;
+				return true;
 			}
 
 			@Override
@@ -146,7 +146,7 @@ public class MainMenu implements Screen {
 					}
 					escclick = false;
 				}
-				return false;
+				return true;
 			}
 			
 			@Override

@@ -1,6 +1,7 @@
 package xyz.hexagons.client.menu.settings;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,9 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import me.wieku.animation.animations.Animation;
 import me.wieku.animation.timeline.Timeline;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class SettingsTab extends Table{
+public class SettingsTab extends Table {
 
 	private static SettingsTab instance = new SettingsTab();
 	private ScrollPane scr;
@@ -37,9 +38,44 @@ public class SettingsTab extends Table{
 	private boolean showed = false;
 	private boolean hidden = true;
 	private boolean showd = false;
-	TextField field;
+	Label field2;
 	TextButton button;
 	Timeline error;
+	String text = "";
+	InputListener listener = new ClickListener() {
+
+		public boolean keyTyped (InputEvent event, char character) {
+			if (hidden) return false;
+
+			switch (character) {
+				case 8:
+					break;
+				default:
+					if (character < 32) return false;
+			}
+
+			if (UIUtils.isMac && Gdx.input.isKeyPressed(Input.Keys.SYM)) return true;
+
+			boolean backspace = character == 8;
+
+			if (backspace && text.length() > 0) {
+				text = text.substring(0, text.length() - 1);
+			}
+
+			if (!backspace) {
+				if (!acceptChar(character)) return true;
+				text += String.valueOf(character);
+			}
+
+			field2.setText(text.length() > 0 ? text : "Type to search");
+
+			if(ConfigEngine.matches(text) != 0){
+				build(text);
+			}
+
+			return true;
+		}
+	};
 
 	public static SettingsTab getInstance(){
 		return instance;
@@ -49,48 +85,21 @@ public class SettingsTab extends Table{
 		super();
 		setBackground(GUIHelper.getTxRegion(new Color(0,0,0,0.5f)));
 		top().left();
-		field = new TextField("", GUIHelper.getTextFieldStyle(Color.BLACK, Color.WHITE));
-		field.setColor(1, 1, 1, 0);
-		field.setMessageText("Search...");
-		field.setVisible(false);
+		field2 = GUIHelper.text("Type to search", Color.WHITE, 20);
+		field2.setAlignment(Align.center);
+		field2.setColor(1, 1, 1, 0);
 
-		field.setTextFieldFilter(new TextFieldFilter(){
+		Image image = new Image(GUIHelper.getTxHRegion(Color.WHITE,1));
+		image.setScaling(Scaling.stretchX);
 
-			@Override
-			public boolean acceptChar(TextField arg0, char arg1) {
+		add(image).fillX().padTop(30).row();
+		add(field2).center().fillX()/*.height(30)*/.padTop(5).padBottom(5).expandX().row();
 
-				String phrase = field.getText() + Character.toString(arg1);
+		Image image2 = new Image(GUIHelper.getTxHRegion(Color.WHITE,1));
+		image2.setScaling(Scaling.stretchX);
 
-				if(ConfigEngine.matches(phrase) > 0){
-					return true;
-				}
+		add(image2).fillX().padBottom(10).row();
 
-				if(error != null && !error.isFinished()) error.kill();
-
-				error = new Timeline().beginSequence().push(new Animation(field,ActorAccessor.TEXTCOLOR,0.2f*field.getColor().r).target(0.5f,0.5f,0.5f,1)).pushPause(0.2f)
-						.push(new Animation(field,ActorAccessor.TEXTCOLOR,0.2f).target(1f,1f,1f,1)).end();
-				error.start(Instance.getAnimationManager());
-
-				return false;
-
-			}
-
-		});
-
-		field.addListener(new InputListener(){
-			@Override
-			public boolean keyTyped(InputEvent event, char character) {
-
-				if(!field.isDisabled())
-					if(ConfigEngine.matches(field.getText()) != 0){
-						build(field.getText());
-					}
-
-				return true;
-			}
-		});
-
-		add(field).center().fillX().height(30).padTop(30).padBottom(5).expandX().row();
 
 		chld = new Table();
 		chld.top().left();
@@ -121,12 +130,13 @@ public class SettingsTab extends Table{
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		setHeight(getStage().getHeight());
+
 		setPosition(0, 0);
-		layout();
-		if(showd){
+
+		if(showd)
 			setWidth(512);
-			layout();
-		}
+
+		layout();
 
 		super.draw(batch, parentAlpha);
 	}
@@ -134,9 +144,9 @@ public class SettingsTab extends Table{
 	public void show(){
 		button.setVisible(true);
 		button.setDisabled(false);
-		field.setVisible(true);
-		field.setDisabled(false);
+
 		getStage().setScrollFocus(scr);
+		getStage().addListener(listener);
 		if(hidingTween != null && !hidingTween.isFinished()){
 			hidingTween.kill();
 		}
@@ -146,7 +156,7 @@ public class SettingsTab extends Table{
 		showingTween = new Timeline().beginParallel().push(ActorAccessor.createSineTween(this, ActorAccessor.SIZEX, 1.0f-(getWidth()/512f), 512, 0))
 				.push(ActorAccessor.createFadeTween(this, 1.0f, 0, 1.0f))
 				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0, 1.0f))
-				.push(ActorAccessor.createFadeTween(field, 1.0f, 0, 1.0f))
+				.push(ActorAccessor.createFadeTween(field2, 1f, 0.4f, 1.0f))
 				.push(ActorAccessor.createFadeTween(button, 1.0f, 0.4f, 1.0f))
 				.end().setCallback((b)->{showd=true;});
 		showingTween.start(Instance.getAnimationManager());
@@ -159,7 +169,9 @@ public class SettingsTab extends Table{
 	public void hide(){
 		if(hidden || button.isDisabled()) return;
 		getStage().setScrollFocus(null);
-		field.setDisabled(true);
+		getStage().setKeyboardFocus(null);
+		getStage().removeListener(listener);
+
 		button.setDisabled(true);
 		if(showingTween != null && !showingTween.isFinished()){
 			showingTween.kill();
@@ -169,7 +181,7 @@ public class SettingsTab extends Table{
 		hidingTween = new Timeline().beginParallel().push(ActorAccessor.createQuadTween(this, ActorAccessor.SIZEX, (getWidth()/512f) * 1.0f, 0, 0f))
 				.push(ActorAccessor.createFadeTween(this, 1.0f, 0f, 0f))
 				.push(ActorAccessor.createFadeTween(scr, 1.0f, 0f, 0f))
-				.push(ActorAccessor.createFadeTween(field, 1.0f, 0f, 0f))
+				.push(ActorAccessor.createFadeTween(field2, 0.4f, 0f, 0f))
 				.push(ActorAccessor.createFadeTween(button, 0.4f, 0, 0f))
 				.end()
 				.setCallback((s)->hidden = true);
@@ -242,5 +254,21 @@ public class SettingsTab extends Table{
 		chld.add(mainTable);
 	}
 
+	public boolean acceptChar(char arg1) {
+
+		String phrase = text + Character.toString(arg1);
+
+		if(ConfigEngine.matches(phrase) > 0){
+			return true;
+		}
+
+		if(error != null && !error.isFinished()) error.kill();
+
+		error = new Timeline().beginSequence().push(new Animation(field2,ActorAccessor.TEXTCOLOR,0.2f*field2.getStyle().fontColor.r).target(0.5f,0.5f,0.5f,1)).pushPause(0.2f)
+				.push(new Animation(field2,ActorAccessor.TEXTCOLOR,0.2f).target(1f,1f,1f,1)).end();
+		error.start(Instance.getAnimationManager());
+
+		return false;
+	}
 
 }

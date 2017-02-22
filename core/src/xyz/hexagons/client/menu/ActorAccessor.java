@@ -3,6 +3,7 @@ package xyz.hexagons.client.menu;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
@@ -52,7 +53,11 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 				returnValues[0] = target.getColor().a;
 				return 1;
 			case TEXTCOLOR:
-				Color col = ((TextField) target).getStyle().fontColor;
+				Color col = null;
+				if(target instanceof TextField)
+					col = ((TextField) target).getStyle().fontColor;
+				if (target instanceof Label)
+					col = ((Label) target).getStyle().fontColor;
 
 				returnValues[0] = col.r;
 				returnValues[1] = col.g;
@@ -116,8 +121,11 @@ public class ActorAccessor implements AnimationAccessor<Actor> {
 				//target.setPosition(target.getX() + (target.getWidth() * target.getScaleX() - sizeX) / 2 , target.getY() + (target.getHeight()*target.getScaleY()-sizeY) / 2);
 				return;
 			case TEXTCOLOR:
-				Color col1 = ((TextField) target).getStyle().fontColor;
-
+				Color col1 = null;
+				if(target instanceof TextField)
+					col1 = ((TextField) target).getStyle().fontColor;
+				if (target instanceof Label)
+					col1 = ((Label) target).getStyle().fontColor;
 				col1.r = newValues[0];
 				col1.g = newValues[1];
 				col1.b = newValues[2];
