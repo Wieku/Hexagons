@@ -5,13 +5,19 @@ import util.{JSZip, REST}
 import util.tags.HexTags.{checkbox, hexButton}
 import util.tags.Tag
 import util.tags.Tags._
+import org.scalajs.dom.crypto.{GlobalCrypto, HashAlgorithm}
 
 import scala.scalajs.js
 import scala.scalajs.js.{JSApp, JSON, URIUtils}
 import js.Dynamic.{global => g}
 import scala.collection.mutable
+import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
+import scala.util.Success
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object MapRegister extends JSApp {
+  private val crypto = GlobalCrypto.crypto.subtle
+
   def main(): Unit = {
     val fileInput = document.getElementsByClassName("register-file")(0).asInstanceOf[HTMLInputElement]
     val nextButton = document.getElementsByClassName("register-button")(0).asInstanceOf[HTMLInputElement]
@@ -73,7 +79,7 @@ object MapRegister extends JSApp {
     REST.get(s"/creator/api/map/info?uuid=${level.uuid}", response => {
       val info = response.asInstanceOf[MapInfo]
       if(info.registered) {
-        if(info.owner != g.config.uid) { //TODO: check!!!
+        if(info.owner != g.config.uid) {
           progressList.appendChild(p("ERROR: Map with this UUID was registered by someone else!"))
           return
         }
@@ -92,6 +98,8 @@ object MapRegister extends JSApp {
 
     val buttonNope = hexButton("No", () => window.location.reload())
     val buttonYes = hexButton("Yes!", () => registerName(level, zip, progressList))
+
+    progressList.appendChild(p(span(buttonYes), span().withClass("hex-space"), span(buttonNope)))
   }
 
   private def registerName(level: Level, zip: JSZip, progressList: Tag): Unit = {
@@ -124,5 +132,24 @@ object MapRegister extends JSApp {
       }
     })
     progressList.appendChild(div(div(list)).withClass("util-flex-center"))
+
+    val buttonNext = hexButton("Register!", () => {
+      val hashes = new mutable.HashMap[String, String]
+
+      inputs.filter(i => i._2.checked).foreach(i => {
+        crypto.digest(HashAlgorithm.`SHA-256`, zip.files(i._1).asArrayBuffer())
+          .toFuture.andThen {
+          case Success(b: ArrayBuffer) => {
+            val buf = new Uint8Array(b)
+            val hash = (0 until buf.length).map(buf.apply).map("%02x" format _).mkString
+            println(s"${i._1} is $hash")
+          }
+        }
+      })
+    })
+
+    progressList.appendChild(buttonNext)
+
+
   }
 }

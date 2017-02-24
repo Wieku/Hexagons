@@ -48,7 +48,7 @@ lazy val client = (project in file("client")).settings(commonSettings("client"):
   persistLauncher in Test := false,
   emitSourceMaps in fullOptJS := development,
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.9.1"
   )
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .dependsOn(commonJs)
@@ -61,7 +61,7 @@ lazy val mapRegister = (project in file("mapRegister")).settings(commonSettings(
   persistLauncher in Test := false,
   emitSourceMaps in fullOptJS := development,
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.9.1"
   )
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .dependsOn(commonJs)
@@ -73,7 +73,7 @@ lazy val mapRegister = (project in file("mapRegister")).settings(commonSettings(
 lazy val jsUtils = (project in file("jsUtils")).settings(commonSettings("jsUtils"): _*).settings(
   emitSourceMaps in fullOptJS := development,
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.9.1"
   )
 ).enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .dependsOn(commonJs)

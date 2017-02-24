@@ -21,6 +21,7 @@ site/server/test/
 site/jsUtils/target/
 site/mapRegister/target/
 site/target/
+site/server/conf/generated.keystore
 core/.classpath
 launcher/.hexagons/
 launcher/Data/

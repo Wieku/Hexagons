@@ -1,6 +1,7 @@
 package util
 
 import scala.scalajs.js
+import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 
 object JSZip extends js.Object {
 
@@ -23,4 +24,6 @@ class ZipEntry extends js.Object {
 
 trait ZipFile extends js.Object {
   def asText(): String
+  def asArrayBuffer(): ArrayBuffer
+  def asUint8Array(): Uint8Array
 }
