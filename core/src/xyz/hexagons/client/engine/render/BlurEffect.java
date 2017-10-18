@@ -63,7 +63,7 @@ public class BlurEffect {
 		program.begin();
 		program.setUniformf("resolution", width, height);
 		program.setUniformf("darkness", darkness);
-		//program.setUniformf("power", power);
+
 		program.end();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(width/SCALE, height/SCALE);
@@ -105,7 +105,6 @@ public class BlurEffect {
 		batch.setShader(program);
 		program.setUniformf("resolution", buffer.getWidth(), buffer.getHeight());
 		program.setUniformf("darkness", darkness);
-		//program.setUniformf("power", power);
 
 		batch.draw(buffer.getColorBufferTexture(), 0, 0, width/SCALE, height/SCALE);
 
