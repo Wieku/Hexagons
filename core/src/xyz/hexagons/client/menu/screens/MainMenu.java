@@ -511,6 +511,7 @@ public class MainMenu implements Screen {
 	@Subscribe
 	public void onLogin(EventLogin event) {
 		if(event.getAccount() != null) {
+			Instance.currentAccount = event.getAccount(); //FIXME: Set Instance.currentAccount before posting event
 			PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
 			rank.update(event.getAccount().nick(), info.globalRank, info.rankedScore);
 		}
