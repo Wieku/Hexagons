@@ -121,8 +121,12 @@ public class MainMenu implements Screen {
 					if(currentIndex == 0)
 						Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps))));
 
-					if(currentIndex == 1 && !sTab.isShowed())
-						sTab.show();
+					if(currentIndex == 1) {
+						if(!sTab.isShowed())
+							sTab.show();
+						else
+							sTab.hide();
+					}
 
 					if(currentIndex == 2)
 						Gdx.app.exit();
@@ -159,9 +163,13 @@ public class MainMenu implements Screen {
 						if(currentIndex == 0)
 							Instance.scheduleOnMain.accept(()->Instance.game.setScreen((sl!=null ? sl : (sl=new MapSelect(Instance.maps)))));
 						
-						if(currentIndex == 1 && !sTab.isShowed())
+						if(currentIndex == 1) {
+							if(!sTab.isShowed())
 								sTab.show();
-						
+							else
+								sTab.hide();
+						}
+
 						if(currentIndex == 2)
 							Gdx.app.exit();
 
@@ -335,7 +343,7 @@ public class MainMenu implements Screen {
 				title.setText(MenuPlaylist.getCurrent().info.songAuthor + " - " + MenuPlaylist.getCurrent().info.songName);
 				float[] cv = MenuPlaylist.getCurrentPlayer().getFFT();
 				for(int i=0;i<40;i++) {
-					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50 * (1.5f/darknessGlider.getValue()), dfg[i] + delta0 * 800), dfg[i] - delta0 * 300));
+					dfg[i] = Math.max(2, Math.max(Math.min(MathUtils.log2(cv[i] * 2) * 50 * (1.5f/darknessGlider.getValue()), dfg[i] + delta0 * 800), dfg[i] - delta0 * 400));
 				}
 			} else title.setText("No maps available");
 
@@ -408,9 +416,9 @@ public class MainMenu implements Screen {
 					}
 					uiAnimation = parr.end();
 					uiAnimation.start(Instance.getAnimationManager());
-					
-					darknessGlider.glide(1.5f, (1f - stage.getRoot().getColor().a));
-					alphaGlider.glide(0.1f, (1f - stage.getRoot().getColor().a));
+
+					darknessGlider.glide(1.5f, 1f - (darknessGlider.getValue()-1f)*2);
+					alphaGlider.glide(0.1f, 1f - (alphaGlider.getValue()-0.1f)*3.333f);
 				}
 				
 				countDown = COUNT;
@@ -502,7 +510,7 @@ public class MainMenu implements Screen {
 	
 	@Subscribe
 	public void onLogin(EventLogin event) {
-		if(Instance.currentAccount != null) {
+		if(event.getAccount() != null) {
 			PlayerRankInfo info = RankApi.instance.getPlayerRankInfo();
 			rank.update(event.getAccount().nick(), info.globalRank, info.rankedScore);
 		}
