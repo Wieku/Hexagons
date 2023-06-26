@@ -48,6 +48,10 @@ task bundle << {
         from "SynapseActivation/build/libs/SynapseActivation-${version}.jar"
         into "../android/assets/Maps"
     }
+    copy {
+        from "TheTrueEnd/build/libs/TheTrueEnd-${version}.jar"
+        into "../android/assets/Maps"
+    }
 }
 
 bundle.dependsOn removeMaps
@@ -62,3 +66,4 @@ bundle.dependsOn 'Pointless:jar'
 bundle.dependsOn 'SecondDimension:jar'
 bundle.dependsOn 'Fairydust:jar'
 bundle.dependsOn 'SynapseActivation:jar'
+bundle.dependsOn 'TheTrueEnd:jar'
