@@ -941,6 +941,7 @@ function babaSwapCage()
         end
 
         timeline.wait(patterns.getPerfectDelay(THICKNESS) * 11)
+    else pattern = pattern - 1
     end
 end
 
@@ -966,6 +967,7 @@ function babaSwapTunnel(mFreq)
             end
 
             timeline.wait(patterns.getPerfectDelay(THICKNESS) * 11)
+        else pattern = pattern - 1
         end
     end
 end
@@ -986,6 +988,7 @@ function babaSwapAdvTunnel(mFreq)
             end
 
             timeline.wait(patterns.getPerfectDelay(THICKNESS) * 8)
+        else pattern = pattern - 1
         end
     end
 end
@@ -1019,6 +1022,7 @@ function exschBackAndForth(mTimes, mDelayMult)
 
             THICKNESS = oldThickness
             timeline.wait(delay)
+        else pattern = pattern - 1
         end
     end
 end
@@ -1065,11 +1069,11 @@ function hxdsTknsTunnelDouble(mTimes, mDelayMult)
                 patterns.wallExtra(startSide - 3, getSides() - 6, THICKNESS*1)
                 patterns.wallExtra(startSide - 2, getSides() - 6, oldThickness)
                 timeline.wait(delay*0.65*mDelayMult)
-
             end
 
             timeline.wait(delay)
             THICKNESS = oldThickness
+        else pattern = pattern - 1
         end
     end
 end
@@ -1141,6 +1145,7 @@ function march31oTrapAround(_freq)
             cWallGrow(_curSide, math.floor(getSides() / 4) + overHexDel, custThickness(2))
 
             timeline.wait(patterns.getPerfectDelay(THICKNESS) * 12)
+        else pattern = pattern - 1
         end
     end
 end
@@ -1178,11 +1183,13 @@ function march31oBat()
         end
 
         timeline.wait(patterns.getPerfectDelay(THICKNESS) * 12)
+    else pattern = pattern - 1
     end
 end
 
 local patternQueue = game.newPatternQueue{
     { weight = 1, pattern = pAltBarrage },
+    { weight = 1, pattern = pSpiral },
     { weight = 1, pattern = pMirrorSpiral },
     { weight = 1, pattern = pBarrageSpiral },
     { weight = 1, pattern = pInverseBarrage },
@@ -1218,7 +1225,7 @@ local patternQueue = game.newPatternQueue{
     { weight = 1, pattern = babaEvenAltBarrage(game.randomParam(4, 6)) },
     { weight = 1, pattern = babaAltTrapBarrage(game.randomParam(3, 5), 1) },
     { weight = 1, pattern = function()
-        setSides(game.randomParam(16, 20))
+        setSides(game.randomParam(5, 7))
         babaJumble(game.randomParam(3, 4), 1.4, getSides() - 3) 
     end },
     { weight = 1, pattern = function()
@@ -1238,18 +1245,19 @@ local patternQueue = game.newPatternQueue{
     { weight = 1, pattern = function()
         setSides(game.randomParam(5, 8))
         timeline.wait(patterns.THICKNESS)
-        pHelix(game.randomParam(2,4))
+        pHelix(game.randomParam(2, 4))
     end },
     { weight = 1, pattern = function()
         setSides(30)
         timeline.wait(patterns.THICKNESS)
-        hookBarrage(game.randomParam(2,20), 0.08, game.randomParam(0,4), game.randomParam(0,1))
+        hookBarrage(game.randomParam(2, 20), 0.08, game.randomParam(0, 4), game.randomParam(0, 1))
     end },
     { weight = 1, pattern = function()
         if pattern >= 20 then
             setSides(30)
             timeline.wait(patterns.THICKNESS)
-            snailBarrage(game.randomParam(2,20), 0.08, 1, game.randomParam(0,1))
+            snailBarrage(game.randomParam(2, 20), 0.08, 1, game.randomParam(0, 1))
+        else pattern = pattern - 1
         end
     end },
     { weight = 1, pattern = synapticBarrageSpiral(10, 0.5, 1) },
@@ -1263,14 +1271,16 @@ local patternQueue = game.newPatternQueue{
         if pattern >= 130 then
             setSides(game.randomParam(4, 8))
             timeline.wait(patterns.THICKNESS)
-            surroundBarrage(game.randomParam(2,4))
+            surroundBarrage(game.randomParam(2, 4))
+        else pattern = pattern - 1
         end
     end },
     { weight = 1, pattern = function()
         if pattern >= 130 then
             setSides(game.randomParam(4, 6))
             timeline.wait(patterns.THICKNESS)
-            surroundSpiral(game.randomParam(2,4), game.randomParam(2,4))
+            surroundSpiral(game.randomParam(2, 4), game.randomParam(2, 4))
+        else pattern = pattern - 1
         end
     end },
 ----------------------------------------------------------------- END OF SURROUND PATTERNS
@@ -1281,7 +1291,8 @@ local patternQueue = game.newPatternQueue{
         if pattern >= 200 then
             setSides(game.randomParam(4, 8))
             timeline.wait(patterns.THICKNESS)
-            surroundSwap(game.randomParam(2,4))
+            surroundSwap(game.randomParam(2, 4))
+        else pattern = pattern - 1
         end
     end },
     { weight = 1, pattern = function()
@@ -1289,6 +1300,7 @@ local patternQueue = game.newPatternQueue{
             setSides(game.randomParam(4, 6))
             timeline.wait(patterns.THICKNESS)
             binaryRandom()
+        else pattern = pattern - 1
         end
     end },
     { weight = 1, pattern = function()
@@ -1296,6 +1308,7 @@ local patternQueue = game.newPatternQueue{
             setSides(20)
             timeline.wait(patterns.THICKNESS)
             flipper()
+        else pattern = pattern - 1
         end
     end }
 }
