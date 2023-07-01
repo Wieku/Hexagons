@@ -1157,7 +1157,7 @@ function march31oBat()
 
         if getSides() > 5 then
             cWallGrow(_curSide, math.floor(getSides() / 2) - 1, custThickness(1));
-            for amount001 = 0, math.floor(getSides() / 2) - 2, 1 do cWallGrow(_curSide, custThickness((4 + (amount001 * 3))), math.floor(getSides() / 2) - (amount001 + 2)); end
+            for amount001 = 0, math.floor(getSides() / 2) - 2, 1 do cWallGrow(_curSide, math.floor(getSides() / 2) - (amount001 + 2), custThickness((4 + (amount001 * 3)))); end
             timeline.wait(custWait(math.floor(getSides() / 2) + 2));
             patterns.wallExtra(_curSide + math.floor(getSides() / 2), getSides() % 2, custThickness((math.floor(getSides() / 2) + math.floor(getSides() / 2) + 1 + math.floor(getSides() / 10) + math.floor(getSides() / 4))));
             timeline.wait(custWait(2));
@@ -1171,7 +1171,7 @@ function march31oBat()
 
             timeline.wait(custWait(3));
             patterns.barrage(_curSide, 0, custThickness(3));
-
+            timeline.wait(custWait(3));
         else
             cWallGrow(_curSide, 1, custThickness(2));
             cWallGrow(_curSide, 0, custThickness(4));
@@ -1264,7 +1264,7 @@ local patternQueue = game.newPatternQueue{
     { weight = 1, pattern = synapticTunnelFastAlt(game.randomParam(4, 10)) }
     { weight = 1, pattern = exschBackAndForth(3, 1.5) },
     { weight = 1, pattern = hxdsTknsTunnelDouble(game.randomParam(1, 2), 1) },
-    { weight = 1, pattern = march31oTrapAround(game.randomParam(0, 1)) },
+    { weight = 1, pattern = march31oTrapAround(game.random(2)) },
     { weight = 1, pattern = march31oBat },
 ----------------------------------------------------------------- END OF NORMAL PATTERNS
     { weight = 1, pattern = function()
@@ -1328,8 +1328,8 @@ function initColors()
 end
 
 function nextPattern()
-    patternQueue:addNext()
     pattern = pattern + 1
+    patternQueue:addNext()
     if pattern < 10 then
         game.setProperty("difficulty.speed", 0.75)
     end
