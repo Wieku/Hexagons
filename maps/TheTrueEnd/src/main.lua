@@ -1125,7 +1125,7 @@ function march31oTrapAround(_freq)
             patterns.barrage(_curSide, 0, custThickness(1))
             timeline.wait(custWait(4));
             if getSides() >= 4 then
-                patterns.wall(_curSide, custThickness(1 + (10 * _freq) + (overHexDel * 4)))
+                patterns.wall(_curSide, custThickness(1 + (10 * _freq) + (overHexDel * 3)))
             end
             cWallGrow(_curSide, getSides() > 5 and math.floor(getSides() / 4) or 0, custThickness(2))
             timeline.wait(custWait(1));
@@ -1140,7 +1140,7 @@ function march31oTrapAround(_freq)
                 for i = -deskExtend, (getSides() % 2) + deskExtend do
                     cWallGrow(_curSide + i + math.floor(getSides() / 2), math.floor(getSides() / 4) - 1, custThickness(2))
                 end
-                timeline.wait(custWait(4 + delExtend));
+                timeline.wait(custWait(5 - math.floor(((a + 1) / (_freq)) * deskExtend) + delExtend));
             end
             cWallGrow(_curSide, math.floor(getSides() / 4) + overHexDel, custThickness(2))
 
